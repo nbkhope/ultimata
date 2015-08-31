@@ -24,6 +24,8 @@
 #include "Constants.h"
 #include "Creature.h"
 #include "GameMap.h"
+//#include "Graphics.h" // this is a problem
+// Input should not deal with Graphics, but Graphics should take an input object as an argument
 
 using namespace std;
 
@@ -34,8 +36,27 @@ public:
 	~Input();
 	
 	bool get(GameMap* gameMap, Creature *c);
+	
+	bool testGet(GameMap* gameMap, Creature *c);
+	
+	// Alpha blending <~test~>
+	Uint8 getAlpha() const;
+	void setAlpha(Uint8 a);
+	Uint8* getColor();
+	void setColor(Uint8* color);
+	
+	// Change tile <~test~>
+	int getTestTileId() const;
+	
 private:
 	SDL_Event e;
+	
+	// Alpha blending <~test~>
+	Uint8 alpha;
+	Uint8 color[3];
+	
+	// Change tile <~test~>
+	int testTileId;
 };
 
 #endif

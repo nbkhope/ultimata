@@ -24,6 +24,8 @@ const int SCREEN_WIDTH = 720;
 const int SCREEN_HEIGHT = 480;
 const int TILESIZE = 48;
 
+enum GAME_MODE { GAME_MODE_TEST, GAME_MODE_NORMAL };
+
 #define __TEXTURE_RENDERING__
 
 #endif

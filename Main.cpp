@@ -26,10 +26,13 @@ int main(int argc, char* args[])
 	Input input;
 	int error;
 	bool quit;
+	int gameMode;
 	
 	//SDL_Event e;
 	
 	// Variable definitions
+	//gameMode = GAME_MODE_TEST;
+	gameMode = GAME_MODE_NORMAL;
 	quit = false;
 	
 	error = system.init(&graphics);
@@ -54,17 +57,33 @@ int main(int argc, char* args[])
 #endif
 			while (!quit)
 			{
-				// Handle Input
-				if(input.get(&gameMap, &creature))
+				
+				if (gameMode == GAME_MODE_TEST)
 				{
-					quit = true;
+					// Handle Input
+					if (input.testGet(&gameMap, &creature))
+					{
+						quit = true;
+					}
+						
+					graphics.testRender(&creature, &input);
+				}
+				else
+				{
+					// Handle Input
+					if (input.get(&gameMap, &creature))
+					{
+						quit = true;
+					}
+					
+	#ifndef __TEXTURE_RENDERING__
+					graphics.updateCurrentSurface();
+	#else
+					graphics.render(&gameMap, &creature, &input);
+	#endif
+					
 				}
 				
-#ifndef __TEXTURE_RENDERING__
-				graphics.updateCurrentSurface();
-#else
-				graphics.render(&creature);
-#endif
 			}
 		}
 	}

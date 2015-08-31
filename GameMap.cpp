@@ -61,6 +61,11 @@ int GameMap::getTilesDown() const
 	return tiles_down;
 }
 
+Tileset* GameMap::getTileset()
+{
+	return &tileset;
+}
+
 void GameMap::setWidth(int w)
 {
 	width = w;

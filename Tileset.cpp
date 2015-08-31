@@ -14,27 +14,37 @@
 //	along with this program; if not, write to the Free Software
 //	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef __TILE_H__
-#define __TILE_H__
+#include "Tileset.h"
 
-class Tile
+Tileset::Tileset()
 {
-public:
-	Tile();
-	~Tile();
+	int i, j;
+	int index;
 	
-	int getId() const;
-	bool isWalkable() const;
-	
-	void setId(int newId);
-	void setWalkable(bool canWalk);
-private:
-	int id;
-	
-	bool walkable;
-	// you could: check whether each tile is walkable with this
-	// or let the tileset define which tile ids are walkable
-	// we will use the first approach
-};
+	cout << "Constructing tileset . . ."  << endl;
 
-#endif
+	tiles_across = 16;
+	tiles_down = 16;
+	
+	// Set up sprite regions
+	for (i = 0; i < tiles_down; i++)
+		for (j = 0; j < tiles_across; j++)
+		{
+			index = i * tiles_across + j;
+			sprite[index].w = sprite[index].h = TILESIZE;
+			sprite[index].x = j * TILESIZE;
+			sprite[index].y = i * TILESIZE;
+		}
+	
+	cout << "Tileset constructed." << endl;
+}
+
+Tileset::~Tileset()
+{
+	//
+}
+
+SDL_Rect* Tileset::getSprite(int index)
+{
+	return &sprite[index];
+}

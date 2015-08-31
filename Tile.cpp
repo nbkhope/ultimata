@@ -18,7 +18,8 @@
 
 Tile::Tile()
 {
-	
+	id = 17;
+	walkable = true;
 }
 
 Tile::~Tile()
@@ -31,7 +32,19 @@ int Tile::getId() const
 	return id;
 }
 
+
+bool Tile::isWalkable() const
+{
+	return walkable;
+}
+
+
 void Tile::setId(int newId)
 {
 	id = newId;
+}
+
+void Tile::setWalkable(bool canWalk)
+{
+	walkable = canWalk;
 }

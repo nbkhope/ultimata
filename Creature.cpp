@@ -24,6 +24,10 @@ Creature::Creature()
 	// Right at the center
 	pos.x = SCREEN_WIDTH / 2 - (SCREEN_WIDTH / 2) % 48;
 	pos.y = SCREEN_HEIGHT / 2 - (SCREEN_HEIGHT/ 2) % 48;
+	
+	name = "Unknown";
+	health = healthMax = 120;
+	mana = manaMax = 40;
 }
 
 Creature::~Creature()
@@ -59,4 +63,70 @@ void Creature::setPosX(int x)
 void Creature::setPosY(int y)
 {
 	pos.y = y;
+}
+
+string Creature::getName() const
+{
+	return name;
+}
+/*
+uint32_t Creature::getLevel() const
+{
+	return level;
+}
+
+uint64_t Creature::getExperience() const
+{
+	return experience;
+}
+*/
+int Creature::getHealth() const
+{
+	return health;
+}
+
+int Creature::getHealthMax() const
+{
+	return healthMax;
+}
+
+int Creature::getMana() const
+{
+	return mana;
+}
+
+int Creature::getManaMax() const
+{
+	return manaMax;
+}
+
+void Creature::setHealth(int newHealth)
+{
+	health = newHealth;
+}
+/*
+void Creature::setLevel(int newLevel)
+{
+	level = newLevel;
+}
+
+void Creature::setExperience(int newExperience)
+{
+	experience = newExperience;
+}
+*/
+
+void Creature::setHealthMax(int newHealthMax)
+{
+	healthMax = newHealthMax;
+}
+
+void Creature::setMana(int newMana)
+{
+	mana = newMana;
+}
+
+void Creature::setManaMax(int newManaMax)
+{
+	manaMax = newManaMax;
 }

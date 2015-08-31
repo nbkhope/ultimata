@@ -1,0 +1,6 @@
+Image Sources
+
+kongokai	https://commons.wikimedia.org/wiki/File:Kongokai.jpg
+nen	http://www.koreanwikiproject.com/wiki/index.php?title=File:%E5%BF%B5.png
+PathAndObjects_0	http://opengameart.org/content/rpg-tiles-cobble-stone-paths-town-objects
+shakyamuni	https://www.flickr.com/photos/90664717@N00/4618488018/

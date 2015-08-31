@@ -17,9 +17,13 @@
 #ifndef __CREATURE_H__
 #define __CREATURE_H__
 
+#include <iostream>
+
 #include "SDL2/SDL.h"
 
 #include "Constants.h"
+
+using namespace std;
 
 class Creature
 {
@@ -34,9 +38,51 @@ public:
 	
 	void setPosX(int x);
 	void setPosY(int y);
+	
+	/**
+	 * Returns the name of the creature
+	 */
+	string getName() const;
+	
+	//uint32_t getLevel() const;
+	
+	//uint64_t getExperience() const;
+	
+	/**
+	 * Returns the current health points of the creature
+	 */
+	int getHealth() const;
+	
+	/**
+	 * Returns the maximum health points of the creture
+	 */
+	int getHealthMax() const;
+	
+	/**
+	 * Returns the current mana points of the creature
+	 */
+	int getMana() const;
+	
+	/**
+	 * Returns the maximum mana points of the creture
+	 */
+	int getManaMax() const;
+	
+	//void setLevel(int newLevel);
+	//void setExperience(int newExperience);
+	void setHealth(int newHealth);
+	void setHealthMax(int newHealthMax);
+	void setMana(int newMana);
+	void setManaMax(int newManaMax);
 private:
 	SDL_Rect pos;
 	//int pos_x, pos, y;
+	
+	string name;
+	int health;
+	int healthMax;
+	int mana;
+	int manaMax;
 };
 
 #endif

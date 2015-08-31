@@ -16,6 +16,157 @@
 
 #include "Graphics.h"
 
+LTexture* Graphics::getMyBackground()
+{
+	return &myBackground;
+}
+
+LTexture* Graphics::getMyForeground()
+{
+	return &myForeground;
+}
+
+// LTexture Functions
+LTexture::LTexture()
+{
+	mTexture = NULL;
+	mWidth = NULL;
+	mHeight = NULL;
+}
+LTexture::~LTexture()
+{
+	free();
+}
+
+/**
+ * Loads a texture into a LTexture object. All images are color keyed (i.e. colors that match the
+ * color key will be made transparent)
+ */
+bool LTexture::loadFromFile(string filename, SDL_Renderer* gRenderer)
+{
+	SDL_Texture* newTexture = NULL;
+	
+	// Gets rid of whatever was loaded before
+	free();
+	
+	
+#ifdef __DEBUG_MODE__
+	cout << "(LTexture) Loading texture . . ." << endl;
+#endif
+	SDL_Surface* loadedSurface = IMG_Load(filename.c_str());
+	
+	if (loadedSurface == NULL)
+	{
+		cerr << "Surface could not be loaded" << endl;
+		cerr << IMG_GetError();
+	}
+	else
+	{
+		// Color key image before creating texture (Cyan: #00FFFF)
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+		
+		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+		
+		if (newTexture == NULL)
+		{
+			cerr << "Texture could not be created" << endl;
+			cerr << SDL_GetError();
+		}
+		else
+		{
+			mWidth = loadedSurface->w;
+			mHeight = loadedSurface->h;
+			
+#ifdef __DEBUG_MODE__
+			cout << "Texture loaded." << endl;
+#endif
+		}
+		
+		SDL_FreeSurface(loadedSurface);
+	}
+	
+	mTexture = newTexture;
+	
+	return mTexture != NULL;
+}
+
+/**
+ * Deallocates texture
+ */
+void LTexture::free()
+{
+	if (mTexture != NULL)
+	{
+		SDL_DestroyTexture(mTexture);
+		mTexture = NULL;
+		mWidth = 0;
+		mHeight = 0;
+	}
+}
+
+/**
+ * Renders a texture, given position and renderer.
+ */
+void LTexture::render(int x, int y, SDL_Renderer* gRenderer, SDL_Rect* clip)
+{
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	
+	if (clip != NULL)
+	{
+		renderQuad.w = clip->w;
+		renderQuad.h = clip->h;
+	}
+	
+	SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
+}
+
+/**
+ * Sets texture color modulation
+ */
+void LTexture::setColor(Uint8 r, Uint8 g, Uint8 b)
+{
+	SDL_SetTextureColorMod(mTexture, r, g, b);
+}
+
+/**
+ * Sets texture blending
+ */
+void LTexture::setBlendMode(SDL_BlendMode blending)
+{
+	SDL_SetTextureBlendMode(mTexture, blending);
+}
+
+/**
+ * Sets texture alpha modulation
+ *
+ * 100% alpha (255) -- opaque
+ * 75% alpha (191)
+ * 50% alpha (127)
+ * 25% alpha (63)
+ * 0% alpha (0) -- fully transparent
+ */
+void LTexture::setAlpha(Uint8 alpha)
+{
+	// Note: Uint8 is an unsigned, 8-bit integer, ranging from 0 to 255
+	SDL_SetTextureAlphaMod(mTexture, alpha);
+}
+
+/**
+ * Returns the width of the texture
+ */
+int LTexture::getWidth() const
+{
+	return mWidth;
+}
+
+/**
+ * Returns the height of the texture
+ */
+int LTexture::getHeight() const
+{
+	return mHeight;
+}
+
 Graphics::Graphics()
 {
 	window = NULL;
@@ -59,6 +210,22 @@ bool Graphics::loadMedia()
 	image = loadSurface("data/images/image.bmp");
 	
 #endif
+	
+	//tileSheet = loadTexture("data/images/PathAndObjects.png");
+	
+	//if (tileSheet == NULL)
+	if(!tileSheet.loadFromFile("data/images/PathAndObjects.png", gRenderer))
+	{
+		cerr << "Could not load tile sheet:" << endl;
+		cerr << SDL_GetError();
+		success = false;
+	}
+	
+	// Alpha blending <~test~>
+	myBackground.loadFromFile("data/images/shakyamuni.png", gRenderer); // should check if failed
+	myForeground.loadFromFile("data/images/kongokai.png", gRenderer);
+	// Set blend mode; the background texture doesn't need to be set, only the foreground
+	myForeground.setBlendMode(SDL_BLENDMODE_BLEND);
 	
 	return success;
 }
@@ -124,14 +291,15 @@ void Graphics::displayImage()
 	SDL_Delay(2000);
 }
 
-void Graphics::render(Creature* creature)
+void Graphics::render(GameMap* gameMap, Creature* creature, Input* input)
 {
 	// Make sure to re-set RenderDrawColor
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer); // Fills the screen with the DrawColor
 	//SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 	
-	drawPrimitiveTiles();
+	//drawPrimitiveTiles();
+	drawTiles(gameMap->getTileset(), input->getTestTileId());
 	
 	// Set viewports. Viewports work with texture. Drawing primitive tiles using SDL_SetRenderXXXX does
 	// not make use of any textures.
@@ -143,6 +311,42 @@ void Graphics::render(Creature* creature)
 	
 	SDL_RenderPresent(gRenderer);
 }
+
+/**
+ * Same as Graphics::render(), but for testing purposes.
+ */
+void Graphics::testRender(Creature* creature, Input* input)
+{
+	Uint8 r, g, b;
+	r = input->getColor()[0];
+	g = input->getColor()[1];
+	b = input->getColor()[2];
+	
+	// Make sure to re-set RenderDrawColor
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(gRenderer); // Fills the screen with the DrawColor
+	//SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+	
+	//drawPrimitiveTiles();
+	// Remember myBackground is a LTexture object
+	myBackground.render(0, 0, gRenderer);
+	
+	// Set viewports. Viewports work with texture. Drawing primitive tiles using SDL_SetRenderXXXX does
+	// not make use of any textures.
+	//setViewport();
+	
+	//drawColorKeyExample();
+	
+	// Set foreground alpha
+	myForeground.setAlpha(input->getAlpha());
+	myForeground.setColor(r, g, b);
+	
+	//drawCreature(creature);
+	myForeground.render(0, 0, gRenderer);
+	
+	SDL_RenderPresent(gRenderer);
+}
+
 
 /**
  * Loads an image into a SDL_Surface
@@ -217,6 +421,9 @@ SDL_Texture* Graphics::loadTexture(string filename)
 	return newTexture;
 }
 
+/**
+ * Renders a tiled map made up of colored tiles using primitive rendering functions.
+ */
 void Graphics::drawPrimitiveTiles()
 {
 	int tiles_across;
@@ -254,6 +461,36 @@ void Graphics::drawPrimitiveTiles()
 	}
 }
 
+// draw tiles based on gameMap
+// draw tiles with the same id
+
+void Graphics::drawTiles(Tileset* tileset, int index)
+{
+	int tiles_across;
+	int tiles_down;
+	int i, j;
+	
+#ifdef __DEBUG_MODE__
+	cout << "Drawing tiles . . ." << endl;
+	SDL_Delay(1000);
+#endif
+	
+	tiles_across = SCREEN_WIDTH / TILESIZE;
+	tiles_down = SCREEN_HEIGHT / TILESIZE;
+	
+	
+	for (i = 0; i < tiles_down; i++)
+	{
+		for (j = 0; j < tiles_across; j++)
+		{
+			tileSheet.render(j * TILESIZE, i * TILESIZE, gRenderer, tileset->getSprite(index));
+		}
+	}
+}
+
+/**
+ * Renders the creature on the screen
+ */
 void Graphics::drawCreature(Creature* c)
 {
 	// why not just make a Creature::getPosRect() ??
@@ -308,99 +545,10 @@ void Graphics::setViewport()
 	SDL_RenderSetViewport(gRenderer, NULL);
 }
 
+/**
+ * Returns the renderer
+ */
 SDL_Renderer* Graphics::getRenderer()
 {
 	return gRenderer;
-}
-
-// LTexture Functions
-LTexture::LTexture()
-{
-	mTexture = NULL;
-	mWidth = NULL;
-	mHeight = NULL;
-}
-LTexture::~LTexture()
-{
-	free();
-}
-
-/**
- * Loads a texture into a LTexture object. All images are color keyed (i.e. colors that match the
- * color key will be made transparent)
- */
-bool LTexture::loadFromFile(string filename, SDL_Renderer* gRenderer)
-{
-	SDL_Texture* newTexture = NULL;
-	
-	// Gets rid of whatever was loaded before
-	free();
-	
-	
-#ifdef __DEBUG_MODE__
-	cout << "(LTexture) Loading texture . . ." << endl;
-#endif
-	SDL_Surface* loadedSurface = IMG_Load(filename.c_str());
-	
-	if (loadedSurface == NULL)
-	{
-		cerr << "Surface could not be loaded" << endl;
-		cerr << IMG_GetError();
-	}
-	else
-	{
-		// Color key image before creating texture (Cyan: #00FFFF)
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
-		
-		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-		
-		if (newTexture == NULL)
-		{
-			cerr << "Texture could not be created" << endl;
-			cerr << SDL_GetError();
-		}
-		else
-		{
-			mWidth = loadedSurface->w;
-			mHeight = loadedSurface->h;
-			
-#ifdef __DEBUG_MODE__
-			cout << "Texture loaded." << endl;
-#endif
-		}
-		
-		SDL_FreeSurface(loadedSurface);
-	}
-	
-	mTexture = newTexture;
-
-	return mTexture != NULL;
-}
-
-void LTexture::free()
-{
-	if (mTexture != NULL)
-	{
-		SDL_DestroyTexture(mTexture);
-		mTexture = NULL;
-		mWidth = 0;
-		mHeight = 0;
-	}
-}
-
-void LTexture::render(int x, int y, SDL_Renderer* gRenderer)
-{
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
-	
-	SDL_RenderCopy(gRenderer, mTexture, NULL, &renderQuad);
-}
-
-int LTexture::getWidth() const
-{
-	return mWidth;
-}
-
-int LTexture::getHeight() const
-{
-	return mHeight;
 }

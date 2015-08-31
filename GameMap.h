@@ -21,6 +21,7 @@
 
 #include "Constants.h"
 #include "Tile.h"
+#include "Tileset.h"
 
 using namespace std;
 
@@ -36,6 +37,8 @@ public:
 	int getTilesAcross() const;
 	int getTilesDown() const;
 	
+	Tileset* getTileset();
+	
 	void setWidth(int w);
 	void setHeight(int h);
 private:
@@ -46,6 +49,7 @@ private:
 	int tiles_down;
 	
 	Tile* tiles;
+	Tileset tileset; // tileset refers to the data; tileSheet refers to the texture (image file)
 };
 
 #endif

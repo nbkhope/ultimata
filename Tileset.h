@@ -14,27 +14,28 @@
 //	along with this program; if not, write to the Free Software
 //	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef __TILE_H__
-#define __TILE_H__
+#ifndef __TILESET_H__
+#define __TILESET_H__
 
-class Tile
+#include <iostream>
+
+#include "SDL2/SDL.h"
+
+#include "Constants.h"
+
+using namespace std;
+
+class Tileset
 {
 public:
-	Tile();
-	~Tile();
+	Tileset();
+	~Tileset();
 	
-	int getId() const;
-	bool isWalkable() const;
-	
-	void setId(int newId);
-	void setWalkable(bool canWalk);
+	SDL_Rect* getSprite(int index);
 private:
-	int id;
+	SDL_Rect sprite[256];
 	
-	bool walkable;
-	// you could: check whether each tile is walkable with this
-	// or let the tileset define which tile ids are walkable
-	// we will use the first approach
+	int tiles_across, tiles_down;
 };
 
 #endif
