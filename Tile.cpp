@@ -19,6 +19,7 @@
 Tile::Tile()
 {
 	id = 17;
+	//id = 23;
 	walkable = true;
 }
 
@@ -47,4 +48,15 @@ void Tile::setId(int newId)
 void Tile::setWalkable(bool canWalk)
 {
 	walkable = canWalk;
+}
+
+void Tile::incrementId()
+{
+	id++;
+}
+
+
+void Tile::decrementId()
+{
+	id--;
 }

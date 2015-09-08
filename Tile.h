@@ -23,11 +23,20 @@ public:
 	Tile();
 	~Tile();
 	
+	/**
+	 * Returns the tile id. Useful to determine which part of the tileset to extract.
+	 */
 	int getId() const;
+	/**
+	 * Returns whether the tile is walkable
+	 */
 	bool isWalkable() const;
 	
 	void setId(int newId);
 	void setWalkable(bool canWalk);
+	
+	void incrementId();
+	void decrementId();
 private:
 	int id;
 	

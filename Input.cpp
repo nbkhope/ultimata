@@ -25,6 +25,15 @@ Input::Input()
 	
 	// Change tile <~test~>
 	testTileId = 17;
+	
+	// Image Loading Different Types <~test~>
+	testImageLoad = 0;
+	
+	// Set initial cursor position
+	cursor.setPosX(0);
+	cursor.setPosY(0);
+	//	cursor.setWidth(TILESIZE);
+	//	cursor.setHeight(TILESIZE);
 }
 
 Input::~Input()
@@ -39,10 +48,16 @@ bool Input::get(GameMap* gameMap, Creature *c)
 {
 	int pos_x, pos_y;
 	int mouse_x, mouse_y;
+	//int cursorTileIndex;
+	//int cursorTileId;
+	//int tileId;
 	bool quit = false; // Using this to send quit signal back, for now . . . at least.
 	
 	pos_x = c->getPosX();
 	pos_y = c->getPosY();
+	
+//	cursorTileIndex = cursor.getPosX() / TILESIZE + (cursor.getPosY() / TILESIZE) * gameMap->getTilesAcross();
+//	cursorTileId = gameMap->getTile(cursorTileIndex)->getId();
 	
 	// For a complete list of keyboard enum, check:
 	// http://wiki.libsdl.org/SDL_Keycode?highlight=%28\bCategoryEnum\b%29|%28CategoryKeyboard%29
@@ -95,28 +110,60 @@ bool Input::get(GameMap* gameMap, Creature *c)
 						testTileId++;
 					else
 						testTileId = 0;
+					cout << "testTileId = " << testTileId << endl;
 					break;
+					
 				case SDLK_y:
 					if (testTileId < 256)
 						testTileId += 16;
 					else
 						testTileId = 0;
+					cout << "testTileId = " << testTileId << endl;
+					break;
+				case SDLK_TAB: // Image Loading Different Types <~test~>
+					if (testImageLoad < 3)
+						testImageLoad++;
+					else
+						testImageLoad = 0;
+					cout << "testImageLoad = " << testImageLoad << endl;
+					break;
+				case SDLK_LEFTBRACKET:
+					if (cursor.getCursorTileId() != 0)
+					{
+						//tileId = gameMap->getTile(cursor.getCursorTileIndex())->getId();
+						//gameMap->getTile(cursor.getCursorTileIndex())->setId(tileId - 1);
+						gameMap->getTile(cursor.getCursorTileIndex())->decrementId();
+					}
+					break;
+				case SDLK_RIGHTBRACKET:
+					if (cursor.getCursorTileId() != 255)
+					{
+						//tileId = gameMap->getTile(cursor.getCursorTileIndex())->getId();
+						//gameMap->getTile(cursor.getCursorTileIndex())->setId(tileId + 1);
+						gameMap->getTile(cursor.getCursorTileIndex())->incrementId();
+					}
+					break;
 				default:
 					// do nothing
 					break;
 			}
-			cout << "testTileId = " << testTileId << endl;
+			
 		}
 		else if (e.type == SDL_MOUSEBUTTONDOWN) // buggy
 		{
 			cout << "SDL_MOUSEBUTTONDOWN event!" << endl;
 			
-			SDL_GetMouseState( &mouse_x, &mouse_y );
+			SDL_GetMouseState(&mouse_x, &mouse_y);
 			//switch (e.button.button == SDL_BUTTON_LEFT)
 			//{
-					c->setPosX(mouse_x - mouse_x % TILESIZE);
-					c->setPosY(mouse_y - mouse_y % TILESIZE);
+				/*	c->setPosX(mouse_x - mouse_x % TILESIZE);
+					c->setPosY(mouse_y - mouse_y % TILESIZE); */
 			//}
+			
+			// Adjust cursor region
+			cursor.setPosX(mouse_x - mouse_x % TILESIZE);
+			cursor.setPosY(mouse_y - mouse_y % TILESIZE);
+			cursor.updateTileInfo(gameMap);
 		}
 	}
 	
@@ -268,4 +315,14 @@ void Input::setColor(Uint8* newColor)
 int Input::getTestTileId() const
 {
 	return testTileId;
+}
+
+int Input::getTestImageLoad() const
+{
+	return testImageLoad;
+}
+
+Cursor* Input::getCursor()
+{
+	return &cursor;
 }

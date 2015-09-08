@@ -23,6 +23,7 @@ int main(int argc, char* args[])
 	Graphics graphics;
 	GameMap gameMap;
 	Creature creature;
+
 	Input input;
 	int error;
 	bool quit;
@@ -37,6 +38,7 @@ int main(int argc, char* args[])
 	
 	error = system.init(&graphics);
 	
+
 	
 	if(error > 0) // error
 	{
@@ -55,6 +57,13 @@ int main(int argc, char* args[])
 #ifndef __TEXTURE_RENDERING__
 			graphics.displayImage();
 #endif
+			
+			// Load Game Map
+			gameMap.loadTxt("data/maps/map.txt");
+			
+			// Set up cursor
+			input.getCursor()->updateTileInfo(&gameMap);
+			
 			while (!quit)
 			{
 				
@@ -85,6 +94,9 @@ int main(int argc, char* args[])
 				}
 				
 			}
+			
+			// Save Game Map
+			gameMap.saveTxt("data/maps/map.txt");
 		}
 	}
 	

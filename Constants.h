@@ -20,8 +20,11 @@
 //#define __DEBUG_MODE__
 
 //const int SCREEN_WIDTH = 640;
+
+/* The screen dimensions */
 const int SCREEN_WIDTH = 720;
 const int SCREEN_HEIGHT = 480;
+/* The size of each game map tile */
 const int TILESIZE = 48;
 
 enum GAME_MODE { GAME_MODE_TEST, GAME_MODE_NORMAL };

@@ -43,6 +43,9 @@ public:
 	System();
 	~System();
 	
+	/**
+	 * Initializes SDL and its subsystems
+	 */
 	int init(Graphics* graphics);
 
 private:

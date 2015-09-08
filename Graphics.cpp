@@ -176,6 +176,11 @@ Graphics::Graphics()
 	gTexture = NULL;
 
 	image = NULL;
+	
+	// Image Loading Different Types <~test~>
+	image_jpg = NULL;
+	image_tiff = NULL;
+	image_bmp = NULL;
 }
 
 Graphics::~Graphics()
@@ -196,6 +201,11 @@ Graphics::~Graphics()
 	// Clean up (takes care of window and window surface (screenSurface)
 	SDL_DestroyWindow(window);
 	window = NULL; // Is this really necessary?
+	
+	// Image Loading Different Types <~test~>
+	SDL_DestroyTexture(image_jpg);
+	SDL_DestroyTexture(image_tiff);
+	SDL_DestroyTexture(image_bmp);
 }
 
 bool Graphics::loadMedia()
@@ -226,6 +236,11 @@ bool Graphics::loadMedia()
 	myForeground.loadFromFile("data/images/kongokai.png", gRenderer);
 	// Set blend mode; the background texture doesn't need to be set, only the foreground
 	myForeground.setBlendMode(SDL_BLENDMODE_BLEND);
+	
+	// Image Loading Different Types <~test~>
+	image_jpg = loadTexture("data/images/taizokai.jpg");
+	image_tiff = loadTexture("data/images/taizokai.tiff");
+	image_bmp = loadTexture("data/images/image.bmp");
 	
 	return success;
 }
@@ -299,15 +314,35 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input)
 	//SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 	
 	//drawPrimitiveTiles();
-	drawTiles(gameMap->getTileset(), input->getTestTileId());
+	//drawTiles(gameMap->getTileset(), input->getTestTileId());
+	drawGameMap(gameMap);
 	
 	// Set viewports. Viewports work with texture. Drawing primitive tiles using SDL_SetRenderXXXX does
 	// not make use of any textures.
 	//setViewport();
 	
 	//drawColorKeyExample();
+	
+	drawCursor(input->getCursor());
 
 	drawCreature(creature);
+	
+	// Image Loading Different Types <~test~>
+	switch (input->getTestImageLoad())
+	{
+		case 1:
+			SDL_RenderCopy(gRenderer, image_bmp, NULL, NULL);
+			break;
+		case 2:
+			SDL_RenderCopy(gRenderer, image_jpg, NULL, NULL);
+			break;
+		case 3:
+			SDL_RenderCopy(gRenderer, image_tiff, NULL, NULL);
+			break;
+		default:
+			// no image
+			break;
+	}
 	
 	SDL_RenderPresent(gRenderer);
 }
@@ -388,12 +423,14 @@ SDL_Surface* Graphics::loadSurface(string filename)
 /**
  * Loads a texture
  * Similar to loadSurface(), but returns a texture instead
+ *
+ *
  */
 SDL_Texture* Graphics::loadTexture(string filename)
 {
 	SDL_Texture* newTexture = NULL;
 	#ifdef __DEBUG_MODE__
-	cout << "Loading texture . . ." << endl;
+	cout << "Loading texture . . . (" << filename << ")" << endl;
 	#endif
 	SDL_Surface* loadedSurface = IMG_Load(filename.c_str());
 
@@ -462,6 +499,37 @@ void Graphics::drawPrimitiveTiles()
 }
 
 // draw tiles based on gameMap
+void Graphics::drawGameMap(GameMap* gameMap)
+{
+	int tiles_across;
+	int tiles_down;
+	int i, j;
+	int spriteIndex;
+	int tileIndex;
+	Tileset* tileset;
+	
+	tileset = gameMap->getTileset();
+	
+#ifdef __DEBUG_MODE__
+	cout << "Drawing tiles from game map . . ." << endl;
+	SDL_Delay(1000);
+#endif
+	
+	tiles_across = SCREEN_WIDTH / TILESIZE;
+	tiles_down = SCREEN_HEIGHT / TILESIZE;
+	
+	
+	for (i = 0; i < tiles_down; i++)
+	{
+		for (j = 0; j < tiles_across; j++)
+		{
+			tileIndex = i * tiles_across + j;
+			spriteIndex = gameMap->getTile(tileIndex)->getId();
+			tileSheet.render(j * TILESIZE, i * TILESIZE, gRenderer, tileset->getSprite(spriteIndex));
+		}
+	}
+}
+
 // draw tiles with the same id
 
 void Graphics::drawTiles(Tileset* tileset, int index)
@@ -499,13 +567,46 @@ void Graphics::drawCreature(Creature* c)
 	SDL_Rect rect;
 	
 	rect.x = c->getPosX();
-	rect. y = c->getPosY();
+	rect.y = c->getPosY();
 	rect.w = c->getWidth();
 	rect.h = c->getHeight();
 	
-	// tile: #CCCCCC, With some transparency
-	SDL_SetRenderDrawColor(gRenderer, 0xCC, 0xCC, 0xCC, 0x80);
+	// we need this for the top image to blend and become transparent
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+	// tile: #CCCCCC, With some transparency (75%, 191)
+	SDL_SetRenderDrawColor(gRenderer, 0xCC, 0xCC, 0xCC, 191);
 	SDL_RenderFillRect(gRenderer, &rect);
+	// set it back to NONE, just in case . . .
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
+	
+	// Add borders
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	SDL_RenderDrawRect(gRenderer, &rect);
+}
+
+/**
+ * Renders the creature on the screen
+ */
+void Graphics::drawCursor(Cursor* c)
+{
+	// why not just make a Creature::getPosRect() ??
+	//int x, y;
+	//int w, h;
+	SDL_Rect rect;
+	
+	rect.x = c->getPosX();
+	rect.y = c->getPosY();
+	rect.w = c->getWidth();
+	rect.h = c->getHeight();
+	
+	
+	// we need this for the top image to blend and become transparent
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+	// tile, with some transparency (25%, 63)
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 63);
+	SDL_RenderFillRect(gRenderer, &rect);
+	// set it back to NONE, just in case . . .
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
 	
 	// Add borders
 	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);

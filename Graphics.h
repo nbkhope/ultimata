@@ -60,7 +60,13 @@ public:
 	Graphics();
 	~Graphics();
 	
+	/**
+	 * Loads the necessary graphical resources such as images, etc.
+	 */
 	bool loadMedia();
+	/**
+	 * Sets up the game window.
+	 */
 	void setUpWindow();
 	
 	void displayImage();
@@ -68,15 +74,41 @@ public:
 	//void testRender(Creature* creature, Input* input);
 	void testRender(Creature* creature, Input* input);
 	
+	/**
+	 * Loads an image into an SDL_Surface, given path
+	 */
 	SDL_Surface* loadSurface(string filename);
+	/**
+	 * Loads an image into an SDL_Texture, given path
+	 */
 	SDL_Texture* loadTexture(string filename);
 	
+	/**
+	 * Renders fixed-id tiles using primitive shape rendering functions
+	 */
 	void drawPrimitiveTiles();
+	/**
+	 * Renders the tiled game map based on data from a GameMap object.
+	 */
+	void drawGameMap(GameMap* gameMap);
+	/**
+	 * Renders fixed-id tiles using data from a Tileset object.
+	 */
 	void drawTiles(Tileset* tileset, int index);
+	/**
+	 * Renders the creature on the screen.
+	 */
 	void drawCreature(Creature* c);
+	/**
+	 * Renders the cursor
+	 */
+	void drawCursor(Cursor* c);
 	void setViewport();
 	void drawColorKeyExample();
 	
+	/**
+	 * Returns the renderer
+	 */
 	SDL_Renderer* getRenderer();
 	
 	// Alpha blending <~test~>
@@ -87,6 +119,9 @@ private:
 	SDL_Surface* screenSurface;
 	SDL_Window* window;
 	
+	/**
+	 * A renderer is necessary if working with textures
+	 */
 	SDL_Renderer* gRenderer;
 	SDL_Texture* gTexture;
 	
@@ -97,6 +132,11 @@ private:
 	// Alpha blending <~test~>
 	LTexture myBackground;
 	LTexture myForeground;
+	
+	// Image Loading Different Types <~test~>
+	SDL_Texture* image_jpg;
+	SDL_Texture* image_tiff;
+	SDL_Texture* image_bmp;
 };
 
 #endif

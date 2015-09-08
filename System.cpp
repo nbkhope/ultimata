@@ -34,7 +34,8 @@ System::~System()
 int System::init(Graphics* graphics)
 {
 	int error_code;
-	int imgFlags = IMG_INIT_PNG;
+	int imgFlags = IMG_INIT_PNG|IMG_INIT_JPG; // load support for png and jpg
+	// * see https://www.libsdl.org/projects/SDL_image/docs/SDL_image.html
 	
 	// assume no errors (code 0)
 	error_code = 0;
@@ -50,8 +51,11 @@ int System::init(Graphics* graphics)
 	}
 	else // SDL initialized successfully
 	{
+		cout << "Initializing SDL_image" << endl;
 		// Initialize SDL_image
+		// * See http://sdl.beuc.net/sdl.wiki/SDL_image
 		// IMG_Init() returns the flags that loaded successfully
+		// (a bitmask of all the currently initted image loaders)
 		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
 			cerr << "SDL_image could not initialize:" << endl;

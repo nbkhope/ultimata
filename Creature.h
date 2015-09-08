@@ -31,8 +31,14 @@ public:
 	Creature();
 	~Creature();
 	
+	/**
+	 * Returns the position of the creature
+	 */
 	int getPosX() const;
 	int getPosY() const;
+	/**
+	 * Returns the dimensions of the creature
+	 */
 	int getWidth() const;
 	int getHeight() const;
 	
