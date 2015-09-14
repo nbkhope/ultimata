@@ -51,7 +51,7 @@ bool LTexture::loadFromFile(string filename, SDL_Renderer* gRenderer)
 	
 	
 #ifdef __DEBUG_MODE__
-	cout << "(LTexture) Loading texture . . ." << endl;
+	cout << "(LTexture) Loading texture " << filename << ". . ." << endl;
 #endif
 	SDL_Surface* loadedSurface = IMG_Load(filename.c_str());
 	
@@ -63,7 +63,8 @@ bool LTexture::loadFromFile(string filename, SDL_Renderer* gRenderer)
 	else
 	{
 		// Color key image before creating texture (Cyan: #00FFFF)
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+		// Purple color key: #C00080
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0xC0, 0x00, 0x80));
 		
 		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
 		
@@ -175,6 +176,8 @@ Graphics::Graphics()
 	gRenderer = NULL;
 	gTexture = NULL;
 
+	gameIcon = NULL;
+	gameLogo = NULL;
 	image = NULL;
 	
 	// Image Loading Different Types <~test~>
@@ -187,6 +190,8 @@ Graphics::~Graphics()
 {
 	SDL_FreeSurface(image);
 	image = NULL;
+	SDL_FreeSurface(gameIcon);
+	SDL_FreeSurface(gameLogo);
 	
 	// The issue was: if currentSurface is associated with the window, then it will automatically be
 	// freed along with the window?
@@ -208,6 +213,61 @@ Graphics::~Graphics()
 	SDL_DestroyTexture(image_bmp);
 }
 
+void Graphics::setUpWindow()
+{
+	/**
+	 * Sets up a window at the center
+	 */
+	window = SDL_CreateWindow("Ultimata 2",
+							  SDL_WINDOWPOS_CENTERED,
+							  SDL_WINDOWPOS_CENTERED,
+							  SCREEN_WIDTH,
+							  SCREEN_HEIGHT,
+							  SDL_WINDOW_SHOWN);
+	
+	if (window == NULL) // if there is an error, function returns NULL
+	{
+		cerr << "Window could not be created:" << endl;
+		cerr << SDL_GetError();
+	}
+	else // all ok
+	{
+		SDL_SetWindowIcon(window, gameIcon);
+
+#ifndef __TEXTURE_RENDERING__
+		// note: this surface will be freed when the window is destroyed
+		// 		 (no need to free this later on)
+		screenSurface = SDL_GetWindowSurface(window);
+		// Necessary for loadSurface() function, but will cause problems if used with gRenderer
+
+		// Paints the screen surface white (#FFFFFF)
+		SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+		
+		// Updates the window surface after the changes made above
+		SDL_UpdateWindowSurface(window);
+		
+		// Wait 2000 ms (2 s)
+		SDL_Delay(2000);
+#else
+		// Use Texture Rendering
+		gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		
+		if (gRenderer == NULL)
+		{
+			cerr << "Could not create renderer:" << endl;
+			cerr << SDL_GetError();
+		}
+		else
+		{
+			// Initialize renderer color
+			// arguments: Renderer; R,G,B and Alpha (transparency)
+			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			SDL_Delay(1000);
+		}
+#endif
+	}
+}
+
 bool Graphics::loadMedia()
 {
 	bool success;
@@ -215,6 +275,46 @@ bool Graphics::loadMedia()
 	success = true;
 	
 	cout << "Loading media. . ." << endl;
+	
+	Uint16 pixels[16*16] = {
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0aab, 0x0789, 0x0bcc, 0x0eee, 0x09aa, 0x099a, 0x0ddd,
+		0x0fff, 0x0eee, 0x0899, 0x0fff, 0x0fff, 0x1fff, 0x0dde, 0x0dee,
+		0x0fff, 0xabbc, 0xf779, 0x8cdd, 0x3fff, 0x9bbc, 0xaaab, 0x6fff,
+		0x0fff, 0x3fff, 0xbaab, 0x0fff, 0x0fff, 0x6689, 0x6fff, 0x0dee,
+		0xe678, 0xf134, 0x8abb, 0xf235, 0xf678, 0xf013, 0xf568, 0xf001,
+		0xd889, 0x7abc, 0xf001, 0x0fff, 0x0fff, 0x0bcc, 0x9124, 0x5fff,
+		0xf124, 0xf356, 0x3eee, 0x0fff, 0x7bbc, 0xf124, 0x0789, 0x2fff,
+		0xf002, 0xd789, 0xf024, 0x0fff, 0x0fff, 0x0002, 0x0134, 0xd79a,
+		0x1fff, 0xf023, 0xf000, 0xf124, 0xc99a, 0xf024, 0x0567, 0x0fff,
+		0xf002, 0xe678, 0xf013, 0x0fff, 0x0ddd, 0x0fff, 0x0fff, 0xb689,
+		0x8abb, 0x0fff, 0x0fff, 0xf001, 0xf235, 0xf013, 0x0fff, 0xd789,
+		0xf002, 0x9899, 0xf001, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0xe789,
+		0xf023, 0xf000, 0xf001, 0xe456, 0x8bcc, 0xf013, 0xf002, 0xf012,
+		0x1767, 0x5aaa, 0xf013, 0xf001, 0xf000, 0x0fff, 0x7fff, 0xf124,
+		0x0fff, 0x089a, 0x0578, 0x0fff, 0x089a, 0x0013, 0x0245, 0x0eff,
+		0x0223, 0x0dde, 0x0135, 0x0789, 0x0ddd, 0xbbbc, 0xf346, 0x0467,
+		0x0fff, 0x4eee, 0x3ddd, 0x0edd, 0x0dee, 0x0fff, 0x0fff, 0x0dee,
+		0x0def, 0x08ab, 0x0fff, 0x7fff, 0xfabc, 0xf356, 0x0457, 0x0467,
+		0x0fff, 0x0bcd, 0x4bde, 0x9bcc, 0x8dee, 0x8eff, 0x8fff, 0x9fff,
+		0xadee, 0xeccd, 0xf689, 0xc357, 0x2356, 0x0356, 0x0467, 0x0467,
+		0x0fff, 0x0ccd, 0x0bdd, 0x0cdd, 0x0aaa, 0x2234, 0x4135, 0x4346,
+		0x5356, 0x2246, 0x0346, 0x0356, 0x0467, 0x0356, 0x0467, 0x0467,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
+		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff
+	};
+	gameIcon = SDL_CreateRGBSurfaceFrom(pixels, 16, 16, 16, 16*2,
+										0x0f00, 0x00f0, 0x000f, 0xf000);
+	//gameIcon = loadSurface("data/images/gameicon.png");
+	
+	gameLogo = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0x0f00, 0x00f0, 0x000f, 0xf000);
 	
 #ifndef __TEXTURE_RENDERING__
 	image = loadSurface("data/images/image.bmp");
@@ -231,6 +331,13 @@ bool Graphics::loadMedia()
 		success = false;
 	}
 	
+	if(!playerCharset.loadFromFile("data/images/player_charset.png", gRenderer))
+	{
+		cerr << "Could not load player charset:" << endl;
+		cerr << SDL_GetError();
+		success = false;
+	}
+	
 	// Alpha blending <~test~>
 	myBackground.loadFromFile("data/images/shakyamuni.png", gRenderer); // should check if failed
 	myForeground.loadFromFile("data/images/kongokai.png", gRenderer);
@@ -243,55 +350,6 @@ bool Graphics::loadMedia()
 	image_bmp = loadTexture("data/images/image.bmp");
 	
 	return success;
-}
-
-void Graphics::setUpWindow()
-{
-	window = SDL_CreateWindow("Ultimata 2",
-							  SDL_WINDOWPOS_UNDEFINED,
-							  SDL_WINDOWPOS_UNDEFINED,
-							  SCREEN_WIDTH,
-							  SCREEN_HEIGHT,
-							  SDL_WINDOW_SHOWN);
-	
-	if (window == NULL) // if there is an error, function returns NULL
-	{
-		cerr << "Window could not be created:" << endl;
-		cerr << SDL_GetError();
-	}
-	else // all ok
-	{
-		#ifndef __TEXTURE_RENDERING__
-		// note: this surface will be freed when the window is destroyed
-		// 		 (no need to free this later on)
-		screenSurface = SDL_GetWindowSurface(window);
-		
-		// Paints the screen surface white (#FFFFFF)
-		SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-		
-		// Updates the window surface after the changes made above
-		SDL_UpdateWindowSurface(window);
-		
-		// Wait 2000 ms (2 s)
-		SDL_Delay(2000);
-		#else
-		// Use Texture Rendering
-		gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-		
-		if (gRenderer == NULL)
-		{
-			cerr << "Could not create renderer:" << endl;
-			cerr << SDL_GetError();
-		}
-		else
-		{
-			// Initialize renderer color
-			// arguments: Renderer; R,G,B and Alpha (transparency)
-			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-			SDL_Delay(1000);
-		}
-		#endif
-	}
 }
 
 void Graphics::displayImage()
@@ -389,7 +447,7 @@ void Graphics::testRender(Creature* creature, Input* input)
  */
 SDL_Surface* Graphics::loadSurface(string filename)
 {
-	SDL_Surface* optimizedSurface;
+	SDL_Surface* optimizedSurface = NULL;
 	//SDL_Surface* loadedSurface = SDL_LoadBMP(filename.c_str());
 	#ifdef __DEBUG_MODE__
 	cout << "Loading surface . . ." << endl;
@@ -403,7 +461,8 @@ SDL_Surface* Graphics::loadSurface(string filename)
 	}
 	else
 	{
-		optimizedSurface = SDL_ConvertSurface(loadedSurface, screenSurface->format, NULL);
+		SDL_Surface* surface = SDL_GetWindowSurface(window);
+		optimizedSurface = SDL_ConvertSurface(loadedSurface, surface->format, NULL);
 		
 		if (optimizedSurface == NULL)
 		{
@@ -417,6 +476,7 @@ SDL_Surface* Graphics::loadSurface(string filename)
 	#ifdef __DEBUG_MODE__
 	cout << "Surface loaded." << endl;
 	#endif
+	
 	return optimizedSurface;
 }
 
@@ -561,6 +621,28 @@ void Graphics::drawTiles(Tileset* tileset, int index)
  */
 void Graphics::drawCreature(Creature* c)
 {
+	SDL_Rect poseClip;
+	
+	/**
+	 * Determines which part of the charset image to clip
+	 * Note the player image has the width of a tile and the height of two tiles
+	 */
+	poseClip.x = c->getStep() * c->getWidth();
+	poseClip.y = c->getDirection() * c->getHeight();
+	poseClip.w = c->getWidth();
+	poseClip.h = c->getHeight();
+	
+	/**
+	 * TODO later: make charset class and generalize drawCreature() for any creature
+	 */
+	playerCharset.render(c->getPosX(), c->getPosY(), gRenderer, &poseClip);
+}
+
+/**
+ * Renders the creature as a square on the screen
+ */
+void Graphics::drawSquareCreature(Creature* c)
+{
 	// why not just make a Creature::getPosRect() ??
 	//int x, y;
 	//int w, h;
@@ -570,6 +652,7 @@ void Graphics::drawCreature(Creature* c)
 	rect.y = c->getPosY();
 	rect.w = c->getWidth();
 	rect.h = c->getHeight();
+	
 	
 	// we need this for the top image to blend and become transparent
 	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);

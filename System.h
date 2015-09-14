@@ -37,9 +37,16 @@
 
 using namespace std;
 
+/**
+ * Responsible for initializing the SDL API
+ * and setting up the game
+ */
 class System
 {
 public:
+	/**
+	 * Constructor and destructor
+	 */
 	System();
 	~System();
 	

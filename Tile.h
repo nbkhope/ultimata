@@ -17,6 +17,11 @@
 #ifndef __TILE_H__
 #define __TILE_H__
 
+/**
+ * A tile object represents a map tile. It has information 
+ * about the tile id and whether the tile is walkable. The 
+ * Tile object has nothing to do with tile images.
+ */
 class Tile
 {
 public:

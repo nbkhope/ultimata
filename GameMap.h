@@ -28,12 +28,24 @@
 
 using namespace std;
 
+/**
+ * Keeps track of the properties of the game map. 
+ * This has nothing to do with graphics and images!
+ *
+ * Essentially, the GameMap object keeps track of each tile 
+ * and has a tileset, which in turn is another object that
+ * keeps track of tileset information
+ * (again, nothing to do with graphics or images)
+ */
 class GameMap
 {
 public:
 	GameMap();
 	~GameMap();
 	
+	/**
+	 * Returns the map dimensions
+	 */
 	int getWidth() const;
 	int getHeight() const;
 	
@@ -52,6 +64,9 @@ public:
 	 */
 	Tile* getTile(int index);
 	
+	/*
+	 * Sets the map dimensions
+	 */
 	void setWidth(int w);
 	void setHeight(int h);
 	
@@ -64,6 +79,9 @@ public:
 	 */
 	bool saveTxt(string filename);
 private:
+	/**
+	 * The map dimensions
+	 */
 	int width;
 	int height;
 	

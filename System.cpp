@@ -37,6 +37,8 @@ int System::init(Graphics* graphics)
 	int imgFlags = IMG_INIT_PNG|IMG_INIT_JPG; // load support for png and jpg
 	// * see https://www.libsdl.org/projects/SDL_image/docs/SDL_image.html
 	
+	cout << "Ultimata 2: Running on " << SDL_GetPlatform() << endl;
+	
 	// assume no errors (code 0)
 	error_code = 0;
 	
@@ -64,6 +66,16 @@ int System::init(Graphics* graphics)
 		else // all ok
 		{
 			graphics->setUpWindow();
+			
+			/**
+			 * Load media after setting up game window
+			 */
+			if (!graphics->loadMedia())
+			{
+				cerr << "Could not load media:" << endl;
+				cerr << SDL_GetError();
+				return 43;
+			}
 		}
 			
 	}

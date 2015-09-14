@@ -30,6 +30,10 @@
 
 using namespace std;
 
+/**
+ * An Input object is responsible for handling player
+ * input and change the game parameters accordingly.
+ */
 class Input
 {
 public:
@@ -62,6 +66,9 @@ public:
 	 * Returns a pointer to the cursor
 	 */
 	Cursor* getCursor();
+	
+	void checkPlayerMovement(GameMap* gameMap, Creature* c);
+	//void movePlayer(Creature *c);
 	
 private:
 	/**

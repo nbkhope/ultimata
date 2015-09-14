@@ -23,6 +23,9 @@
 #include "Constants.h"
 #include "GameMap.h"
 
+/**
+ * A cursor keeps track of where you are on the screen
+ */
 class Cursor
 {
 public:

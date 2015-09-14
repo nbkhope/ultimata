@@ -18,14 +18,31 @@
 
 Creature::Creature()
 {
-	pos.w = 48;
-	pos.h = 48;
+	/**
+	 * Position attributes
+	 */
+	pos.w = TILESIZE;
+	pos.h = TILESIZE*2;
 	
 	// Right at the center
-	pos.x = SCREEN_WIDTH / 2 - (SCREEN_WIDTH / 2) % 48;
-	pos.y = SCREEN_HEIGHT / 2 - (SCREEN_HEIGHT/ 2) % 48;
+	pos.x = SCREEN_WIDTH / 2 - (SCREEN_WIDTH / 2) % TILESIZE;
+	pos.y = SCREEN_HEIGHT / 2 - (SCREEN_HEIGHT/ 2) % TILESIZE;
 	
+	/**
+	 * Movement attributes
+	 */
+	xspeed = 0;
+	yspeed = 0;
+	step = 0;
+	direction = DIRECTION_SOUTH;
+	newDirection = false;
+	
+	/**
+	 * Stats attributes
+	 */
 	name = "Unknown";
+	level = 1;
+	experience = 0;
 	health = healthMax = 120;
 	mana = manaMax = 40;
 }
@@ -45,6 +62,12 @@ int Creature::getPosY() const
 	return pos.y;
 }
 
+void Creature::getPos(int &x, int &y) const
+{
+	x = pos.x;
+	y = pos.y;
+}
+
 int Creature::getWidth() const
 {
 	return pos.w;
@@ -53,6 +76,37 @@ int Creature::getWidth() const
 int Creature::getHeight() const
 {
 	return pos.h;
+}
+
+int Creature::getSpeedX() const
+{
+	return xspeed;
+}
+
+int Creature::getSpeedY() const
+{
+	return yspeed;
+}
+
+void Creature::getSpeed(int &xs, int &ys)
+{
+	xs = xspeed;
+	ys = yspeed;
+}
+
+int Creature::getStep() const
+{
+	return step;
+}
+
+int Creature::getDirection() const
+{
+	return direction;
+}
+
+bool Creature::getNewDirection() const
+{
+	return newDirection;
 }
 
 void Creature::setPosX(int x)
@@ -65,11 +119,63 @@ void Creature::setPosY(int y)
 	pos.y = y;
 }
 
+void Creature::setPos(int x, int y)
+{
+	pos.x = x;
+	pos.y = y;
+}
+
+void Creature::setSpeedX(int newSpeed)
+{
+	xspeed = newSpeed;
+}
+
+void Creature::setSpeedY(int newSpeed)
+{
+	yspeed = newSpeed;
+}
+
+void Creature::setSpeed(int newSpeedX, int newSpeedY)
+{
+	xspeed = newSpeedX;
+	yspeed = newSpeedY;
+}
+
+void Creature::setStep(int newStep)
+{
+	step = newStep;
+}
+
+void Creature::setDirection(int newDirection)
+{
+	direction = newDirection;
+}
+
+void Creature::setNewDirection(bool newNewDirection)
+{
+	newDirection = newNewDirection;
+}
+
+void Creature::shiftPosX(int xshift)
+{
+	pos.x += xshift;
+}
+
+void Creature::shiftPosY(int yshift)
+{
+	pos.y += yshift;
+}
+
+void Creature::shiftStep()
+{
+	step = (step + 1) % 4;
+}
+
 string Creature::getName() const
 {
 	return name;
 }
-/*
+
 uint32_t Creature::getLevel() const
 {
 	return level;
@@ -79,7 +185,7 @@ uint64_t Creature::getExperience() const
 {
 	return experience;
 }
-*/
+
 int Creature::getHealth() const
 {
 	return health;
@@ -104,7 +210,7 @@ void Creature::setHealth(int newHealth)
 {
 	health = newHealth;
 }
-/*
+
 void Creature::setLevel(int newLevel)
 {
 	level = newLevel;
@@ -114,7 +220,7 @@ void Creature::setExperience(int newExperience)
 {
 	experience = newExperience;
 }
-*/
+
 
 void Creature::setHealthMax(int newHealthMax)
 {

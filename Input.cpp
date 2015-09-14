@@ -46,15 +46,11 @@ Input::~Input()
  */
 bool Input::get(GameMap* gameMap, Creature *c)
 {
-	int pos_x, pos_y;
 	int mouse_x, mouse_y;
 	//int cursorTileIndex;
 	//int cursorTileId;
 	//int tileId;
 	bool quit = false; // Using this to send quit signal back, for now . . . at least.
-	
-	pos_x = c->getPosX();
-	pos_y = c->getPosY();
 	
 //	cursorTileIndex = cursor.getPosX() / TILESIZE + (cursor.getPosY() / TILESIZE) * gameMap->getTilesAcross();
 //	cursorTileId = gameMap->getTile(cursorTileIndex)->getId();
@@ -65,8 +61,14 @@ bool Input::get(GameMap* gameMap, Creature *c)
 	
 	// Handle events on queue
 	// Keeps doing while there are still events left
-	while (SDL_PollEvent(&e) != 0)
+	while (SDL_PollEvent(&e))
 	{
+		/**
+		 * Note: checkPlayerMovement() checks e.type for SDL_KEYDOWN and SDL_KEYUP
+		 */
+		checkPlayerMovement(gameMap, c);
+		// issue here ... ( don't want to do switch check again)
+		
 		if (e.type == SDL_QUIT)
 		{
 			cout << "SDL_QUIT event!" << endl;
@@ -81,30 +83,7 @@ bool Input::get(GameMap* gameMap, Creature *c)
 				case SDLK_q: // quit
 					quit = true;
 					break;
-				case SDLK_UP:
-					if (pos_y != 0) // if not trying to go out of bounds
-						c->setPosY(pos_y - TILESIZE);
-					else
-						cout << "SDLK_UP: Attempt to go out of bounds!!" << endl;
-					break;
-				case SDLK_DOWN:
-					if (pos_y != SCREEN_HEIGHT - TILESIZE) // if not trying to go out of bounds
-						c->setPosY(pos_y + TILESIZE);
-					else
-						cout << "SDLK_DOWN: Attempt to go out of bounds!!" << endl;
-					break;
-				case SDLK_LEFT:
-					if (pos_x != 0) // if not trying to go out of bounds
-						c->setPosX(pos_x - TILESIZE);
-					else
-						cout << "SDLK_LEFT: Attempt to go out of bounds!!" << endl;
-					break;
-				case SDLK_RIGHT:
-					if (pos_x != SCREEN_WIDTH - TILESIZE) // if not trying to go out of bounds
-						c->setPosX(pos_x + TILESIZE);
-					else
-						cout << "SDLK_RIGHT: Attempt to go out of bounds!!" << endl;
-					break;
+
 				case SDLK_t: // change tile <~test~>
 					if (testTileId < 256)
 						testTileId++;
@@ -205,30 +184,7 @@ bool Input::testGet(GameMap* gameMap, Creature *c)
 				case SDLK_q: // quit
 					quit = true;
 					break;
-				case SDLK_UP:
-					if (pos_y != 0) // if not trying to go out of bounds
-						c->setPosY(pos_y - TILESIZE);
-					else
-						cout << "SDLK_UP: Attempt to go out of bounds!!" << endl;
-					break;
-				case SDLK_DOWN:
-					if (pos_y != SCREEN_HEIGHT - TILESIZE) // if not trying to go out of bounds
-						c->setPosY(pos_y + TILESIZE);
-					else
-						cout << "SDLK_DOWN: Attempt to go out of bounds!!" << endl;
-					break;
-				case SDLK_LEFT:
-					if (pos_x != 0) // if not trying to go out of bounds
-						c->setPosX(pos_x - TILESIZE);
-					else
-						cout << "SDLK_LEFT: Attempt to go out of bounds!!" << endl;
-					break;
-				case SDLK_RIGHT:
-					if (pos_x != SCREEN_WIDTH - TILESIZE) // if not trying to go out of bounds
-						c->setPosX(pos_x + TILESIZE);
-					else
-						cout << "SDLK_RIGHT: Attempt to go out of bounds!!" << endl;
-					break;
+					
 				// Alpha blending <~test~>
 				case SDLK_o: // increase alpha
 					if (alpha + 32 < 255)
@@ -326,3 +282,194 @@ Cursor* Input::getCursor()
 {
 	return &cursor;
 }
+
+/**
+ * For free movement, will increase/decrease the creature movement speed accordingly.
+ * Then, the creature's position will be changed.
+ */
+void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
+{
+	int pos_x, pos_y;
+	int xspeed, yspeed;
+	int direction;
+	
+	pos_x = c->getPosX();
+	pos_y = c->getPosY();
+	xspeed = c->getSpeedX();
+	yspeed = c->getSpeedY();
+	direction = c->getDirection();
+	
+	if (e.type == SDL_KEYDOWN)
+	{
+		// Which key was pressed down?
+		switch (e.key.keysym.sym)
+		{
+	#ifdef __TILE_MOVEMENT__
+			case SDLK_UP:
+				/**
+				 * Note: if the player image is higher than a tile, you have to make sure he can
+				 * still go up to the first row of tiles, where y = 0.
+				 *
+				 * The player image position is determine from the top left. If a player is tall,
+				 * then he will still be able to move to the first horizontal row of tiles, as 
+				 * shown below by allowing the y index to go negative. Only the lower body of the player
+				 * image will be displayed. Question: when graphics renders the player image,
+				 * would the negative position be an issue? (out of bounds)
+				 * Answer: so far, no problems. It works.
+				 */
+				if (pos_y != TILESIZE - c->getHeight()) // if not trying to go out of bounds
+				{
+					c->setPosY(pos_y - TILESIZE);
+					c->setDirection(DIRECTION_NORTH);
+				}
+				else
+					cout << "SDLK_UP: Attempt to go out of bounds!!" << endl;
+				break;
+			case SDLK_DOWN:
+				/**
+				 * Note: if the player image is higher than a tile, you have to make sure he canno
+				 * go down beyond the map boundaries in the last horizontal row of tiles, 
+				 * where y = MAP_HEIGHT - TILESIZE.
+				 */
+				if (pos_y != gameMap->getHeight() - c->getHeight()) // if not trying to go out of bounds
+				{
+					c->setPosY(pos_y + TILESIZE);
+					c->setDirection(DIRECTION_SOUTH);
+				}
+				else
+					cout << "SDLK_DOWN: Attempt to go out of bounds!!" << endl;
+				break;
+			case SDLK_LEFT:
+				if (pos_x != 0) // if not trying to go out of bounds
+				{
+					c->setPosX(pos_x - TILESIZE);
+					c->setDirection(DIRECTION_WEST);
+				}
+				else
+					cout << "SDLK_LEFT: Attempt to go out of bounds!!" << endl;
+				break;
+			case SDLK_RIGHT:
+				if (pos_x != gameMap->getWidth() - c->getWidth()) // if not trying to go out of bounds
+				{
+					c->setPosX(pos_x + TILESIZE);
+					c->setDirection(DIRECTION_EAST);
+				}
+				else
+					cout << "SDLK_RIGHT: Attempt to go out of bounds!!" << endl;
+				break;
+				
+	#else // Free Movement
+			case SDLK_UP:
+				if (yspeed == 0)
+					yspeed = -PLAYER_MOVE_SPEED;
+				if (direction != DIRECTION_NORTH) // Do we really need this if statement?
+				{
+					c->setDirection(DIRECTION_NORTH);
+				}
+				break;
+			case SDLK_DOWN:
+				if (yspeed == 0)
+					yspeed = PLAYER_MOVE_SPEED;
+				if (direction != DIRECTION_SOUTH)
+				{
+					c->setDirection(DIRECTION_SOUTH);
+				}
+				break;
+			case SDLK_LEFT:
+				if (xspeed == 0)
+					xspeed = -PLAYER_MOVE_SPEED;
+				if (direction != DIRECTION_WEST) // if not trying to go out of bounds
+				{
+					c->setDirection(DIRECTION_WEST);
+				}
+				break;
+			case SDLK_RIGHT:
+				if (xspeed == 0)
+					xspeed = PLAYER_MOVE_SPEED;
+				if (direction != DIRECTION_EAST) // if not trying to go out of bounds
+				{
+					c->setDirection(DIRECTION_EAST);
+				}
+				break;
+	#endif
+		}
+	}
+	#ifndef __TILE_MOVEMENT__
+	else if (e.type == SDL_KEYUP)
+	{
+		/**
+		 * Which key was released?
+		 * Depending on the key, decrease player speed
+		 */
+		switch (e.key.keysym.sym) {
+			case SDLK_UP:
+				yspeed = 0;
+				break;
+			case SDLK_DOWN:
+				yspeed = 0;
+				break;
+			case SDLK_RIGHT:
+				xspeed = 0;
+				break;
+			case SDLK_LEFT:
+				xspeed = 0;
+				break;
+		}
+	}
+	
+	if ((pos_x == 0 && xspeed < 0) || (pos_x == gameMap->getWidth() - c->getWidth() && xspeed > 0))
+		// don't allow him to go out of bounds
+		xspeed = 0;
+	else if (xspeed != 0)
+		c->shiftPosX(xspeed);
+	
+	if ((pos_y == TILESIZE - c->getHeight() && yspeed < 0) || pos_y == gameMap->getHeight() - c->getHeight() && yspeed > 0)
+		yspeed = 0;
+	else if (yspeed != 0)
+		c->shiftPosY(yspeed);
+	
+	// Finally updates player speed
+	c->setSpeed(xspeed, yspeed);
+	
+	#endif /** Type of Movement **/
+	
+	/**
+	 * Handles animation
+	 */
+	c->shiftStep();
+	if (c->getStep() == 4)
+		c->setStep(0);
+	
+	
+}
+
+/*
+void Input::movePlayer(Creature* c)
+{
+	int pos_x, pos_y;
+	int xspeed, yspeed;
+	int direction;
+	pos_x = c->getPosX();
+	pos_y = c->getPosY();
+	xspeed = c->getSpeedX();
+	yspeed = c->getSpeedY();
+	direction = c->getDirection();
+	
+	if (xspeed != 0 || yspeed != 0)
+	{
+		if (!newDirection)
+		{
+			if (c->getStep() != 0)
+			{
+				c->shiftStep();
+			}
+			else
+			{
+				c->setStep(1);
+			}
+		}
+		else
+			c->setNewDirection(false);
+	}
+}
+ */

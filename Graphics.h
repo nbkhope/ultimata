@@ -54,20 +54,28 @@ private:
 	int mHeight;
 };
 
+/**
+ * The Graphics class deals with everything related 
+ * to loading, rendering, and displaying images.
+ */
 class Graphics
 {
 public:
+	/**
+	 * Constructor and destructor
+	 */
 	Graphics();
 	~Graphics();
+	
+	/**
+	 * Sets up the game window.
+	 */
+	void setUpWindow();
 	
 	/**
 	 * Loads the necessary graphical resources such as images, etc.
 	 */
 	bool loadMedia();
-	/**
-	 * Sets up the game window.
-	 */
-	void setUpWindow();
 	
 	void displayImage();
 	void render(GameMap* gameMap, Creature* creature, Input* input);
@@ -99,6 +107,7 @@ public:
 	 * Renders the creature on the screen.
 	 */
 	void drawCreature(Creature* c);
+	void drawSquareCreature(Creature* c);
 	/**
 	 * Renders the cursor
 	 */
@@ -117,6 +126,9 @@ public:
 	
 private:
 	SDL_Surface* screenSurface;
+	/**
+	 * The game window
+	 */
 	SDL_Window* window;
 	
 	/**
@@ -126,7 +138,12 @@ private:
 	SDL_Texture* gTexture;
 	
 	SDL_Surface* image;
+	SDL_Surface* gameIcon;
+	SDL_Surface* gameLogo;
 	//SDL_Texture* tileSheet;
+	/**
+	 * An image with all the tiles necessary to draw a map.
+	 */
 	LTexture tileSheet;
 	
 	// Alpha blending <~test~>
@@ -137,6 +154,8 @@ private:
 	SDL_Texture* image_jpg;
 	SDL_Texture* image_tiff;
 	SDL_Texture* image_bmp;
+	
+	LTexture playerCharset;
 };
 
 #endif

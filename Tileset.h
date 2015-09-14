@@ -25,6 +25,10 @@
 
 using namespace std;
 
+/**
+ * A Tileset object keeps information about a tilesheet, 
+ * but has nothing to do with its rendering.
+ */
 class Tileset
 {
 public:

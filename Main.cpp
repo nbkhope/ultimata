@@ -38,7 +38,6 @@ int main(int argc, char* args[])
 	
 	error = system.init(&graphics);
 	
-
 	
 	if(error > 0) // error
 	{
@@ -46,58 +45,57 @@ int main(int argc, char* args[])
 	}
 	else // no errors
 	{
-		if (!graphics.loadMedia())
-		{
-			cerr << "Could not load media:" << endl;
-			cerr << SDL_GetError();
-			return 43;
-		}
-		else // Ready for the main thing after all initializing and loading
-		{
+		// Ready for the main thing after all initializing and loading
+		
 #ifndef __TEXTURE_RENDERING__
-			graphics.displayImage();
+		graphics.displayImage();
 #endif
+		
+		// Load Game Map
+		gameMap.loadTxt("data/maps/map.txt");
+		
+		// Set up cursor
+		input.getCursor()->updateTileInfo(&gameMap);
+		
+		/**
+		 * Begins game loop
+		 */
+		while (!quit)
+		{
 			
-			// Load Game Map
-			gameMap.loadTxt("data/maps/map.txt");
-			
-			// Set up cursor
-			input.getCursor()->updateTileInfo(&gameMap);
-			
-			while (!quit)
+			if (gameMode == GAME_MODE_TEST)
 			{
+				// Handle Input
+				if (input.testGet(&gameMap, &creature))
+				{
+					quit = true;
+				}
+					
+				graphics.testRender(&creature, &input);
+			}
+			else
+			{
+				// Handle Input
+				if (input.get(&gameMap, &creature))
+				{
+					quit = true;
+				}
 				
-				if (gameMode == GAME_MODE_TEST)
-				{
-					// Handle Input
-					if (input.testGet(&gameMap, &creature))
-					{
-						quit = true;
-					}
-						
-					graphics.testRender(&creature, &input);
-				}
-				else
-				{
-					// Handle Input
-					if (input.get(&gameMap, &creature))
-					{
-						quit = true;
-					}
-					
-	#ifndef __TEXTURE_RENDERING__
-					graphics.updateCurrentSurface();
-	#else
-					graphics.render(&gameMap, &creature, &input);
-	#endif
-					
-				}
+#ifndef __TEXTURE_RENDERING__
+				graphics.updateCurrentSurface();
+#else
+				graphics.render(&gameMap, &creature, &input);
+#endif
 				
 			}
 			
-			// Save Game Map
-			gameMap.saveTxt("data/maps/map.txt");
 		}
+		/**
+		 * Game Loop End
+		 */
+			
+		// Save Game Map
+		gameMap.saveTxt("data/maps/map.txt");
 	}
 	
 	cout << "Finishing program. . ." << endl;
