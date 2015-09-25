@@ -76,7 +76,7 @@ bool Input::get(GameMap* gameMap, Creature *c)
 		}
 		else if (e.type == SDL_KEYDOWN)
 		{
-			cout << "SDL_KEYDOWN event!" << endl;
+			//cout << "SDL_KEYDOWN event!" << endl;
 			
 			switch (e.key.keysym.sym)
 			{
@@ -122,6 +122,25 @@ bool Input::get(GameMap* gameMap, Creature *c)
 						gameMap->getTile(cursor.getCursorTileIndex())->incrementId();
 					}
 					break;
+					
+				/**
+				 * Deals with timer
+				 */
+				case SDLK_PERIOD: // start/stop timer
+					if (timer.isOn() && !timer.isPaused())
+						timer.stop();
+					else
+						timer.start();
+					break;
+				case SDLK_COMMA: // pause/unpause timer
+					if (timer.isPaused())
+						timer.start();
+					else
+						timer.pause();
+					break;
+				case SDLK_SLASH: // reset timer
+					timer.reset();
+					break;
 				default:
 					// do nothing
 					break;
@@ -130,7 +149,7 @@ bool Input::get(GameMap* gameMap, Creature *c)
 		}
 		else if (e.type == SDL_MOUSEBUTTONDOWN) // buggy
 		{
-			cout << "SDL_MOUSEBUTTONDOWN event!" << endl;
+			//cout << "SDL_MOUSEBUTTONDOWN event!" << endl;
 			
 			SDL_GetMouseState(&mouse_x, &mouse_y);
 			//switch (e.button.button == SDL_BUTTON_LEFT)
@@ -283,6 +302,11 @@ Cursor* Input::getCursor()
 	return &cursor;
 }
 
+Timer* Input::getTimer()
+{
+	return &timer;
+}
+
 /**
  * For free movement, will increase/decrease the creature movement speed accordingly.
  * Then, the creature's position will be changed.
@@ -423,7 +447,7 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
 	else if (xspeed != 0)
 		c->shiftPosX(xspeed);
 	
-	if ((pos_y == TILESIZE - c->getHeight() && yspeed < 0) || pos_y == gameMap->getHeight() - c->getHeight() && yspeed > 0)
+	if ((pos_y == TILESIZE - c->getHeight() && yspeed < 0) || (pos_y == gameMap->getHeight() - c->getHeight() && yspeed > 0))
 		yspeed = 0;
 	else if (yspeed != 0)
 		c->shiftPosY(yspeed);
@@ -436,11 +460,8 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
 	/**
 	 * Handles animation
 	 */
-	c->shiftStep();
-	if (c->getStep() == 4)
-		c->setStep(0);
-	
-	
+	if (xspeed != 0 || yspeed != 0)
+		c->shiftStep();
 }
 
 /*

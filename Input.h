@@ -25,6 +25,7 @@
 #include "Creature.h"
 #include "Cursor.h"
 #include "GameMap.h"
+#include "Timer.h"
 //#include "Graphics.h" // this is a problem
 // Input should not deal with Graphics, but Graphics should take an input object as an argument
 
@@ -67,6 +68,8 @@ public:
 	 */
 	Cursor* getCursor();
 	
+	Timer* getTimer();
+	
 	void checkPlayerMovement(GameMap* gameMap, Creature* c);
 	//void movePlayer(Creature *c);
 	
@@ -90,6 +93,8 @@ private:
 	 * The screen cursor
 	 */
 	Cursor cursor; // to select a certain tile and eventually change it with [, ]
+	
+	Timer timer;
 };
 
 #endif

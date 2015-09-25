@@ -371,6 +371,11 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input)
 	SDL_RenderClear(gRenderer); // Fills the screen with the DrawColor
 	//SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 	
+	// For the timer
+	string title;
+	title = "Ultimata :: " + to_string(input->getTimer()->getTicks() / 1000.);
+	SDL_SetWindowTitle(window, title.c_str());
+	
 	//drawPrimitiveTiles();
 	//drawTiles(gameMap->getTileset(), input->getTestTileId());
 	drawGameMap(gameMap);
@@ -571,8 +576,9 @@ void Graphics::drawGameMap(GameMap* gameMap)
 	tileset = gameMap->getTileset();
 	
 #ifdef __DEBUG_MODE__
-	cout << "Drawing tiles from game map . . ." << endl;
-	SDL_Delay(1000);
+	// this is not good. Makes everything way too slow. (too many operations)
+	//cout << "Drawing tiles from game map . . ." << endl;
+	//SDL_Delay(1000);
 #endif
 	
 	tiles_across = SCREEN_WIDTH / TILESIZE;
@@ -599,8 +605,8 @@ void Graphics::drawTiles(Tileset* tileset, int index)
 	int i, j;
 	
 #ifdef __DEBUG_MODE__
-	cout << "Drawing tiles . . ." << endl;
-	SDL_Delay(1000);
+	//cout << "Drawing tiles . . ." << endl;
+	//SDL_Delay(1000);
 #endif
 	
 	tiles_across = SCREEN_WIDTH / TILESIZE;

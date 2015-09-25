@@ -84,10 +84,16 @@ public:
 	
 	/**
 	 * Loads an image into an SDL_Surface, given path
+	 *
+	 * @param	filename	the name of the image to be loaded
+	 * @return	a pointer to the loaded surface
 	 */
 	SDL_Surface* loadSurface(string filename);
 	/**
 	 * Loads an image into an SDL_Texture, given path
+	 *
+	 * @param	filename	the name of the image to be loaded
+	 * @return	a pointer to the loaded surface
 	 */
 	SDL_Texture* loadTexture(string filename);
 	
@@ -97,6 +103,8 @@ public:
 	void drawPrimitiveTiles();
 	/**
 	 * Renders the tiled game map based on data from a GameMap object.
+	 *
+	 * @param	gameMap	a pointer to a GameMap object
 	 */
 	void drawGameMap(GameMap* gameMap);
 	/**

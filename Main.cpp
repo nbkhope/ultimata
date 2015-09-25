@@ -14,6 +14,13 @@
 //	along with this program; if not, write to the Free Software
 //	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+/**
+ * Moving player game
+ *
+ * @author	Renan Martins
+ * @version	0.2
+ */
+
 #include "Main.h"
 
 int main(int argc, char* args[])
@@ -28,7 +35,7 @@ int main(int argc, char* args[])
 	int error;
 	bool quit;
 	int gameMode;
-	
+
 	//SDL_Event e;
 	
 	// Variable definitions

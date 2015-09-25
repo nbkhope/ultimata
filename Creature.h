@@ -48,11 +48,20 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	
+	/**
+	 * Returns the creature speed
+	 */
 	int getSpeedX() const;
 	int getSpeedY() const;
 	void getSpeed(int &xs, int &ys);
 	
+	/**
+	 * Returns the creature's current step
+	 */
 	int getStep() const;
+	/**
+	 * Returns the direction the creature is facing
+	 */
 	int getDirection() const;
 	bool getNewDirection() const;
 	
@@ -63,6 +72,9 @@ public:
 	void setPosY(int y);
 	void setPos(int x, int y);
 	
+	/**
+	 * Sets the creature speed (for movement)
+	 */
 	void setSpeedX(int newSpeed);
 	void setSpeedY(int newSpeed);
 	void setSpeed(int newSpeedX, int newSpeedY);
@@ -71,8 +83,15 @@ public:
 	void setDirection(int newDirection);
 	void setNewDirection (bool newNewDirection);
 	
+	/**
+	 * Shifts creature position by the given amount.
+	 */
 	void shiftPosX(int xshift);
 	void shiftPosY(int yshift);
+	/**
+	 * Shifts the creature step (for animation purposes)
+	 * Step will be brought back to 0 after a certain number of shifts
+	 */
 	void shiftStep();
 	
 	/**

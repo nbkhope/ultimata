@@ -17,7 +17,7 @@
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
-//#define __DEBUG_MODE__
+#define __DEBUG_MODE__
 //#define __TILE_MOVEMENT__
 
 const int FRAMES_PER_SECOND = 30;
