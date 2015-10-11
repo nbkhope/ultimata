@@ -23,9 +23,9 @@
 
 ## File placement
 * All class declarations should go into a **header file** named after the class
-  e.g. **Creature.h** for the __Creature__ class declaration
+  * e.g. **Creature.h** for the __Creature__ class declaration
 * All class definitions should go into a **.cpp implementation file**
-  e.g. Definitions for Creature class functions should go into **Creature.cpp**
+  * e.g. Definitions for Creature class functions should go into **Creature.cpp**
 
 ### Other placements
 * documentation: docs/
