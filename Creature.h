@@ -14,6 +14,10 @@
 //	along with this program; if not, write to the Free Software
 //	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+/** @file
+ * Contains the declaration of the Creature class
+ */
+
 #ifndef __CREATURE_H__
 #define __CREATURE_H__
 
@@ -36,31 +40,31 @@ public:
 	~Creature();
 	
 	/**
-	 * Returns the position of the creature
+	 * @return the position of the creature
 	 */
 	int getPosX() const;
 	int getPosY() const;
 	void getPos(int &x, int &y) const;
 	
 	/**
-	 * Returns the dimensions of the creature
+	 * @return the dimensions of the creature
 	 */
 	int getWidth() const;
 	int getHeight() const;
 	
 	/**
-	 * Returns the creature speed
+	 * @return the creature speed
 	 */
 	int getSpeedX() const;
 	int getSpeedY() const;
 	void getSpeed(int &xs, int &ys);
 	
 	/**
-	 * Returns the creature's current step
+	 * @return the creature's current step
 	 */
 	int getStep() const;
 	/**
-	 * Returns the direction the creature is facing
+	 * @return the direction the creature is facing
 	 */
 	int getDirection() const;
 	bool getNewDirection() const;
@@ -95,12 +99,12 @@ public:
 	void shiftStep();
 	
 	/**
-	 * Returns the name of the creature
+	 * @return the name of the creature
 	 */
 	string getName() const;
 	
 	/*
-	 * Returns the level of the creature
+	 * @return the level of the creature
 	 */
 	uint32_t getLevel() const;
 	
@@ -112,22 +116,22 @@ public:
 	uint64_t getExperience() const;
 	
 	/**
-	 * Returns the current health points of the creature
+	 * @return the current health points of the creature
 	 */
 	int getHealth() const;
 	
 	/**
-	 * Returns the maximum health points of the creture
+	 * @return the maximum health points of the creture
 	 */
 	int getHealthMax() const;
 	
 	/**
-	 * Returns the current mana points of the creature
+	 * @return the current mana points of the creature
 	 */
 	int getMana() const;
 	
 	/**
-	 * Returns the maximum mana points of the creture
+	 * @return the maximum mana points of the creture
 	 */
 	int getManaMax() const;
 	

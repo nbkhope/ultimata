@@ -1,0 +1,106 @@
+\hypertarget{class_game_map}{}\section{Game\+Map Class Reference}
+\label{class_game_map}\index{Game\+Map@{Game\+Map}}
+
+
+{\ttfamily \#include $<$Game\+Map.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{class_game_map_a1f393e9009820a23ac1e0ad2c8626d97}{get\+Width} () const 
+\item 
+\hypertarget{class_game_map_af2364f9ff14b927f34ee56e1fa415f7b}{}int {\bfseries get\+Height} () const \label{class_game_map_af2364f9ff14b927f34ee56e1fa415f7b}
+
+\item 
+\hypertarget{class_game_map_a2574b6d012255d7ef5e24a67563568f5}{}int {\bfseries get\+Tiles\+Across} () const \label{class_game_map_a2574b6d012255d7ef5e24a67563568f5}
+
+\item 
+\hypertarget{class_game_map_aa46a078820c590f35406e83992d8f276}{}int {\bfseries get\+Tiles\+Down} () const \label{class_game_map_aa46a078820c590f35406e83992d8f276}
+
+\item 
+\hyperlink{class_tileset}{Tileset} $\ast$ \hyperlink{class_game_map_a2923a06a137d06f1d3fb809125a0809a}{get\+Tileset} ()
+\item 
+\hyperlink{class_tile}{Tile} $\ast$ \hyperlink{class_game_map_a9f86cbac8b3b53c06fc6955ec6b5b812}{get\+Tile} (int index)
+\item 
+\hypertarget{class_game_map_a5001c2991d82e37ab00483189aa1f11c}{}void {\bfseries set\+Width} (int w)\label{class_game_map_a5001c2991d82e37ab00483189aa1f11c}
+
+\item 
+\hypertarget{class_game_map_aa494ccc1f0235cadf5d2268cae4d3995}{}void {\bfseries set\+Height} (int h)\label{class_game_map_aa494ccc1f0235cadf5d2268cae4d3995}
+
+\item 
+bool \hyperlink{class_game_map_a65748ed7200ba15543c631f974c94ae7}{load\+Txt} (string filename)
+\item 
+bool \hyperlink{class_game_map_acfc2a16e2f01a6a254ba4df760686e9e}{save\+Txt} (string filename)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Keeps track of the properties of the game map. This has nothing to do with graphics and images!
+
+Essentially, the \hyperlink{class_game_map}{Game\+Map} object keeps track of each tile and has a tileset, which in turn is another object that keeps track of tileset information (again, nothing to do with graphics or images) 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_game_map_a9f86cbac8b3b53c06fc6955ec6b5b812}{}\index{Game\+Map@{Game\+Map}!get\+Tile@{get\+Tile}}
+\index{get\+Tile@{get\+Tile}!Game\+Map@{Game\+Map}}
+\subsubsection[{get\+Tile(int index)}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Tile} $\ast$ Game\+Map\+::get\+Tile (
+\begin{DoxyParamCaption}
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)}\label{class_game_map_a9f86cbac8b3b53c06fc6955ec6b5b812}
+\begin{DoxyReturn}{Returns}
+a pointer to a specific map tile Each tile in the map has a position index, which is determined by counting the tile from left to right, top to bottom. 
+\end{DoxyReturn}
+\hypertarget{class_game_map_a2923a06a137d06f1d3fb809125a0809a}{}\index{Game\+Map@{Game\+Map}!get\+Tileset@{get\+Tileset}}
+\index{get\+Tileset@{get\+Tileset}!Game\+Map@{Game\+Map}}
+\subsubsection[{get\+Tileset()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Tileset} $\ast$ Game\+Map\+::get\+Tileset (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_game_map_a2923a06a137d06f1d3fb809125a0809a}
+\begin{DoxyReturn}{Returns}
+a pointer to the tileset object. 
+\end{DoxyReturn}
+\hypertarget{class_game_map_a1f393e9009820a23ac1e0ad2c8626d97}{}\index{Game\+Map@{Game\+Map}!get\+Width@{get\+Width}}
+\index{get\+Width@{get\+Width}!Game\+Map@{Game\+Map}}
+\subsubsection[{get\+Width() const }]{\setlength{\rightskip}{0pt plus 5cm}int Game\+Map\+::get\+Width (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}\label{class_game_map_a1f393e9009820a23ac1e0ad2c8626d97}
+\begin{DoxyReturn}{Returns}
+the map dimensions 
+\end{DoxyReturn}
+\hypertarget{class_game_map_a65748ed7200ba15543c631f974c94ae7}{}\index{Game\+Map@{Game\+Map}!load\+Txt@{load\+Txt}}
+\index{load\+Txt@{load\+Txt}!Game\+Map@{Game\+Map}}
+\subsubsection[{load\+Txt(string filename)}]{\setlength{\rightskip}{0pt plus 5cm}bool Game\+Map\+::load\+Txt (
+\begin{DoxyParamCaption}
+\item[{string}]{filename}
+\end{DoxyParamCaption}
+)}\label{class_game_map_a65748ed7200ba15543c631f974c94ae7}
+Loads map from a text file
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & path to the game map file \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_game_map_acfc2a16e2f01a6a254ba4df760686e9e}{}\index{Game\+Map@{Game\+Map}!save\+Txt@{save\+Txt}}
+\index{save\+Txt@{save\+Txt}!Game\+Map@{Game\+Map}}
+\subsubsection[{save\+Txt(string filename)}]{\setlength{\rightskip}{0pt plus 5cm}bool Game\+Map\+::save\+Txt (
+\begin{DoxyParamCaption}
+\item[{string}]{filename}
+\end{DoxyParamCaption}
+)}\label{class_game_map_acfc2a16e2f01a6a254ba4df760686e9e}
+Saves map to a text file
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & path to the game map file \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/\hyperlink{_game_map_8h}{Game\+Map.\+h}\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/Game\+Map.\+cpp\end{DoxyCompactItemize}

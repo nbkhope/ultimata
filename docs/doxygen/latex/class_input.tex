@@ -1,0 +1,103 @@
+\hypertarget{class_input}{}\section{Input Class Reference}
+\label{class_input}\index{Input@{Input}}
+
+
+{\ttfamily \#include $<$Input.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_input_ae72c10b92311d7f335cc15a72c1d3682}{get} (\hyperlink{class_game_map}{Game\+Map} $\ast$game\+Map, \hyperlink{class_creature}{Creature} $\ast$c)
+\item 
+bool \hyperlink{class_input_ae5a7b046114b18cd234a43e3bc6500a3}{test\+Get} (\hyperlink{class_game_map}{Game\+Map} $\ast$game\+Map, \hyperlink{class_creature}{Creature} $\ast$c)
+\item 
+\hypertarget{class_input_a18cfa7a63c2354d5b467b6ee59e87d46}{}Uint8 {\bfseries get\+Alpha} () const \label{class_input_a18cfa7a63c2354d5b467b6ee59e87d46}
+
+\item 
+\hypertarget{class_input_a83ef8e0aafcc6880c692ed8edb1023d4}{}void {\bfseries set\+Alpha} (Uint8 a)\label{class_input_a83ef8e0aafcc6880c692ed8edb1023d4}
+
+\item 
+\hypertarget{class_input_acaff8427f74a7c56a3cf53a58c23d583}{}Uint8 $\ast$ {\bfseries get\+Color} ()\label{class_input_acaff8427f74a7c56a3cf53a58c23d583}
+
+\item 
+\hypertarget{class_input_aa226ff0e5f087bd8deef102263e73871}{}void {\bfseries set\+Color} (Uint8 $\ast$color)\label{class_input_aa226ff0e5f087bd8deef102263e73871}
+
+\item 
+\hypertarget{class_input_a00046e1e9ff727c0112765819abe717c}{}int {\bfseries get\+Test\+Tile\+Id} () const \label{class_input_a00046e1e9ff727c0112765819abe717c}
+
+\item 
+\hypertarget{class_input_a5982749083ffc44865f5452da8db6c78}{}int {\bfseries get\+Test\+Image\+Load} () const \label{class_input_a5982749083ffc44865f5452da8db6c78}
+
+\item 
+\hyperlink{class_cursor}{Cursor} $\ast$ \hyperlink{class_input_a1198fed427c40c4a4945352db61e3518}{get\+Cursor} ()
+\item 
+\hypertarget{class_input_a1bc956ef2dea0511a2820561072be0d8}{}\hyperlink{class_timer}{Timer} $\ast$ {\bfseries get\+Timer} ()\label{class_input_a1bc956ef2dea0511a2820561072be0d8}
+
+\item 
+void \hyperlink{class_input_a7b7cf488450f97ef78ee643a21007f69}{check\+Player\+Movement} (\hyperlink{class_game_map}{Game\+Map} $\ast$game\+Map, \hyperlink{class_creature}{Creature} $\ast$c)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+An \hyperlink{class_input}{Input} object is responsible for handling player input and change the game parameters accordingly. 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_input_a7b7cf488450f97ef78ee643a21007f69}{}\index{Input@{Input}!check\+Player\+Movement@{check\+Player\+Movement}}
+\index{check\+Player\+Movement@{check\+Player\+Movement}!Input@{Input}}
+\subsubsection[{check\+Player\+Movement(\+Game\+Map $\ast$game\+Map, Creature $\ast$c)}]{\setlength{\rightskip}{0pt plus 5cm}void Input\+::check\+Player\+Movement (
+\begin{DoxyParamCaption}
+\item[{{\bf Game\+Map} $\ast$}]{game\+Map, }
+\item[{{\bf Creature} $\ast$}]{c}
+\end{DoxyParamCaption}
+)}\label{class_input_a7b7cf488450f97ef78ee643a21007f69}
+For free movement, will increase/decrease the creature movement speed accordingly. Then, the creature\textquotesingle{}s position will be changed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+Map} & the game map object \\
+\hline
+{\em c} & the creature object \\
+\hline
+\end{DoxyParams}
+Which key was released? Depending on the key, decrease player speed
+
+Type of Movement
+
+Handles animation\hypertarget{class_input_ae72c10b92311d7f335cc15a72c1d3682}{}\index{Input@{Input}!get@{get}}
+\index{get@{get}!Input@{Input}}
+\subsubsection[{get(\+Game\+Map $\ast$game\+Map, Creature $\ast$c)}]{\setlength{\rightskip}{0pt plus 5cm}bool Input\+::get (
+\begin{DoxyParamCaption}
+\item[{{\bf Game\+Map} $\ast$}]{game\+Map, }
+\item[{{\bf Creature} $\ast$}]{c}
+\end{DoxyParamCaption}
+)}\label{class_input_ae72c10b92311d7f335cc15a72c1d3682}
+Handles input from the player
+
+Handles input for a non-\/scrolling, fixed-\/screen map. Note\+: \hyperlink{class_input_a7b7cf488450f97ef78ee643a21007f69}{check\+Player\+Movement()} checks e.\+type for S\+D\+L\+\_\+\+K\+E\+Y\+D\+O\+W\+N and S\+D\+L\+\_\+\+K\+E\+Y\+U\+P
+
+Deals with timer\hypertarget{class_input_a1198fed427c40c4a4945352db61e3518}{}\index{Input@{Input}!get\+Cursor@{get\+Cursor}}
+\index{get\+Cursor@{get\+Cursor}!Input@{Input}}
+\subsubsection[{get\+Cursor()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Cursor} $\ast$ Input\+::get\+Cursor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_input_a1198fed427c40c4a4945352db61e3518}
+\begin{DoxyReturn}{Returns}
+a pointer to the cursor 
+\end{DoxyReturn}
+\hypertarget{class_input_ae5a7b046114b18cd234a43e3bc6500a3}{}\index{Input@{Input}!test\+Get@{test\+Get}}
+\index{test\+Get@{test\+Get}!Input@{Input}}
+\subsubsection[{test\+Get(\+Game\+Map $\ast$game\+Map, Creature $\ast$c)}]{\setlength{\rightskip}{0pt plus 5cm}bool Input\+::test\+Get (
+\begin{DoxyParamCaption}
+\item[{{\bf Game\+Map} $\ast$}]{game\+Map, }
+\item[{{\bf Creature} $\ast$}]{c}
+\end{DoxyParamCaption}
+)}\label{class_input_ae5a7b046114b18cd234a43e3bc6500a3}
+Handles input from the player (test version)
+
+Same as \hyperlink{class_input_ae72c10b92311d7f335cc15a72c1d3682}{Input\+::get()}, but for testing purposes. Handles input for a non-\/scrolling, fixed-\/screen map. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/\hyperlink{_input_8h}{Input.\+h}\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/Input.\+cpp\end{DoxyCompactItemize}

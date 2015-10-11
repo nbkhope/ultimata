@@ -153,7 +153,7 @@ void LTexture::setAlpha(Uint8 alpha)
 }
 
 /**
- * Returns the width of the texture
+ * @return the width of the texture
  */
 int LTexture::getWidth() const
 {
@@ -161,7 +161,7 @@ int LTexture::getWidth() const
 }
 
 /**
- * Returns the height of the texture
+ * @return the height of the texture
  */
 int LTexture::getHeight() const
 {

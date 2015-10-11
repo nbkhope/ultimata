@@ -14,6 +14,9 @@
 //	along with this program; if not, write to the Free Software
 //	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+/** @file
+ */
+
 #ifndef __GAMEMAP_H__
 #define __GAMEMAP_H__
 
@@ -44,7 +47,7 @@ public:
 	~GameMap();
 	
 	/**
-	 * Returns the map dimensions
+	 * @return the map dimensions
 	 */
 	int getWidth() const;
 	int getHeight() const;
@@ -53,12 +56,12 @@ public:
 	int getTilesDown() const;
 	
 	/**
-	 * Returns a pointer to the tileset object.
+	 * @return a pointer to the tileset object.
 	 */
 	Tileset* getTileset();
 	
 	/**
-	 * Returns a pointer to a specific map tile
+	 * @return a pointer to a specific map tile
 	 * Each tile in the map has a position index, which is determined by counting
 	 * the tile from left to right, top to bottom.
 	 */
@@ -72,10 +75,14 @@ public:
 	
 	/**
 	 * Loads map from a text file
+	 *
+	 * @param filename	path to the game map file
 	 */
 	bool loadTxt(string filename);
 	/**
 	 * Saves map to a text file
+	 *
+	 * @param filename	path to the game map file
 	 */
 	bool saveTxt(string filename);
 private:

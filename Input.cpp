@@ -310,6 +310,9 @@ Timer* Input::getTimer()
 /**
  * For free movement, will increase/decrease the creature movement speed accordingly.
  * Then, the creature's position will be changed.
+ *
+ * @param	gameMap	the game map object
+ * @param c	the creature object
  */
 void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
 {

@@ -1,0 +1,100 @@
+\hypertarget{class_l_texture}{}\section{L\+Texture Class Reference}
+\label{class_l_texture}\index{L\+Texture@{L\+Texture}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_l_texture_a5948e4e14e204cc5ccc0a9c4f857ab6b}{load\+From\+File} (string filename, S\+D\+L\+\_\+\+Renderer $\ast$g\+Renderer)
+\item 
+void \hyperlink{class_l_texture_abef558f0b920270079925548a3976a06}{free} ()
+\item 
+void \hyperlink{class_l_texture_a54fc839c87fc1a64dda772c1754921bb}{render} (int x, int y, S\+D\+L\+\_\+\+Renderer $\ast$g\+Renderer, S\+D\+L\+\_\+\+Rect $\ast$clip=N\+U\+L\+L)
+\item 
+void \hyperlink{class_l_texture_aead3e0fd603db038782f15e9845e50d4}{set\+Color} (Uint8 r, Uint8 g, Uint8 b)
+\item 
+void \hyperlink{class_l_texture_aa1fe07070f715bf3981c129ae1619a4e}{set\+Blend\+Mode} (S\+D\+L\+\_\+\+Blend\+Mode blending)
+\item 
+void \hyperlink{class_l_texture_ab4e51b54752ae7b54614078f9128a9c0}{set\+Alpha} (Uint8 alpha)
+\item 
+int \hyperlink{class_l_texture_ad9e83e3ba49b7ef6a0719ddbbdf7b3fa}{get\+Width} () const 
+\item 
+int \hyperlink{class_l_texture_a88f3901941f4a71f929845ee1311b68b}{get\+Height} () const 
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_l_texture_abef558f0b920270079925548a3976a06}{}\index{L\+Texture@{L\+Texture}!free@{free}}
+\index{free@{free}!L\+Texture@{L\+Texture}}
+\subsubsection[{free()}]{\setlength{\rightskip}{0pt plus 5cm}void L\+Texture\+::free (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_l_texture_abef558f0b920270079925548a3976a06}
+Deallocates texture \hypertarget{class_l_texture_a88f3901941f4a71f929845ee1311b68b}{}\index{L\+Texture@{L\+Texture}!get\+Height@{get\+Height}}
+\index{get\+Height@{get\+Height}!L\+Texture@{L\+Texture}}
+\subsubsection[{get\+Height() const }]{\setlength{\rightskip}{0pt plus 5cm}int L\+Texture\+::get\+Height (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}\label{class_l_texture_a88f3901941f4a71f929845ee1311b68b}
+\begin{DoxyReturn}{Returns}
+the height of the texture 
+\end{DoxyReturn}
+\hypertarget{class_l_texture_ad9e83e3ba49b7ef6a0719ddbbdf7b3fa}{}\index{L\+Texture@{L\+Texture}!get\+Width@{get\+Width}}
+\index{get\+Width@{get\+Width}!L\+Texture@{L\+Texture}}
+\subsubsection[{get\+Width() const }]{\setlength{\rightskip}{0pt plus 5cm}int L\+Texture\+::get\+Width (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}\label{class_l_texture_ad9e83e3ba49b7ef6a0719ddbbdf7b3fa}
+\begin{DoxyReturn}{Returns}
+the width of the texture 
+\end{DoxyReturn}
+\hypertarget{class_l_texture_a5948e4e14e204cc5ccc0a9c4f857ab6b}{}\index{L\+Texture@{L\+Texture}!load\+From\+File@{load\+From\+File}}
+\index{load\+From\+File@{load\+From\+File}!L\+Texture@{L\+Texture}}
+\subsubsection[{load\+From\+File(string filename, S\+D\+L\+\_\+\+Renderer $\ast$g\+Renderer)}]{\setlength{\rightskip}{0pt plus 5cm}bool L\+Texture\+::load\+From\+File (
+\begin{DoxyParamCaption}
+\item[{string}]{filename, }
+\item[{S\+D\+L\+\_\+\+Renderer $\ast$}]{g\+Renderer}
+\end{DoxyParamCaption}
+)}\label{class_l_texture_a5948e4e14e204cc5ccc0a9c4f857ab6b}
+Loads a texture into a \hyperlink{class_l_texture}{L\+Texture} object. All images are color keyed (i.\+e. colors that match the color key will be made transparent) \hypertarget{class_l_texture_a54fc839c87fc1a64dda772c1754921bb}{}\index{L\+Texture@{L\+Texture}!render@{render}}
+\index{render@{render}!L\+Texture@{L\+Texture}}
+\subsubsection[{render(int x, int y, S\+D\+L\+\_\+\+Renderer $\ast$g\+Renderer, S\+D\+L\+\_\+\+Rect $\ast$clip=\+N\+U\+L\+L)}]{\setlength{\rightskip}{0pt plus 5cm}void L\+Texture\+::render (
+\begin{DoxyParamCaption}
+\item[{int}]{x, }
+\item[{int}]{y, }
+\item[{S\+D\+L\+\_\+\+Renderer $\ast$}]{g\+Renderer, }
+\item[{S\+D\+L\+\_\+\+Rect $\ast$}]{clip = {\ttfamily NULL}}
+\end{DoxyParamCaption}
+)}\label{class_l_texture_a54fc839c87fc1a64dda772c1754921bb}
+Renders a texture, given position and renderer. \hypertarget{class_l_texture_ab4e51b54752ae7b54614078f9128a9c0}{}\index{L\+Texture@{L\+Texture}!set\+Alpha@{set\+Alpha}}
+\index{set\+Alpha@{set\+Alpha}!L\+Texture@{L\+Texture}}
+\subsubsection[{set\+Alpha(\+Uint8 alpha)}]{\setlength{\rightskip}{0pt plus 5cm}void L\+Texture\+::set\+Alpha (
+\begin{DoxyParamCaption}
+\item[{Uint8}]{alpha}
+\end{DoxyParamCaption}
+)}\label{class_l_texture_ab4e51b54752ae7b54614078f9128a9c0}
+Sets texture alpha modulation
+
+100\% alpha (255) -- opaque 75\% alpha (191) 50\% alpha (127) 25\% alpha (63) 0\% alpha (0) -- fully transparent \hypertarget{class_l_texture_aa1fe07070f715bf3981c129ae1619a4e}{}\index{L\+Texture@{L\+Texture}!set\+Blend\+Mode@{set\+Blend\+Mode}}
+\index{set\+Blend\+Mode@{set\+Blend\+Mode}!L\+Texture@{L\+Texture}}
+\subsubsection[{set\+Blend\+Mode(\+S\+D\+L\+\_\+\+Blend\+Mode blending)}]{\setlength{\rightskip}{0pt plus 5cm}void L\+Texture\+::set\+Blend\+Mode (
+\begin{DoxyParamCaption}
+\item[{S\+D\+L\+\_\+\+Blend\+Mode}]{blending}
+\end{DoxyParamCaption}
+)}\label{class_l_texture_aa1fe07070f715bf3981c129ae1619a4e}
+Sets texture blending \hypertarget{class_l_texture_aead3e0fd603db038782f15e9845e50d4}{}\index{L\+Texture@{L\+Texture}!set\+Color@{set\+Color}}
+\index{set\+Color@{set\+Color}!L\+Texture@{L\+Texture}}
+\subsubsection[{set\+Color(\+Uint8 r, Uint8 g, Uint8 b)}]{\setlength{\rightskip}{0pt plus 5cm}void L\+Texture\+::set\+Color (
+\begin{DoxyParamCaption}
+\item[{Uint8}]{r, }
+\item[{Uint8}]{g, }
+\item[{Uint8}]{b}
+\end{DoxyParamCaption}
+)}\label{class_l_texture_aead3e0fd603db038782f15e9845e50d4}
+Sets texture color modulation 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/\hyperlink{_graphics_8h}{Graphics.\+h}\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/Graphics.\+cpp\end{DoxyCompactItemize}

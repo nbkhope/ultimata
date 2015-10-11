@@ -14,6 +14,9 @@
 //	along with this program; if not, write to the Free Software
 //	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+/** @file
+ */
+
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
@@ -44,7 +47,7 @@ public:
 	bool isPaused() const;
 
 	/**
-	 * Returns the number of milliseconds elapsed since the timer has started.
+	 * @return the number of milliseconds elapsed since the timer has started.
 	 */
 	int getTicks() const;
 

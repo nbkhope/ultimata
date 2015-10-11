@@ -14,6 +14,9 @@
 //	along with this program; if not, write to the Free Software
 //	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+/** @file
+ */
+
 #ifndef __TILE_H__
 #define __TILE_H__
 
@@ -29,7 +32,7 @@ public:
 	~Tile();
 	
 	/**
-	 * Returns the tile id. Useful to determine which part of the tileset to extract.
+	 * @return the tile id. Useful to determine which part of the tileset to extract.
 	 */
 	int getId() const;
 	/**

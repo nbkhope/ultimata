@@ -1,0 +1,199 @@
+\hypertarget{class_graphics}{}\section{Graphics Class Reference}
+\label{class_graphics}\index{Graphics@{Graphics}}
+
+
+{\ttfamily \#include $<$Graphics.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_graphics_af2e8fe67fd31ec263c843a6e28b29d3c}{Graphics} ()
+\item 
+void \hyperlink{class_graphics_ac0a2b43dd0353c527174a0cc23665672}{set\+Up\+Window} ()
+\item 
+bool \hyperlink{class_graphics_afc73b9d97804e153e361353afac1c3ad}{load\+Media} ()
+\item 
+\hypertarget{class_graphics_a6a3422320eb4d7f1c1d931dcefcd6f5c}{}void {\bfseries display\+Image} ()\label{class_graphics_a6a3422320eb4d7f1c1d931dcefcd6f5c}
+
+\item 
+\hypertarget{class_graphics_a8b70dd76aa4fee5d0b38895c718a54b6}{}void {\bfseries render} (\hyperlink{class_game_map}{Game\+Map} $\ast$game\+Map, \hyperlink{class_creature}{Creature} $\ast$creature, \hyperlink{class_input}{Input} $\ast$input)\label{class_graphics_a8b70dd76aa4fee5d0b38895c718a54b6}
+
+\item 
+void \hyperlink{class_graphics_afe1bbdee236b1dd96f98fdeda77cf88d}{test\+Render} (\hyperlink{class_creature}{Creature} $\ast$creature, \hyperlink{class_input}{Input} $\ast$input)
+\item 
+S\+D\+L\+\_\+\+Surface $\ast$ \hyperlink{class_graphics_a279878ad3f1a747e441f2c0e20f2bbab}{load\+Surface} (string filename)
+\item 
+S\+D\+L\+\_\+\+Texture $\ast$ \hyperlink{class_graphics_ad5f0b6c1b3fd9fac4db77c6e23f2f66e}{load\+Texture} (string filename)
+\item 
+void \hyperlink{class_graphics_a8d914c5e696214717c1d3d38db207494}{draw\+Primitive\+Tiles} ()
+\item 
+void \hyperlink{class_graphics_abf80c5d5caf22091133ba90fdda8459c}{draw\+Game\+Map} (\hyperlink{class_game_map}{Game\+Map} $\ast$game\+Map)
+\item 
+void \hyperlink{class_graphics_a37efcea2a9b2e9e139eebada719b1c59}{draw\+Tiles} (\hyperlink{class_tileset}{Tileset} $\ast$tileset, int index)
+\item 
+void \hyperlink{class_graphics_a1fd0f0f6b23a6e793a04d11e2736d8e2}{draw\+Creature} (\hyperlink{class_creature}{Creature} $\ast$c)
+\item 
+void \hyperlink{class_graphics_a874d7a083168bb630df655e234a6a200}{draw\+Square\+Creature} (\hyperlink{class_creature}{Creature} $\ast$c)
+\item 
+void \hyperlink{class_graphics_a149b8bb3cb3fcf4f67a1a0187af6cbcb}{draw\+Cursor} (\hyperlink{class_cursor}{Cursor} $\ast$c)
+\item 
+\hypertarget{class_graphics_a1924b4274ef7d57f6e1572f189760e2c}{}void {\bfseries set\+Viewport} ()\label{class_graphics_a1924b4274ef7d57f6e1572f189760e2c}
+
+\item 
+\hypertarget{class_graphics_a44e1645c6b51f59539bcb39c79d822d8}{}void {\bfseries draw\+Color\+Key\+Example} ()\label{class_graphics_a44e1645c6b51f59539bcb39c79d822d8}
+
+\item 
+S\+D\+L\+\_\+\+Renderer $\ast$ \hyperlink{class_graphics_afacc722603c661f667d0fcfd43f7ab5c}{get\+Renderer} ()
+\item 
+\hypertarget{class_graphics_aa8d99f1aa702fecc352a0ea63f632cf8}{}\hyperlink{class_l_texture}{L\+Texture} $\ast$ {\bfseries get\+My\+Background} ()\label{class_graphics_aa8d99f1aa702fecc352a0ea63f632cf8}
+
+\item 
+\hypertarget{class_graphics_ab9b5d29e1c381e1a3158c53f22b62235}{}\hyperlink{class_l_texture}{L\+Texture} $\ast$ {\bfseries get\+My\+Foreground} ()\label{class_graphics_ab9b5d29e1c381e1a3158c53f22b62235}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{class_graphics}{Graphics} class deals with everything related to loading, rendering, and displaying images. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_graphics_af2e8fe67fd31ec263c843a6e28b29d3c}{}\index{Graphics@{Graphics}!Graphics@{Graphics}}
+\index{Graphics@{Graphics}!Graphics@{Graphics}}
+\subsubsection[{Graphics()}]{\setlength{\rightskip}{0pt plus 5cm}Graphics\+::\+Graphics (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_graphics_af2e8fe67fd31ec263c843a6e28b29d3c}
+Constructor and destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_graphics_a1fd0f0f6b23a6e793a04d11e2736d8e2}{}\index{Graphics@{Graphics}!draw\+Creature@{draw\+Creature}}
+\index{draw\+Creature@{draw\+Creature}!Graphics@{Graphics}}
+\subsubsection[{draw\+Creature(\+Creature $\ast$c)}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::draw\+Creature (
+\begin{DoxyParamCaption}
+\item[{{\bf Creature} $\ast$}]{c}
+\end{DoxyParamCaption}
+)}\label{class_graphics_a1fd0f0f6b23a6e793a04d11e2736d8e2}
+Renders the creature on the screen.
+
+Renders the creature on the screen Determines which part of the charset image to clip Note the player image has the width of a tile and the height of two tiles
+
+T\+O\+D\+O later\+: make charset class and generalize \hyperlink{class_graphics_a1fd0f0f6b23a6e793a04d11e2736d8e2}{draw\+Creature()} for any creature\hypertarget{class_graphics_a149b8bb3cb3fcf4f67a1a0187af6cbcb}{}\index{Graphics@{Graphics}!draw\+Cursor@{draw\+Cursor}}
+\index{draw\+Cursor@{draw\+Cursor}!Graphics@{Graphics}}
+\subsubsection[{draw\+Cursor(\+Cursor $\ast$c)}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::draw\+Cursor (
+\begin{DoxyParamCaption}
+\item[{{\bf Cursor} $\ast$}]{c}
+\end{DoxyParamCaption}
+)}\label{class_graphics_a149b8bb3cb3fcf4f67a1a0187af6cbcb}
+Renders the cursor
+
+Renders the creature on the screen \hypertarget{class_graphics_abf80c5d5caf22091133ba90fdda8459c}{}\index{Graphics@{Graphics}!draw\+Game\+Map@{draw\+Game\+Map}}
+\index{draw\+Game\+Map@{draw\+Game\+Map}!Graphics@{Graphics}}
+\subsubsection[{draw\+Game\+Map(\+Game\+Map $\ast$game\+Map)}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::draw\+Game\+Map (
+\begin{DoxyParamCaption}
+\item[{{\bf Game\+Map} $\ast$}]{game\+Map}
+\end{DoxyParamCaption}
+)}\label{class_graphics_abf80c5d5caf22091133ba90fdda8459c}
+Renders the tiled game map based on data from a \hyperlink{class_game_map}{Game\+Map} object.
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+Map} & a pointer to a \hyperlink{class_game_map}{Game\+Map} object \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_graphics_a8d914c5e696214717c1d3d38db207494}{}\index{Graphics@{Graphics}!draw\+Primitive\+Tiles@{draw\+Primitive\+Tiles}}
+\index{draw\+Primitive\+Tiles@{draw\+Primitive\+Tiles}!Graphics@{Graphics}}
+\subsubsection[{draw\+Primitive\+Tiles()}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::draw\+Primitive\+Tiles (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_graphics_a8d914c5e696214717c1d3d38db207494}
+Renders fixed-\/id tiles using primitive shape rendering functions
+
+Renders a tiled map made up of colored tiles using primitive rendering functions. \hypertarget{class_graphics_a874d7a083168bb630df655e234a6a200}{}\index{Graphics@{Graphics}!draw\+Square\+Creature@{draw\+Square\+Creature}}
+\index{draw\+Square\+Creature@{draw\+Square\+Creature}!Graphics@{Graphics}}
+\subsubsection[{draw\+Square\+Creature(\+Creature $\ast$c)}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::draw\+Square\+Creature (
+\begin{DoxyParamCaption}
+\item[{{\bf Creature} $\ast$}]{c}
+\end{DoxyParamCaption}
+)}\label{class_graphics_a874d7a083168bb630df655e234a6a200}
+Renders the creature as a square on the screen \hypertarget{class_graphics_a37efcea2a9b2e9e139eebada719b1c59}{}\index{Graphics@{Graphics}!draw\+Tiles@{draw\+Tiles}}
+\index{draw\+Tiles@{draw\+Tiles}!Graphics@{Graphics}}
+\subsubsection[{draw\+Tiles(\+Tileset $\ast$tileset, int index)}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::draw\+Tiles (
+\begin{DoxyParamCaption}
+\item[{{\bf Tileset} $\ast$}]{tileset, }
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)}\label{class_graphics_a37efcea2a9b2e9e139eebada719b1c59}
+Renders fixed-\/id tiles using data from a \hyperlink{class_tileset}{Tileset} object. \hypertarget{class_graphics_afacc722603c661f667d0fcfd43f7ab5c}{}\index{Graphics@{Graphics}!get\+Renderer@{get\+Renderer}}
+\index{get\+Renderer@{get\+Renderer}!Graphics@{Graphics}}
+\subsubsection[{get\+Renderer()}]{\setlength{\rightskip}{0pt plus 5cm}S\+D\+L\+\_\+\+Renderer $\ast$ Graphics\+::get\+Renderer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_graphics_afacc722603c661f667d0fcfd43f7ab5c}
+\begin{DoxyReturn}{Returns}
+the renderer
+\end{DoxyReturn}
+Returns the renderer \hypertarget{class_graphics_afc73b9d97804e153e361353afac1c3ad}{}\index{Graphics@{Graphics}!load\+Media@{load\+Media}}
+\index{load\+Media@{load\+Media}!Graphics@{Graphics}}
+\subsubsection[{load\+Media()}]{\setlength{\rightskip}{0pt plus 5cm}bool Graphics\+::load\+Media (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_graphics_afc73b9d97804e153e361353afac1c3ad}
+Loads the necessary graphical resources such as images, etc. \hypertarget{class_graphics_a279878ad3f1a747e441f2c0e20f2bbab}{}\index{Graphics@{Graphics}!load\+Surface@{load\+Surface}}
+\index{load\+Surface@{load\+Surface}!Graphics@{Graphics}}
+\subsubsection[{load\+Surface(string filename)}]{\setlength{\rightskip}{0pt plus 5cm}S\+D\+L\+\_\+\+Surface $\ast$ Graphics\+::load\+Surface (
+\begin{DoxyParamCaption}
+\item[{string}]{filename}
+\end{DoxyParamCaption}
+)}\label{class_graphics_a279878ad3f1a747e441f2c0e20f2bbab}
+Loads an image into an S\+D\+L\+\_\+\+Surface, given path
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & the name of the image to be loaded \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a pointer to the loaded surface
+\end{DoxyReturn}
+Loads an image into a S\+D\+L\+\_\+\+Surface Then converts to the screen display format \hypertarget{class_graphics_ad5f0b6c1b3fd9fac4db77c6e23f2f66e}{}\index{Graphics@{Graphics}!load\+Texture@{load\+Texture}}
+\index{load\+Texture@{load\+Texture}!Graphics@{Graphics}}
+\subsubsection[{load\+Texture(string filename)}]{\setlength{\rightskip}{0pt plus 5cm}S\+D\+L\+\_\+\+Texture $\ast$ Graphics\+::load\+Texture (
+\begin{DoxyParamCaption}
+\item[{string}]{filename}
+\end{DoxyParamCaption}
+)}\label{class_graphics_ad5f0b6c1b3fd9fac4db77c6e23f2f66e}
+Loads an image into an S\+D\+L\+\_\+\+Texture, given path
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & the name of the image to be loaded \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a pointer to the loaded surface
+\end{DoxyReturn}
+Loads a texture Similar to \hyperlink{class_graphics_a279878ad3f1a747e441f2c0e20f2bbab}{load\+Surface()}, but returns a texture instead \hypertarget{class_graphics_ac0a2b43dd0353c527174a0cc23665672}{}\index{Graphics@{Graphics}!set\+Up\+Window@{set\+Up\+Window}}
+\index{set\+Up\+Window@{set\+Up\+Window}!Graphics@{Graphics}}
+\subsubsection[{set\+Up\+Window()}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::set\+Up\+Window (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_graphics_ac0a2b43dd0353c527174a0cc23665672}
+Sets up the game window. Sets up a window at the center\hypertarget{class_graphics_afe1bbdee236b1dd96f98fdeda77cf88d}{}\index{Graphics@{Graphics}!test\+Render@{test\+Render}}
+\index{test\+Render@{test\+Render}!Graphics@{Graphics}}
+\subsubsection[{test\+Render(\+Creature $\ast$creature, Input $\ast$input)}]{\setlength{\rightskip}{0pt plus 5cm}void Graphics\+::test\+Render (
+\begin{DoxyParamCaption}
+\item[{{\bf Creature} $\ast$}]{creature, }
+\item[{{\bf Input} $\ast$}]{input}
+\end{DoxyParamCaption}
+)}\label{class_graphics_afe1bbdee236b1dd96f98fdeda77cf88d}
+Same as Graphics\+::render(), but for testing purposes. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/\hyperlink{_graphics_8h}{Graphics.\+h}\item 
+/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/Graphics.\+cpp\end{DoxyCompactItemize}
