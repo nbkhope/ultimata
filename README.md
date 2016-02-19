@@ -2,7 +2,7 @@
 
 # Ultimata 2
 
-Game programming experiments with libSDL, this time using SDL 2.0.
+Game programming experiments using SDL 2.0.
 
 ## Goal
 
@@ -10,7 +10,7 @@ Ultimata is a project to build a simple two-dimensional role-playing game, drawi
 
 ## Note
 
-This project is a rewritten version of https://github.com/nbkhope/ultimata-old-2011
+This project is a rewritten version of https://github.com/nbkhope/ultimata-old-2011, which used SDL 1.2.
 
 # Ultimata Web Site
 
