@@ -1,5 +1,7 @@
 Image Sources
 
+Player charset (color key #c00080)	http://opengameart.org/content/rpg-hero-walking-cycle
+Game Icon	http://opengameart.org/content/700-rpg-icons
 kongokai	https://commons.wikimedia.org/wiki/File:Kongokai.jpg
 nen	http://www.koreanwikiproject.com/wiki/index.php?title=File:%E5%BF%B5.png
 PathAndObjects_0	http://opengameart.org/content/rpg-tiles-cobble-stone-paths-town-objects
