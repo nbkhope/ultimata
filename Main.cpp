@@ -1,4 +1,4 @@
-//	Copyright (C) 2010-2011, 2015  Renan Martins
+//	Copyright (C) 2010-2011, 2015  nbkhope
 //
 //	This program is free software; you can redistribute it and/or
 //	modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 /** @file
  * Moving player game
  *
- * @author	Renan Martins
+ * @author	nbkhope
  * @version	0.2
  */
 
