@@ -705,32 +705,32 @@ void Graphics::drawCursor(Cursor* c)
 void Graphics::setViewport()
 {
 	SDL_Rect rect;
-	
+
 	cout << "Setting viewports . . ." << endl;
-	
+
 	rect.x = 0;
 	rect.y = 0;
 	rect.w = SCREEN_WIDTH / 2;
 	rect.h = SCREEN_HEIGHT / 2;
-	
+
 	// You need a texture to do viewport
 	// Note rendering shapes using SDL_RenderXXXX will not use any texture, only the renderer
 	gTexture = loadTexture("data/images/nen.png");
-	
+
 	// Set viewport, then render
 	SDL_RenderSetViewport(gRenderer, &rect);
 	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
-	
-	rect = { SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-	
+
+	rect = (SDL_Rect) { SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
+
 	SDL_RenderSetViewport(gRenderer, &rect);
 	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
-	
-	rect = { 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2 };
-	
+
+	rect = (SDL_Rect) { 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2 };
+
 	SDL_RenderSetViewport(gRenderer, &rect);
 	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
-	
+
 	// Important to have this (to reset the viewport to whole screen)
 	SDL_RenderSetViewport(gRenderer, NULL);
 }
