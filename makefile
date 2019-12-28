@@ -35,4 +35,4 @@ Timer.o: Timer.cpp Timer.h
 	g++ -c Timer.cpp -o build/Timer.o
 
 clean:
-	$(RM) Ultimata *.o
+	$(RM) build/Ultimata build/*.o
