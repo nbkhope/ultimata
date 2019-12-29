@@ -1,38 +1,38 @@
 Ultimata:	Creature.o Cursor.o GameMap.o Graphics.o Main.o HelperFunctions.o Input.o System.o Tile.o Tileset.o Timer.o
 	g++ -o build/Ultimata build/*.o -lSDL2 -lSDL2_image
 
-Creature.o: Creature.cpp Creature.h
-	g++ -c Creature.cpp -o build/Creature.o
+Creature.o: src/Creature.cpp src/Creature.h
+	g++ -c src/Creature.cpp -o build/Creature.o
 
-Cursor.o: Cursor.cpp Cursor.h
-	g++ -c Cursor.cpp -o build/Cursor.o
+Cursor.o: src/Cursor.cpp src/Cursor.h
+	g++ -c src/Cursor.cpp -o build/Cursor.o
 
-GameMap.o: GameMap.cpp GameMap.h
-	g++ -c GameMap.cpp -o build/GameMap.o
+GameMap.o: src/GameMap.cpp src/GameMap.h
+	g++ -c src/GameMap.cpp -o build/GameMap.o
 
-Graphics.o: Graphics.cpp Graphics.h
-	g++ -c Graphics.cpp -o build/Graphics.o
+Graphics.o: src/Graphics.cpp src/Graphics.h
+	g++ -c src/Graphics.cpp -o build/Graphics.o
 
-HelperFunctions.o: HelperFunctions.cpp HelperFunctions.h
-	g++ -c HelperFunctions.cpp -o build/HelperFunctions.o
+HelperFunctions.o: src/HelperFunctions.cpp src/HelperFunctions.h
+	g++ -c src/HelperFunctions.cpp -o build/HelperFunctions.o
 
-Input.o: Input.cpp Input.h
-	g++ -c Input.cpp -o build/Input.o
+Input.o: src/Input.cpp src/Input.h
+	g++ -c src/Input.cpp -o build/Input.o
 
-Main.o: Main.cpp Main.h
-	g++ -c Main.cpp -o build/Main.o
+Main.o: src/Main.cpp src/Main.h
+	g++ -c src/Main.cpp -o build/Main.o
 
-System.o: System.cpp System.h
-	g++ -c System.cpp -o build/System.o
+System.o: src/System.cpp src/System.h
+	g++ -c src/System.cpp -o build/System.o
 
-Tile.o: Tile.cpp Tile.h
-	g++ -c Tile.cpp -o build/Tile.o
+Tile.o: src/Tile.cpp src/Tile.h
+	g++ -c src/Tile.cpp -o build/Tile.o
 
-Tileset.o: Tileset.cpp Tileset.h
-	g++ -c Tileset.cpp -o build/Tileset.o
+Tileset.o: src/Tileset.cpp src/Tileset.h
+	g++ -c src/Tileset.cpp -o build/Tileset.o
 
-Timer.o: Timer.cpp Timer.h
-	g++ -c Timer.cpp -o build/Timer.o
+Timer.o: src/Timer.cpp src/Timer.h
+	g++ -c src/Timer.cpp -o build/Timer.o
 
 clean:
 	$(RM) build/Ultimata build/*.o
