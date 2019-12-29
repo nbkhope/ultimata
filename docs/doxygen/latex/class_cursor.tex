@@ -1,96 +1,89 @@
-\hypertarget{class_cursor}{}\section{Cursor Class Reference}
+\hypertarget{class_cursor}{}\doxysection{Cursor Class Reference}
 \label{class_cursor}\index{Cursor@{Cursor}}
 
 
 {\ttfamily \#include $<$Cursor.\+h$>$}
 
-\subsection*{Public Member Functions}
+\doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{class_cursor_ac6aea4b2b4a2a6161714177f946912f8}{}void {\bfseries update\+Tile\+Info} (\hyperlink{class_game_map}{Game\+Map} $\ast$game\+Map)\label{class_cursor_ac6aea4b2b4a2a6161714177f946912f8}
-
+\mbox{\Hypertarget{class_cursor_ac6aea4b2b4a2a6161714177f946912f8}\label{class_cursor_ac6aea4b2b4a2a6161714177f946912f8}} 
+void {\bfseries update\+Tile\+Info} (\mbox{\hyperlink{class_game_map}{Game\+Map}} $\ast$game\+Map)
 \item 
-int \hyperlink{class_cursor_a48601bc1add8c98130e4ab06dd64612e}{get\+Pos\+X} () const 
+int \mbox{\hyperlink{class_cursor_a247eb5bf4c7b89f813dcdbb13a234063}{get\+PosX}} () const
 \item 
-\hypertarget{class_cursor_a544d547307359cf5756695731c5b9cee}{}int {\bfseries get\+Pos\+Y} () const \label{class_cursor_a544d547307359cf5756695731c5b9cee}
-
+\mbox{\Hypertarget{class_cursor_aae58a55c2f8a2012b4d69d2463212e8e}\label{class_cursor_aae58a55c2f8a2012b4d69d2463212e8e}} 
+int {\bfseries get\+PosY} () const
 \item 
-int \hyperlink{class_cursor_a042c734fb8cbf2e25caf35fb464672ee}{get\+Width} () const 
+int \mbox{\hyperlink{class_cursor_ad2fab50b6ece8818dc3def7880c94652}{get\+Width}} () const
 \item 
-\hypertarget{class_cursor_aae2b2a4bf603eea6db6d251c2860a697}{}int {\bfseries get\+Height} () const \label{class_cursor_aae2b2a4bf603eea6db6d251c2860a697}
-
+\mbox{\Hypertarget{class_cursor_a286115749dc63e9bb8f6c3f1517a09bf}\label{class_cursor_a286115749dc63e9bb8f6c3f1517a09bf}} 
+int {\bfseries get\+Height} () const
 \item 
-int \hyperlink{class_cursor_a64f0af5ad4d61b7538eb8cf4cc9772db}{get\+Cursor\+Tile\+Index} () const 
+int \mbox{\hyperlink{class_cursor_a4274c8591cf59412f984fe6196da2665}{get\+Cursor\+Tile\+Index}} () const
 \item 
-int \hyperlink{class_cursor_a0ab2df178de6fe9004df0a544f2b362d}{get\+Cursor\+Tile\+Id} () const 
+int \mbox{\hyperlink{class_cursor_a546768d9e8c4e1a7baaf0cefc542d43e}{get\+Cursor\+Tile\+Id}} () const
 \item 
-void \hyperlink{class_cursor_a5183d34de8df425d11181d321161cad3}{set\+Pos\+X} (int x)
+void \mbox{\hyperlink{class_cursor_a5183d34de8df425d11181d321161cad3}{set\+PosX}} (int x)
 \item 
-\hypertarget{class_cursor_a96feb857d5a4bee5823d364f8d3f8781}{}void {\bfseries set\+Pos\+Y} (int y)\label{class_cursor_a96feb857d5a4bee5823d364f8d3f8781}
-
+\mbox{\Hypertarget{class_cursor_a96feb857d5a4bee5823d364f8d3f8781}\label{class_cursor_a96feb857d5a4bee5823d364f8d3f8781}} 
+void {\bfseries set\+PosY} (int y)
 \item 
-void \hyperlink{class_cursor_a792ae0f117bffa4ed7290240e12aa3f2}{set\+Cursor\+Tile\+Index} (int index)
+void \mbox{\hyperlink{class_cursor_a792ae0f117bffa4ed7290240e12aa3f2}{set\+Cursor\+Tile\+Index}} (int index)
 \item 
-void \hyperlink{class_cursor_a4e8701b1e4bf1670ffce00105f257e99}{set\+Cursor\+Tile\+Id} (int index)
+void \mbox{\hyperlink{class_cursor_a4e8701b1e4bf1670ffce00105f257e99}{set\+Cursor\+Tile\+Id}} (int index)
 \end{DoxyCompactItemize}
 
 
-\subsection{Detailed Description}
+\doxysubsection{Detailed Description}
 A cursor keeps track of where you are on the screen 
 
-\subsection{Member Function Documentation}
-\hypertarget{class_cursor_a0ab2df178de6fe9004df0a544f2b362d}{}\index{Cursor@{Cursor}!get\+Cursor\+Tile\+Id@{get\+Cursor\+Tile\+Id}}
-\index{get\+Cursor\+Tile\+Id@{get\+Cursor\+Tile\+Id}!Cursor@{Cursor}}
-\subsubsection[{get\+Cursor\+Tile\+Id() const }]{\setlength{\rightskip}{0pt plus 5cm}int Cursor\+::get\+Cursor\+Tile\+Id (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-) const}\label{class_cursor_a0ab2df178de6fe9004df0a544f2b362d}
-To get the id of the tile within the cursor area. The tile id is used to determine which tile in the tileset to use. \hypertarget{class_cursor_a64f0af5ad4d61b7538eb8cf4cc9772db}{}\index{Cursor@{Cursor}!get\+Cursor\+Tile\+Index@{get\+Cursor\+Tile\+Index}}
-\index{get\+Cursor\+Tile\+Index@{get\+Cursor\+Tile\+Index}!Cursor@{Cursor}}
-\subsubsection[{get\+Cursor\+Tile\+Index() const }]{\setlength{\rightskip}{0pt plus 5cm}int Cursor\+::get\+Cursor\+Tile\+Index (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-) const}\label{class_cursor_a64f0af5ad4d61b7538eb8cf4cc9772db}
-To get the position index of the tile within the cursor area. \hypertarget{class_cursor_a48601bc1add8c98130e4ab06dd64612e}{}\index{Cursor@{Cursor}!get\+Pos\+X@{get\+Pos\+X}}
-\index{get\+Pos\+X@{get\+Pos\+X}!Cursor@{Cursor}}
-\subsubsection[{get\+Pos\+X() const }]{\setlength{\rightskip}{0pt plus 5cm}int Cursor\+::get\+Pos\+X (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-) const}\label{class_cursor_a48601bc1add8c98130e4ab06dd64612e}
-To get the cursor position \hypertarget{class_cursor_a042c734fb8cbf2e25caf35fb464672ee}{}\index{Cursor@{Cursor}!get\+Width@{get\+Width}}
-\index{get\+Width@{get\+Width}!Cursor@{Cursor}}
-\subsubsection[{get\+Width() const }]{\setlength{\rightskip}{0pt plus 5cm}int Cursor\+::get\+Width (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-) const}\label{class_cursor_a042c734fb8cbf2e25caf35fb464672ee}
-To get the cursor area dimensions \hypertarget{class_cursor_a4e8701b1e4bf1670ffce00105f257e99}{}\index{Cursor@{Cursor}!set\+Cursor\+Tile\+Id@{set\+Cursor\+Tile\+Id}}
-\index{set\+Cursor\+Tile\+Id@{set\+Cursor\+Tile\+Id}!Cursor@{Cursor}}
-\subsubsection[{set\+Cursor\+Tile\+Id(int index)}]{\setlength{\rightskip}{0pt plus 5cm}void Cursor\+::set\+Cursor\+Tile\+Id (
-\begin{DoxyParamCaption}
-\item[{int}]{index}
-\end{DoxyParamCaption}
-)}\label{class_cursor_a4e8701b1e4bf1670ffce00105f257e99}
-Sets the cursor tile id value \hypertarget{class_cursor_a792ae0f117bffa4ed7290240e12aa3f2}{}\index{Cursor@{Cursor}!set\+Cursor\+Tile\+Index@{set\+Cursor\+Tile\+Index}}
-\index{set\+Cursor\+Tile\+Index@{set\+Cursor\+Tile\+Index}!Cursor@{Cursor}}
-\subsubsection[{set\+Cursor\+Tile\+Index(int index)}]{\setlength{\rightskip}{0pt plus 5cm}void Cursor\+::set\+Cursor\+Tile\+Index (
-\begin{DoxyParamCaption}
-\item[{int}]{index}
-\end{DoxyParamCaption}
-)}\label{class_cursor_a792ae0f117bffa4ed7290240e12aa3f2}
-Sets the cursor tile position index value. \hypertarget{class_cursor_a5183d34de8df425d11181d321161cad3}{}\index{Cursor@{Cursor}!set\+Pos\+X@{set\+Pos\+X}}
-\index{set\+Pos\+X@{set\+Pos\+X}!Cursor@{Cursor}}
-\subsubsection[{set\+Pos\+X(int x)}]{\setlength{\rightskip}{0pt plus 5cm}void Cursor\+::set\+Pos\+X (
-\begin{DoxyParamCaption}
-\item[{int}]{x}
-\end{DoxyParamCaption}
-)}\label{class_cursor_a5183d34de8df425d11181d321161cad3}
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_cursor_a546768d9e8c4e1a7baaf0cefc542d43e}\label{class_cursor_a546768d9e8c4e1a7baaf0cefc542d43e}} 
+\index{Cursor@{Cursor}!getCursorTileId@{getCursorTileId}}
+\index{getCursorTileId@{getCursorTileId}!Cursor@{Cursor}}
+\doxysubsubsection{\texorpdfstring{getCursorTileId()}{getCursorTileId()}}
+{\footnotesize\ttfamily int Cursor\+::get\+Cursor\+Tile\+Id (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+To get the id of the tile within the cursor area. The tile id is used to determine which tile in the tileset to use. \mbox{\Hypertarget{class_cursor_a4274c8591cf59412f984fe6196da2665}\label{class_cursor_a4274c8591cf59412f984fe6196da2665}} 
+\index{Cursor@{Cursor}!getCursorTileIndex@{getCursorTileIndex}}
+\index{getCursorTileIndex@{getCursorTileIndex}!Cursor@{Cursor}}
+\doxysubsubsection{\texorpdfstring{getCursorTileIndex()}{getCursorTileIndex()}}
+{\footnotesize\ttfamily int Cursor\+::get\+Cursor\+Tile\+Index (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+To get the position index of the tile within the cursor area. \mbox{\Hypertarget{class_cursor_a247eb5bf4c7b89f813dcdbb13a234063}\label{class_cursor_a247eb5bf4c7b89f813dcdbb13a234063}} 
+\index{Cursor@{Cursor}!getPosX@{getPosX}}
+\index{getPosX@{getPosX}!Cursor@{Cursor}}
+\doxysubsubsection{\texorpdfstring{getPosX()}{getPosX()}}
+{\footnotesize\ttfamily int Cursor\+::get\+PosX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+To get the cursor position \mbox{\Hypertarget{class_cursor_ad2fab50b6ece8818dc3def7880c94652}\label{class_cursor_ad2fab50b6ece8818dc3def7880c94652}} 
+\index{Cursor@{Cursor}!getWidth@{getWidth}}
+\index{getWidth@{getWidth}!Cursor@{Cursor}}
+\doxysubsubsection{\texorpdfstring{getWidth()}{getWidth()}}
+{\footnotesize\ttfamily int Cursor\+::get\+Width (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+To get the cursor area dimensions \mbox{\Hypertarget{class_cursor_a4e8701b1e4bf1670ffce00105f257e99}\label{class_cursor_a4e8701b1e4bf1670ffce00105f257e99}} 
+\index{Cursor@{Cursor}!setCursorTileId@{setCursorTileId}}
+\index{setCursorTileId@{setCursorTileId}!Cursor@{Cursor}}
+\doxysubsubsection{\texorpdfstring{setCursorTileId()}{setCursorTileId()}}
+{\footnotesize\ttfamily void Cursor\+::set\+Cursor\+Tile\+Id (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})}
+
+Sets the cursor tile id value \mbox{\Hypertarget{class_cursor_a792ae0f117bffa4ed7290240e12aa3f2}\label{class_cursor_a792ae0f117bffa4ed7290240e12aa3f2}} 
+\index{Cursor@{Cursor}!setCursorTileIndex@{setCursorTileIndex}}
+\index{setCursorTileIndex@{setCursorTileIndex}!Cursor@{Cursor}}
+\doxysubsubsection{\texorpdfstring{setCursorTileIndex()}{setCursorTileIndex()}}
+{\footnotesize\ttfamily void Cursor\+::set\+Cursor\+Tile\+Index (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})}
+
+Sets the cursor tile position index value. \mbox{\Hypertarget{class_cursor_a5183d34de8df425d11181d321161cad3}\label{class_cursor_a5183d34de8df425d11181d321161cad3}} 
+\index{Cursor@{Cursor}!setPosX@{setPosX}}
+\index{setPosX@{setPosX}!Cursor@{Cursor}}
+\doxysubsubsection{\texorpdfstring{setPosX()}{setPosX()}}
+{\footnotesize\ttfamily void Cursor\+::set\+PosX (\begin{DoxyParamCaption}\item[{int}]{x }\end{DoxyParamCaption})}
+
 Sets the cursor position 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/\hyperlink{_cursor_8h}{Cursor.\+h}\item 
-/\+Users/scientificwork/dev/\+Ultimata 2/\+Ultimata 2/Cursor.\+cpp\end{DoxyCompactItemize}
+\mbox{\hyperlink{_cursor_8h}{Cursor.\+h}}\item 
+Cursor.\+cpp\end{DoxyCompactItemize}

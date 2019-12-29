@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['creature',['Creature',['../class_creature.html',1,'']]],
-  ['cursor',['Cursor',['../class_cursor.html',1,'']]]
+  ['creature_82',['Creature',['../class_creature.html',1,'']]],
+  ['cursor_83',['Cursor',['../class_cursor.html',1,'']]]
 ];
