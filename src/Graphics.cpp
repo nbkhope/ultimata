@@ -14,8 +14,8 @@ LTexture* Graphics::getMyForeground()
 LTexture::LTexture()
 {
 	mTexture = NULL;
-	mWidth = NULL;
-	mHeight = NULL;
+	mWidth = 0;
+	mHeight = 0;
 }
 LTexture::~LTexture()
 {
@@ -451,8 +451,8 @@ SDL_Surface* Graphics::loadSurface(string filename)
 	else
 	{
 		SDL_Surface* surface = SDL_GetWindowSurface(window);
-		optimizedSurface = SDL_ConvertSurface(loadedSurface, surface->format, NULL);
-		
+		optimizedSurface = SDL_ConvertSurface(loadedSurface, surface->format, 0);
+
 		if (optimizedSurface == NULL)
 		{
 			cerr << "Surface could not be converted" << endl;
