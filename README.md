@@ -11,3 +11,12 @@ Ultimata is a project to build a simple two-dimensional role-playing game, drawi
 # Simple DirectMedia Layer
 
 For more information about SDL, visit http://www.libsdl.org
+
+## Git Diff with Old Mode 100755 / New Mode 100644
+
+The following command was set on this repository to eliminate the files from git status:
+
+```
+git config core.filemode false
+```
+
