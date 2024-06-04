@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Ultimata 2.xcscheme</key>
+		<key>Ultimata.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,7 +12,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>BEEE1C9B1B694AC200E04D0F</key>
+		<key>BEA6F9571B69471E000D936B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

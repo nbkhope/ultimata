@@ -7,25 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BE3A3ACA1B9509AC00280B0E /* Tileset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE3A3AC91B9509AC00280B0E /* Tileset.cpp */; };
-		BE54D0541B93E6FD0092C773 /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE54D0531B93E6FD0092C773 /* Input.cpp */; };
-		BE54D0571B93EA1C0092C773 /* GameMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE54D0561B93EA1C0092C773 /* GameMap.cpp */; };
-		BE54D05A1B93F34D0092C773 /* Tile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE54D0591B93F34D0092C773 /* Tile.cpp */; };
-		BE5787271B97B92800B24D12 /* Cursor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE5787261B97B92800B24D12 /* Cursor.cpp */; };
-		BE8577771B91728A00CFAD29 /* Graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE8577761B91728A00CFAD29 /* Graphics.cpp */; };
-		BE85777A1B9176C700CFAD29 /* Creature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE8577791B9176C700CFAD29 /* Creature.cpp */; };
-		BE94EF141B9F9DC2002E9D0C /* HelperFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE94EF131B9F9DC2002E9D0C /* HelperFunctions.cpp */; };
-		BED5B0371BB5FD220000188E /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BED5B0351BB5FD220000188E /* Timer.cpp */; settings = {ASSET_TAGS = (); }; };
-		BEEC501F1B8EBA65006E0704 /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEEC501D1B8EBA65006E0704 /* Main.cpp */; };
-		BEEC50221B8EC46E006E0704 /* System.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEEC50211B8EC46E006E0704 /* System.cpp */; };
-		BEEE1CA71B694ADE00E04D0F /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEE1CA61B694ADE00E04D0F /* SDL2.framework */; };
-		BEEE1CAF1B694E4E00E04D0F /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEE1CAC1B694E4E00E04D0F /* SDL2_image.framework */; };
-		BEEE1CB01B694E4E00E04D0F /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEE1CAD1B694E4E00E04D0F /* SDL2_mixer.framework */; };
-		BEEE1CB11B694E4E00E04D0F /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEE1CAE1B694E4E00E04D0F /* SDL2_ttf.framework */; };
+		BE93B9EA1B8D0D25007BDA01 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEA6F9641B694839000D936B /* SDL.framework */; };
+		BE93B9F01B8D0D8A007BDA01 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = BE93B9EF1B8D0D8A007BDA01 /* SDLMain.m */; };
+		BE93BA151B8D0F5F007BDA01 /* Creature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA041B8D0F5F007BDA01 /* Creature.cpp */; };
+		BE93BA161B8D0F5F007BDA01 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA051B8D0F5F007BDA01 /* FontManager.cpp */; };
+		BE93BA171B8D0F5F007BDA01 /* Graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA061B8D0F5F007BDA01 /* Graphics.cpp */; };
+		BE93BA181B8D0F5F007BDA01 /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA071B8D0F5F007BDA01 /* Input.cpp */; };
+		BE93BA191B8D0F5F007BDA01 /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA081B8D0F5F007BDA01 /* Item.cpp */; };
+		BE93BA1A1B8D0F5F007BDA01 /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA091B8D0F5F007BDA01 /* Main.cpp */; };
+		BE93BA1B1B8D0F5F007BDA01 /* Map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA0A1B8D0F5F007BDA01 /* Map.cpp */; };
+		BE93BA1C1B8D0F5F007BDA01 /* Message.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA0B1B8D0F5F007BDA01 /* Message.cpp */; };
+		BE93BA1D1B8D0F5F007BDA01 /* Monster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA0C1B8D0F5F007BDA01 /* Monster.cpp */; };
+		BE93BA1F1B8D0F5F007BDA01 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA0E1B8D0F5F007BDA01 /* Player.cpp */; };
+		BE93BA201B8D0F5F007BDA01 /* sdl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA0F1B8D0F5F007BDA01 /* sdl.cpp */; };
+		BE93BA211B8D0F5F007BDA01 /* Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA101B8D0F5F007BDA01 /* Sound.cpp */; };
+		BE93BA221B8D0F5F007BDA01 /* System.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA111B8D0F5F007BDA01 /* System.cpp */; };
+		BE93BA231B8D0F5F007BDA01 /* Tile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA121B8D0F5F007BDA01 /* Tile.cpp */; };
+		BE93BA241B8D0F5F007BDA01 /* Tileset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA131B8D0F5F007BDA01 /* Tileset.cpp */; };
+		BE93BA251B8D0F5F007BDA01 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE93BA141B8D0F5F007BDA01 /* Timer.cpp */; };
+		BE93BA2A1B8D0FC8007BDA01 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE93BA271B8D0FC8007BDA01 /* SDL_image.framework */; };
+		BE93BA2B1B8D0FC8007BDA01 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE93BA281B8D0FC8007BDA01 /* SDL_mixer.framework */; };
+		BE93BA2C1B8D0FC8007BDA01 /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE93BA291B8D0FC8007BDA01 /* SDL_ttf.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		BEEE1C9A1B694AC200E04D0F /* CopyFiles */ = {
+		BEA6F9561B69471E000D936B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -37,175 +43,213 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BE3A3AC81B95081400280B0E /* Tileset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tileset.h; sourceTree = "<group>"; };
-		BE3A3AC91B9509AC00280B0E /* Tileset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tileset.cpp; sourceTree = "<group>"; };
-		BE54D0521B93E6920092C773 /* Input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Input.h; sourceTree = "<group>"; };
-		BE54D0531B93E6FD0092C773 /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Input.cpp; sourceTree = "<group>"; };
-		BE54D0551B93E9A20092C773 /* GameMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameMap.h; sourceTree = "<group>"; };
-		BE54D0561B93EA1C0092C773 /* GameMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameMap.cpp; sourceTree = "<group>"; };
-		BE54D0581B93F3090092C773 /* Tile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tile.h; sourceTree = "<group>"; };
-		BE54D0591B93F34D0092C773 /* Tile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tile.cpp; sourceTree = "<group>"; };
-		BE5787251B97B86C00B24D12 /* Cursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cursor.h; sourceTree = "<group>"; };
-		BE5787261B97B92800B24D12 /* Cursor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cursor.cpp; sourceTree = "<group>"; };
-		BE635FD81B90036700151203 /* Graphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Graphics.h; sourceTree = "<group>"; };
-		BE8577761B91728A00CFAD29 /* Graphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Graphics.cpp; sourceTree = "<group>"; };
-		BE8577781B91765200CFAD29 /* Creature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Creature.h; sourceTree = "<group>"; };
-		BE8577791B9176C700CFAD29 /* Creature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Creature.cpp; sourceTree = "<group>"; };
-		BE94EF131B9F9DC2002E9D0C /* HelperFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HelperFunctions.cpp; sourceTree = "<group>"; };
-		BE94EF151B9F9DCF002E9D0C /* HelperFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelperFunctions.h; sourceTree = "<group>"; };
-		BED5B0351BB5FD220000188E /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
-		BED5B0361BB5FD220000188E /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
-		BEEC501D1B8EBA65006E0704 /* Main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Main.cpp; sourceTree = "<group>"; };
-		BEEC501E1B8EBA65006E0704 /* Main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Main.h; sourceTree = "<group>"; };
-		BEEC50201B8EBB53006E0704 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		BEEC50211B8EC46E006E0704 /* System.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = System.cpp; sourceTree = "<group>"; };
-		BEEC50231B8EC47B006E0704 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
-		BEEE1C9C1B694AC200E04D0F /* Ultimata 2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Ultimata 2"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BEEE1CA61B694ADE00E04D0F /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
-		BEEE1CAC1B694E4E00E04D0F /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
-		BEEE1CAD1B694E4E00E04D0F /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../../../../Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
-		BEEE1CAE1B694E4E00E04D0F /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = ../../../../Library/Frameworks/SDL2_ttf.framework; sourceTree = "<group>"; };
+		BE93B9EE1B8D0D8A007BDA01 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
+		BE93B9EF1B8D0D8A007BDA01 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
+		BE93B9F11B8D0F5F007BDA01 /* Battle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Battle.h; sourceTree = "<group>"; };
+		BE93B9F21B8D0F5F007BDA01 /* Chat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chat.h; sourceTree = "<group>"; };
+		BE93B9F31B8D0F5F007BDA01 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		BE93B9F41B8D0F5F007BDA01 /* Creature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Creature.h; sourceTree = "<group>"; };
+		BE93B9F51B8D0F5F007BDA01 /* Dialogue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dialogue.h; sourceTree = "<group>"; };
+		BE93B9F61B8D0F5F007BDA01 /* FontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontManager.h; sourceTree = "<group>"; };
+		BE93B9F71B8D0F5F007BDA01 /* Graphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Graphics.h; sourceTree = "<group>"; };
+		BE93B9F81B8D0F5F007BDA01 /* Input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Input.h; sourceTree = "<group>"; };
+		BE93B9F91B8D0F5F007BDA01 /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
+		BE93B9FA1B8D0F5F007BDA01 /* Main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Main.h; sourceTree = "<group>"; };
+		BE93B9FB1B8D0F5F007BDA01 /* Map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Map.h; sourceTree = "<group>"; };
+		BE93B9FC1B8D0F5F007BDA01 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		BE93B9FD1B8D0F5F007BDA01 /* Monster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Monster.h; sourceTree = "<group>"; };
+		BE93B9FE1B8D0F5F007BDA01 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		BE93B9FF1B8D0F5F007BDA01 /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
+		BE93BA001B8D0F5F007BDA01 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
+		BE93BA011B8D0F5F007BDA01 /* Tile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tile.h; sourceTree = "<group>"; };
+		BE93BA021B8D0F5F007BDA01 /* Tileset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tileset.h; sourceTree = "<group>"; };
+		BE93BA031B8D0F5F007BDA01 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
+		BE93BA041B8D0F5F007BDA01 /* Creature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Creature.cpp; sourceTree = "<group>"; };
+		BE93BA051B8D0F5F007BDA01 /* FontManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FontManager.cpp; sourceTree = "<group>"; };
+		BE93BA061B8D0F5F007BDA01 /* Graphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Graphics.cpp; sourceTree = "<group>"; };
+		BE93BA071B8D0F5F007BDA01 /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Input.cpp; sourceTree = "<group>"; };
+		BE93BA081B8D0F5F007BDA01 /* Item.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Item.cpp; sourceTree = "<group>"; };
+		BE93BA091B8D0F5F007BDA01 /* Main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Main.cpp; sourceTree = "<group>"; };
+		BE93BA0A1B8D0F5F007BDA01 /* Map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
+		BE93BA0B1B8D0F5F007BDA01 /* Message.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Message.cpp; sourceTree = "<group>"; };
+		BE93BA0C1B8D0F5F007BDA01 /* Monster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Monster.cpp; sourceTree = "<group>"; };
+		BE93BA0E1B8D0F5F007BDA01 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
+		BE93BA0F1B8D0F5F007BDA01 /* sdl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sdl.cpp; sourceTree = "<group>"; };
+		BE93BA101B8D0F5F007BDA01 /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sound.cpp; sourceTree = "<group>"; };
+		BE93BA111B8D0F5F007BDA01 /* System.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = System.cpp; sourceTree = "<group>"; };
+		BE93BA121B8D0F5F007BDA01 /* Tile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tile.cpp; sourceTree = "<group>"; };
+		BE93BA131B8D0F5F007BDA01 /* Tileset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tileset.cpp; sourceTree = "<group>"; };
+		BE93BA141B8D0F5F007BDA01 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
+		BE93BA261B8D0F97007BDA01 /* sdl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sdl.h; sourceTree = "<group>"; };
+		BE93BA271B8D0FC8007BDA01 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = ../../../../Library/Frameworks/SDL_image.framework; sourceTree = "<group>"; };
+		BE93BA281B8D0FC8007BDA01 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../../Library/Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
+		BE93BA291B8D0FC8007BDA01 /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = ../../../../Library/Frameworks/SDL_ttf.framework; sourceTree = "<group>"; };
+		BEA6F9581B69471E000D936B /* Ultimata */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Ultimata; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEA6F9621B69481C000D936B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		BEA6F9641B694839000D936B /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../../Library/Frameworks/SDL.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		BEEE1C991B694AC200E04D0F /* Frameworks */ = {
+		BEA6F9551B69471E000D936B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEEE1CAF1B694E4E00E04D0F /* SDL2_image.framework in Frameworks */,
-				BEEE1CB01B694E4E00E04D0F /* SDL2_mixer.framework in Frameworks */,
-				BEEE1CB11B694E4E00E04D0F /* SDL2_ttf.framework in Frameworks */,
-				BEEE1CA71B694ADE00E04D0F /* SDL2.framework in Frameworks */,
+				BE93BA2A1B8D0FC8007BDA01 /* SDL_image.framework in Frameworks */,
+				BE93BA2B1B8D0FC8007BDA01 /* SDL_mixer.framework in Frameworks */,
+				BE93BA2C1B8D0FC8007BDA01 /* SDL_ttf.framework in Frameworks */,
+				BE93B9EA1B8D0D25007BDA01 /* SDL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BEEE1C931B694AC200E04D0F = {
+		BEA6F94F1B69471E000D936B = {
 			isa = PBXGroup;
 			children = (
-				BEEE1CAC1B694E4E00E04D0F /* SDL2_image.framework */,
-				BEEE1CAD1B694E4E00E04D0F /* SDL2_mixer.framework */,
-				BEEE1CAE1B694E4E00E04D0F /* SDL2_ttf.framework */,
-				BEEE1CA61B694ADE00E04D0F /* SDL2.framework */,
-				BEEE1C9E1B694AC200E04D0F /* Ultimata 2 */,
-				BEEE1C9D1B694AC200E04D0F /* Products */,
+				BE93BA271B8D0FC8007BDA01 /* SDL_image.framework */,
+				BE93BA281B8D0FC8007BDA01 /* SDL_mixer.framework */,
+				BE93BA291B8D0FC8007BDA01 /* SDL_ttf.framework */,
+				BEA6F9641B694839000D936B /* SDL.framework */,
+				BEA6F9621B69481C000D936B /* Cocoa.framework */,
+				BEA6F95A1B69471E000D936B /* Ultimata */,
+				BEA6F9591B69471E000D936B /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		BEEE1C9D1B694AC200E04D0F /* Products */ = {
+		BEA6F9591B69471E000D936B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BEEE1C9C1B694AC200E04D0F /* Ultimata 2 */,
+				BEA6F9581B69471E000D936B /* Ultimata */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BEEE1C9E1B694AC200E04D0F /* Ultimata 2 */ = {
+		BEA6F95A1B69471E000D936B /* Ultimata */ = {
 			isa = PBXGroup;
 			children = (
-				BED5B0351BB5FD220000188E /* Timer.cpp */,
-				BED5B0361BB5FD220000188E /* Timer.h */,
-				BEEC50201B8EBB53006E0704 /* Constants.h */,
-				BE8577791B9176C700CFAD29 /* Creature.cpp */,
-				BE8577781B91765200CFAD29 /* Creature.h */,
-				BE5787261B97B92800B24D12 /* Cursor.cpp */,
-				BE5787251B97B86C00B24D12 /* Cursor.h */,
-				BE54D0561B93EA1C0092C773 /* GameMap.cpp */,
-				BE54D0551B93E9A20092C773 /* GameMap.h */,
-				BE8577761B91728A00CFAD29 /* Graphics.cpp */,
-				BE635FD81B90036700151203 /* Graphics.h */,
-				BE94EF131B9F9DC2002E9D0C /* HelperFunctions.cpp */,
-				BE94EF151B9F9DCF002E9D0C /* HelperFunctions.h */,
-				BE54D0531B93E6FD0092C773 /* Input.cpp */,
-				BE54D0521B93E6920092C773 /* Input.h */,
-				BEEC501D1B8EBA65006E0704 /* Main.cpp */,
-				BEEC501E1B8EBA65006E0704 /* Main.h */,
-				BEEC50211B8EC46E006E0704 /* System.cpp */,
-				BEEC50231B8EC47B006E0704 /* System.h */,
-				BE54D0591B93F34D0092C773 /* Tile.cpp */,
-				BE54D0581B93F3090092C773 /* Tile.h */,
-				BE3A3AC91B9509AC00280B0E /* Tileset.cpp */,
-				BE3A3AC81B95081400280B0E /* Tileset.h */,
+				BE93BA261B8D0F97007BDA01 /* sdl.h */,
+				BE93B9F11B8D0F5F007BDA01 /* Battle.h */,
+				BE93B9F21B8D0F5F007BDA01 /* Chat.h */,
+				BE93B9F31B8D0F5F007BDA01 /* constants.h */,
+				BE93B9F41B8D0F5F007BDA01 /* Creature.h */,
+				BE93B9F51B8D0F5F007BDA01 /* Dialogue.h */,
+				BE93B9F61B8D0F5F007BDA01 /* FontManager.h */,
+				BE93B9F71B8D0F5F007BDA01 /* Graphics.h */,
+				BE93B9F81B8D0F5F007BDA01 /* Input.h */,
+				BE93B9F91B8D0F5F007BDA01 /* Item.h */,
+				BE93B9FA1B8D0F5F007BDA01 /* Main.h */,
+				BE93B9FB1B8D0F5F007BDA01 /* Map.h */,
+				BE93B9FC1B8D0F5F007BDA01 /* Message.h */,
+				BE93B9FD1B8D0F5F007BDA01 /* Monster.h */,
+				BE93B9FE1B8D0F5F007BDA01 /* Player.h */,
+				BE93B9FF1B8D0F5F007BDA01 /* Sound.h */,
+				BE93BA001B8D0F5F007BDA01 /* System.h */,
+				BE93BA011B8D0F5F007BDA01 /* Tile.h */,
+				BE93BA021B8D0F5F007BDA01 /* Tileset.h */,
+				BE93BA031B8D0F5F007BDA01 /* Timer.h */,
+				BE93BA041B8D0F5F007BDA01 /* Creature.cpp */,
+				BE93BA051B8D0F5F007BDA01 /* FontManager.cpp */,
+				BE93BA061B8D0F5F007BDA01 /* Graphics.cpp */,
+				BE93BA071B8D0F5F007BDA01 /* Input.cpp */,
+				BE93BA081B8D0F5F007BDA01 /* Item.cpp */,
+				BE93BA091B8D0F5F007BDA01 /* Main.cpp */,
+				BE93BA0A1B8D0F5F007BDA01 /* Map.cpp */,
+				BE93BA0B1B8D0F5F007BDA01 /* Message.cpp */,
+				BE93BA0C1B8D0F5F007BDA01 /* Monster.cpp */,
+				BE93BA0E1B8D0F5F007BDA01 /* Player.cpp */,
+				BE93BA0F1B8D0F5F007BDA01 /* sdl.cpp */,
+				BE93BA101B8D0F5F007BDA01 /* Sound.cpp */,
+				BE93BA111B8D0F5F007BDA01 /* System.cpp */,
+				BE93BA121B8D0F5F007BDA01 /* Tile.cpp */,
+				BE93BA131B8D0F5F007BDA01 /* Tileset.cpp */,
+				BE93BA141B8D0F5F007BDA01 /* Timer.cpp */,
+				BE93B9EE1B8D0D8A007BDA01 /* SDLMain.h */,
+				BE93B9EF1B8D0D8A007BDA01 /* SDLMain.m */,
 			);
-			path = "Ultimata 2";
+			path = Ultimata;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BEEE1C9B1B694AC200E04D0F /* Ultimata 2 */ = {
+		BEA6F9571B69471E000D936B /* Ultimata */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BEEE1CA31B694AC300E04D0F /* Build configuration list for PBXNativeTarget "Ultimata 2" */;
+			buildConfigurationList = BEA6F95F1B69471E000D936B /* Build configuration list for PBXNativeTarget "Ultimata" */;
 			buildPhases = (
-				BEEE1C981B694AC200E04D0F /* Sources */,
-				BEEE1C991B694AC200E04D0F /* Frameworks */,
-				BEEE1C9A1B694AC200E04D0F /* CopyFiles */,
+				BEA6F9541B69471E000D936B /* Sources */,
+				BEA6F9551B69471E000D936B /* Frameworks */,
+				BEA6F9561B69471E000D936B /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "Ultimata 2";
-			productName = "Ultimata 2";
-			productReference = BEEE1C9C1B694AC200E04D0F /* Ultimata 2 */;
+			name = Ultimata;
+			productName = Ultimata;
+			productReference = BEA6F9581B69471E000D936B /* Ultimata */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		BEEE1C941B694AC200E04D0F /* Project object */ = {
+		BEA6F9501B69471E000D936B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = butsu_dev;
 				TargetAttributes = {
-					BEEE1C9B1B694AC200E04D0F = {
+					BEA6F9571B69471E000D936B = {
 						CreatedOnToolsVersion = 6.4;
 					};
 				};
 			};
-			buildConfigurationList = BEEE1C971B694AC200E04D0F /* Build configuration list for PBXProject "Ultimata 2" */;
+			buildConfigurationList = BEA6F9531B69471E000D936B /* Build configuration list for PBXProject "Ultimata" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = BEEE1C931B694AC200E04D0F;
-			productRefGroup = BEEE1C9D1B694AC200E04D0F /* Products */;
+			mainGroup = BEA6F94F1B69471E000D936B;
+			productRefGroup = BEA6F9591B69471E000D936B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BEEE1C9B1B694AC200E04D0F /* Ultimata 2 */,
+				BEA6F9571B69471E000D936B /* Ultimata */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		BEEE1C981B694AC200E04D0F /* Sources */ = {
+		BEA6F9541B69471E000D936B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE85777A1B9176C700CFAD29 /* Creature.cpp in Sources */,
-				BE94EF141B9F9DC2002E9D0C /* HelperFunctions.cpp in Sources */,
-				BEEC50221B8EC46E006E0704 /* System.cpp in Sources */,
-				BE8577771B91728A00CFAD29 /* Graphics.cpp in Sources */,
-				BEEC501F1B8EBA65006E0704 /* Main.cpp in Sources */,
-				BED5B0371BB5FD220000188E /* Timer.cpp in Sources */,
-				BE5787271B97B92800B24D12 /* Cursor.cpp in Sources */,
-				BE54D0571B93EA1C0092C773 /* GameMap.cpp in Sources */,
-				BE3A3ACA1B9509AC00280B0E /* Tileset.cpp in Sources */,
-				BE54D0541B93E6FD0092C773 /* Input.cpp in Sources */,
-				BE54D05A1B93F34D0092C773 /* Tile.cpp in Sources */,
+				BE93BA221B8D0F5F007BDA01 /* System.cpp in Sources */,
+				BE93BA191B8D0F5F007BDA01 /* Item.cpp in Sources */,
+				BE93BA1A1B8D0F5F007BDA01 /* Main.cpp in Sources */,
+				BE93BA1D1B8D0F5F007BDA01 /* Monster.cpp in Sources */,
+				BE93BA151B8D0F5F007BDA01 /* Creature.cpp in Sources */,
+				BE93B9F01B8D0D8A007BDA01 /* SDLMain.m in Sources */,
+				BE93BA171B8D0F5F007BDA01 /* Graphics.cpp in Sources */,
+				BE93BA231B8D0F5F007BDA01 /* Tile.cpp in Sources */,
+				BE93BA241B8D0F5F007BDA01 /* Tileset.cpp in Sources */,
+				BE93BA201B8D0F5F007BDA01 /* sdl.cpp in Sources */,
+				BE93BA161B8D0F5F007BDA01 /* FontManager.cpp in Sources */,
+				BE93BA1F1B8D0F5F007BDA01 /* Player.cpp in Sources */,
+				BE93BA1B1B8D0F5F007BDA01 /* Map.cpp in Sources */,
+				BE93BA211B8D0F5F007BDA01 /* Sound.cpp in Sources */,
+				BE93BA251B8D0F5F007BDA01 /* Timer.cpp in Sources */,
+				BE93BA181B8D0F5F007BDA01 /* Input.cpp in Sources */,
+				BE93BA1C1B8D0F5F007BDA01 /* Message.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		BEEE1CA11B694AC300E04D0F /* Debug */ = {
+		BEA6F95D1B69471E000D936B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -225,7 +269,6 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -248,7 +291,7 @@
 			};
 			name = Debug;
 		};
-		BEEE1CA21B694AC300E04D0F /* Release */ = {
+		BEA6F95E1B69471E000D936B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -283,24 +326,24 @@
 			};
 			name = Release;
 		};
-		BEEE1CA41B694AC300E04D0F /* Debug */ = {
+		BEA6F9601B69471E000D936B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks",
-				);
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		BEEE1CA51B694AC300E04D0F /* Release */ = {
+		BEA6F9611B69471E000D936B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LOCAL_LIBRARY_DIR)/Frameworks",
-				);
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -308,25 +351,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BEEE1C971B694AC200E04D0F /* Build configuration list for PBXProject "Ultimata 2" */ = {
+		BEA6F9531B69471E000D936B /* Build configuration list for PBXProject "Ultimata" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BEEE1CA11B694AC300E04D0F /* Debug */,
-				BEEE1CA21B694AC300E04D0F /* Release */,
+				BEA6F95D1B69471E000D936B /* Debug */,
+				BEA6F95E1B69471E000D936B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BEEE1CA31B694AC300E04D0F /* Build configuration list for PBXNativeTarget "Ultimata 2" */ = {
+		BEA6F95F1B69471E000D936B /* Build configuration list for PBXNativeTarget "Ultimata" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BEEE1CA41B694AC300E04D0F /* Debug */,
-				BEEE1CA51B694AC300E04D0F /* Release */,
+				BEA6F9601B69471E000D936B /* Debug */,
+				BEA6F9611B69471E000D936B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = BEEE1C941B694AC200E04D0F /* Project object */;
+	rootObject = BEA6F9501B69471E000D936B /* Project object */;
 }

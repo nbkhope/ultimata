@@ -9,29 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Ultimata 2/Graphics.h"
-            timestampString = "463730468.744506"
+            filePath = "Ultimata/Map.h"
+            timestampString = "462318221.731899"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
-            landmarkName = "class Graphics"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Ultimata 2/Creature.h"
-            timestampString = "466223537.132517"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
-            landmarkName = "class Creature"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "class Map"
             landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
