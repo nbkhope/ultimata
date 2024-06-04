@@ -21,17 +21,17 @@ class LTexture
 public:
 	LTexture();
 	~LTexture();
-	
+
 	bool loadFromFile(string filename, SDL_Renderer* gRenderer);
-	
+
 	void free();
 	void render(int x, int y, SDL_Renderer* gRenderer, SDL_Rect* clip = NULL);
-	
+
 	void setColor(Uint8 r, Uint8 g, Uint8 b);
 	void setBlendMode(SDL_BlendMode blending);
 	void setAlpha(Uint8 alpha);
 
-	
+
 	int getWidth() const;
 	int getHeight() const;
 private:
@@ -41,7 +41,7 @@ private:
 };
 
 /**
- * The Graphics class deals with everything related 
+ * The Graphics class deals with everything related
  * to loading, rendering, and displaying images.
  */
 class Graphics
@@ -52,22 +52,22 @@ public:
 	 */
 	Graphics();
 	~Graphics();
-	
+
 	/**
 	 * Sets up the game window.
 	 */
 	void setUpWindow();
-	
+
 	/**
 	 * Loads the necessary graphical resources such as images, etc.
 	 */
 	bool loadMedia();
-	
+
 	void displayImage();
 	void render(GameMap* gameMap, Creature* creature, Input* input);
 	//void testRender(Creature* creature, Input* input);
 	void testRender(Creature* creature, Input* input);
-	
+
 	/**
 	 * Loads an image into an SDL_Surface, given path
 	 *
@@ -82,7 +82,7 @@ public:
 	 * @return	a pointer to the loaded surface
 	 */
 	SDL_Texture* loadTexture(string filename);
-	
+
 	/**
 	 * Renders fixed-id tiles using primitive shape rendering functions
 	 */
@@ -108,29 +108,29 @@ public:
 	void drawCursor(Cursor* c);
 	void setViewport();
 	void drawColorKeyExample();
-	
+
 	/**
 	 * @return the renderer
 	 */
 	SDL_Renderer* getRenderer();
-	
+
 	// Alpha blending <~test~>
 	LTexture* getMyBackground();
 	LTexture* getMyForeground();
-	
+
 private:
 	SDL_Surface* screenSurface;
 	/**
 	 * The game window
 	 */
 	SDL_Window* window;
-	
+
 	/**
 	 * A renderer is necessary if working with textures
 	 */
 	SDL_Renderer* gRenderer;
 	SDL_Texture* gTexture;
-	
+
 	SDL_Surface* image;
 	SDL_Surface* gameIcon;
 	SDL_Surface* gameLogo;
@@ -139,16 +139,16 @@ private:
 	 * An image with all the tiles necessary to draw a map.
 	 */
 	LTexture tileSheet;
-	
+
 	// Alpha blending <~test~>
 	LTexture myBackground;
 	LTexture myForeground;
-	
+
 	// Image Loading Different Types <~test~>
 	SDL_Texture* image_jpg;
 	SDL_Texture* image_tiff;
 	SDL_Texture* image_bmp;
-	
+
 	LTexture playerCharset;
 };
 

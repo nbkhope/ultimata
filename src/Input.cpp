@@ -6,13 +6,13 @@ Input::Input()
 	alpha = 255;
 	for (int i = 0; i < 3; i++)
 		color[i] = 255;
-	
+
 	// Change tile <~test~>
 	testTileId = 17;
-	
+
 	// Image Loading Different Types <~test~>
 	testImageLoad = 0;
-	
+
 	// Set initial cursor position
 	cursor.setPosX(0);
 	cursor.setPosY(0);
@@ -22,27 +22,27 @@ Input::Input()
 
 Input::~Input()
 {
-	
+
 }
 
 /**
  * Handles input for a non-scrolling, fixed-screen map.
  */
-bool Input::get(GameMap* gameMap, Creature *c)
+bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
 {
 	int mouse_x, mouse_y;
 	//int cursorTileIndex;
 	//int cursorTileId;
 	//int tileId;
 	bool quit = false; // Using this to send quit signal back, for now . . . at least.
-	
+
 //	cursorTileIndex = cursor.getPosX() / TILESIZE + (cursor.getPosY() / TILESIZE) * gameMap->getTilesAcross();
 //	cursorTileId = gameMap->getTile(cursorTileIndex)->getId();
-	
+
 	// For a complete list of keyboard enum, check:
 	// http://wiki.libsdl.org/SDL_Keycode?highlight=%28\bCategoryEnum\b%29|%28CategoryKeyboard%29
 	// https://www.libsdl.org/release/SDL-1.2.15/docs/html/sdlkey.html
-	
+
 	// Handle events on queue
 	// Keeps doing while there are still events left
 	while (SDL_PollEvent(&e))
@@ -50,18 +50,33 @@ bool Input::get(GameMap* gameMap, Creature *c)
 		/**
 		 * Note: checkPlayerMovement() checks e.type for SDL_KEYDOWN and SDL_KEYUP
 		 */
-		checkPlayerMovement(gameMap, c);
+		checkPlayerMovement(gameMap, c, socket);
 		// issue here ... ( don't want to do switch check again)
-		
+
 		if (e.type == SDL_QUIT)
 		{
 			cout << "SDL_QUIT event!" << endl;
 			quit = true;
+
+			// position changed
+			//todo: throttling. this is called many times due to speed...
+			char message[255] = "disconnect";
+			int len = strlen(message);
+			// int len = sprintf(message, "player position is (%d, %d)", c->getPosX(), c->getPosY());
+			std::cout << message << std::endl;
+			//note terminating null (+1)...
+			int bytesSent = SDLNet_TCP_Send(socket, message, len);
+			if (bytesSent < len)
+			{
+				//todo: use error lib
+				std::cerr << SDLNet_GetError() << std::endl;
+			}
+			//todo: error sprintf
 		}
 		else if (e.type == SDL_KEYDOWN)
 		{
 			//cout << "SDL_KEYDOWN event!" << endl;
-			
+
 			switch (e.key.keysym.sym)
 			{
 				case SDLK_q: // quit
@@ -75,7 +90,7 @@ bool Input::get(GameMap* gameMap, Creature *c)
 						testTileId = 0;
 					cout << "testTileId = " << testTileId << endl;
 					break;
-					
+
 				case SDLK_y:
 					if (testTileId < 256)
 						testTileId += 16;
@@ -106,7 +121,7 @@ bool Input::get(GameMap* gameMap, Creature *c)
 						gameMap->getTile(cursor.getCursorTileIndex())->incrementId();
 					}
 					break;
-					
+
 				/**
 				 * Deals with timer
 				 */
@@ -129,26 +144,26 @@ bool Input::get(GameMap* gameMap, Creature *c)
 					// do nothing
 					break;
 			}
-			
+
 		}
 		else if (e.type == SDL_MOUSEBUTTONDOWN) // buggy
 		{
 			//cout << "SDL_MOUSEBUTTONDOWN event!" << endl;
-			
+
 			SDL_GetMouseState(&mouse_x, &mouse_y);
 			//switch (e.button.button == SDL_BUTTON_LEFT)
 			//{
 				/*	c->setPosX(mouse_x - mouse_x % TILESIZE);
 					c->setPosY(mouse_y - mouse_y % TILESIZE); */
 			//}
-			
+
 			// Adjust cursor region
 			cursor.setPosX(mouse_x - mouse_x % TILESIZE);
 			cursor.setPosY(mouse_y - mouse_y % TILESIZE);
 			cursor.updateTileInfo(gameMap);
 		}
 	}
-	
+
 	return quit;
 }
 
@@ -161,14 +176,14 @@ bool Input::testGet(GameMap* gameMap, Creature *c)
 	int pos_x, pos_y;
 	int mouse_x, mouse_y;
 	bool quit = false; // Using this to send quit signal back, for now . . . at least.
-	
+
 	pos_x = c->getPosX();
 	pos_y = c->getPosY();
-	
+
 	// For a complete list of keyboard enum, check:
 	// http://wiki.libsdl.org/SDL_Keycode?highlight=%28\bCategoryEnum\b%29|%28CategoryKeyboard%29
 	// https://www.libsdl.org/release/SDL-1.2.15/docs/html/sdlkey.html
-	
+
 	// Handle events on queue
 	// Keeps doing while there are still events left
 	while (SDL_PollEvent(&e) != 0)
@@ -181,13 +196,13 @@ bool Input::testGet(GameMap* gameMap, Creature *c)
 		else if (e.type == SDL_KEYDOWN)
 		{
 			cout << "SDL_KEYDOWN event!" << endl;
-			
+
 			switch (e.key.keysym.sym)
 			{
 				case SDLK_q: // quit
 					quit = true;
 					break;
-					
+
 				// Alpha blending <~test~>
 				case SDLK_o: // increase alpha
 					if (alpha + 32 < 255)
@@ -235,7 +250,7 @@ bool Input::testGet(GameMap* gameMap, Creature *c)
 		else if (e.type == SDL_MOUSEBUTTONDOWN) // buggy
 		{
 			cout << "SDL_MOUSEBUTTONDOWN event!" << endl;
-			
+
 			SDL_GetMouseState( &mouse_x, &mouse_y );
 			//switch (e.button.button == SDL_BUTTON_LEFT)
 			//{
@@ -244,7 +259,7 @@ bool Input::testGet(GameMap* gameMap, Creature *c)
 			//}
 		}
 	}
-	
+
 	return quit;
 }
 
@@ -298,18 +313,18 @@ Timer* Input::getTimer()
  * @param	gameMap	the game map object
  * @param c	the creature object
  */
-void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
+void Input::checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket)
 {
 	int pos_x, pos_y;
 	int xspeed, yspeed;
 	int direction;
-	
+
 	pos_x = c->getPosX();
 	pos_y = c->getPosY();
 	xspeed = c->getSpeedX();
 	yspeed = c->getSpeedY();
 	direction = c->getDirection();
-	
+
 	if (e.type == SDL_KEYDOWN)
 	{
 		// Which key was pressed down?
@@ -322,7 +337,7 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
 				 * still go up to the first row of tiles, where y = 0.
 				 *
 				 * The player image position is determine from the top left. If a player is tall,
-				 * then he will still be able to move to the first horizontal row of tiles, as 
+				 * then he will still be able to move to the first horizontal row of tiles, as
 				 * shown below by allowing the y index to go negative. Only the lower body of the player
 				 * image will be displayed. Question: when graphics renders the player image,
 				 * would the negative position be an issue? (out of bounds)
@@ -339,7 +354,7 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
 			case SDLK_DOWN:
 				/**
 				 * Note: if the player image is higher than a tile, you have to make sure he canno
-				 * go down beyond the map boundaries in the last horizontal row of tiles, 
+				 * go down beyond the map boundaries in the last horizontal row of tiles,
 				 * where y = MAP_HEIGHT - TILESIZE.
 				 */
 				if (pos_y != gameMap->getHeight() - c->getHeight()) // if not trying to go out of bounds
@@ -368,7 +383,7 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
 				else
 					cout << "SDLK_RIGHT: Attempt to go out of bounds!!" << endl;
 				break;
-				
+
 	#else // Free Movement
 			case SDLK_UP:
 				if (yspeed == 0)
@@ -427,28 +442,48 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c)
 				break;
 		}
 	}
-	
+
 	if ((pos_x == 0 && xspeed < 0) || (pos_x == gameMap->getWidth() - c->getWidth() && xspeed > 0))
 		// don't allow him to go out of bounds
 		xspeed = 0;
 	else if (xspeed != 0)
 		c->shiftPosX(xspeed);
-	
+
 	if ((pos_y == TILESIZE - c->getHeight() && yspeed < 0) || (pos_y == gameMap->getHeight() - c->getHeight() && yspeed > 0))
 		yspeed = 0;
 	else if (yspeed != 0)
 		c->shiftPosY(yspeed);
-	
+
 	// Finally updates player speed
 	c->setSpeed(xspeed, yspeed);
-	
+
 	#endif /** Type of Movement **/
-	
+
 	/**
 	 * Handles animation
 	 */
 	if (xspeed != 0 || yspeed != 0)
 		c->shiftStep();
+
+	//networking
+	//networking stuff
+	if (pos_x != c->getPosX() || pos_y != c->getPosY())
+	{
+		// position changed
+		//todo: throttling. this is called many times due to speed...
+		char message[255];
+		int len = sprintf(message, "player position is (%d, %d)", c->getPosX(), c->getPosY());
+		std::cout << message << std::endl;
+		//note terminating null (+1)...
+		int bytesSent = SDLNet_TCP_Send(socket, message, len + 1);
+		if (bytesSent < len)
+		{
+			//todo: use error lib
+			std::cerr << SDLNet_GetError() << std::endl;
+		}
+		//todo: error sprintf
+	}
+
 }
 
 /*
@@ -462,7 +497,7 @@ void Input::movePlayer(Creature* c)
 	xspeed = c->getSpeedX();
 	yspeed = c->getSpeedY();
 	direction = c->getDirection();
-	
+
 	if (xspeed != 0 || yspeed != 0)
 	{
 		if (!newDirection)

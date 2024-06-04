@@ -1,5 +1,5 @@
 Ultimata:	Creature.o Cursor.o GameMap.o Graphics.o Main.o HelperFunctions.o Input.o System.o Tile.o Tileset.o Timer.o
-	g++ -o build/Ultimata build/*.o -lSDL2 -lSDL2_image
+	g++ -o build/Ultimata build/*.o -lSDL2 -lSDL2_image -lSDL2_net
 
 Creature.o: src/Creature.cpp src/Creature.h
 	g++ -c src/Creature.cpp -o build/Creature.o
