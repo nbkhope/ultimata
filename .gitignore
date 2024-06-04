@@ -1,5 +1,6 @@
 build/
 .bzr/
+.bzr_probably-old
 
 docs/doxygen/config
 
