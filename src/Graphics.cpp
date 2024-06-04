@@ -168,6 +168,11 @@ Graphics::Graphics()
 	image_jpg = NULL;
 	image_tiff = NULL;
 	image_bmp = NULL;
+
+	buffer = NULL;
+	buffer2 = NULL;
+	logo = NULL;
+	running = false;
 }
 
 Graphics::~Graphics()
@@ -176,6 +181,10 @@ Graphics::~Graphics()
 	image = NULL;
 	SDL_FreeSurface(gameIcon);
 	SDL_FreeSurface(gameLogo);
+
+	SDL_FreeSurface(buffer);
+	SDL_FreeSurface(buffer2);
+	SDL_FreeSurface(logo);
 	
 	// The issue was: if currentSurface is associated with the window, then it will automatically be
 	// freed along with the window?
@@ -725,4 +734,156 @@ void Graphics::setViewport()
 SDL_Renderer* Graphics::getRenderer()
 {
 	return gRenderer;
+}
+
+bool Graphics::init()
+{
+	buffer = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE);
+
+	if (buffer == NULL)
+	{
+		cerr << "Unable to set up the buffer: " << SDL_GetError() << endl;
+		running = false;
+	}
+	else {
+
+	SDL_FillRect(buffer, &buffer->clip_rect, SDL_MapRGB(buffer->format, 0xED, 0xED, 0xED));
+	// Keeps a copy of the buffer
+	//buffer2 = SDL_ConvertSurface(buffer, buffer->format, SDL_SWSURFACE);
+
+	// Adds a title to the program window
+	SDL_WM_SetCaption("Ultimata", NULL);
+
+	logo = loadImage("gamelogo.png");
+	running = true;
+	}
+
+	return running;
+}
+
+void Graphics::displayBuffer()
+{
+	SDL_Flip(buffer);
+}
+
+
+SDL_Surface* Graphics::loadImage(string filename)
+{
+	// A surface to hold the original image
+	SDL_Surface* loadedImage = NULL;
+
+	// A surface to hold the converted image
+	SDL_Surface* optimizedImage = NULL;
+
+	string newfilename = "data/graphics/" + filename;
+	// Loads the image
+	//loadedImage = SDL_LoadBMP(filename.c_str());
+	loadedImage = IMG_Load(newfilename.c_str());
+
+	// If everything went well, we convert the image to fit the display's settings
+	if (loadedImage != NULL)
+	{
+		// This function optimizes the given image to the user's display
+		// and returns the address of the new image, leaving the original image
+		// intact.
+		optimizedImage = SDL_DisplayFormat(loadedImage);
+
+		// Free the surface used by the original image
+		SDL_FreeSurface(loadedImage);
+
+		if (optimizedImage != NULL)
+		{
+			// Set our desired color key to white
+			Uint32 colorkey = SDL_MapRGB(optimizedImage->format, 0xFF, 0xFF, 0xFF);
+	
+			// Apply color key to image.
+			// Now white becomes transparent in the image
+			SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorkey);
+		}
+	}
+
+
+
+	return optimizedImage;		
+}
+
+/**
+ * Applies a surface to the buffer
+ */
+void Graphics::drawToBuffer(int x, int y, SDL_Surface* source, SDL_Rect* clip)
+{
+	// The BlitSurface function requires coordinates using a SDL_Rect,
+	// which is a structure representing a rectangle of width x
+	// and height y.
+	SDL_Rect offset;
+	offset.x = x;
+	offset.y = y;
+
+	// Blits the surface onto the destination. The position is given by a pointer
+	// to a SDL_Rect, reason for the ampersand
+	SDL_BlitSurface(source, clip, buffer, &offset);
+
+	// Update the changed portion of the screen
+	SDL_UpdateRects(buffer, 1, &offset);
+}
+
+void Graphics::drawMapToBuffer(int x, int y, SDL_Rect* clip)
+{
+	// The BlitSurface function requires coordinates using a SDL_Rect,
+	// which is a structure representing a rectangle of width x
+	// and height y.
+	SDL_Rect offset;
+	offset.x = x;
+	offset.y = y;
+	
+	// Blits the surface onto the destination. The position is given by a pointer
+	// to a SDL_Rect, reason for the ampersand
+	SDL_BlitSurface(buffer2, clip, buffer, &offset);
+	
+	// Update the changed portion of the screen
+	SDL_UpdateRects(buffer, 1, &offset);
+}
+
+void Graphics::drawMap(Map& map)
+{
+	int tiles_across;
+	int tiles_down;
+	int total_tiles;
+	
+	int tileId;
+	
+	SDL_Rect clipping;
+	SDL_Surface* tilesheet;
+	Tileset* tileset;
+	
+	// Sets up the map surface
+	buffer2 = SDL_CreateRGBSurface(SDL_SWSURFACE, map.getWidth(), map.getHeight(), SCREEN_BPP, 0, 0, 0, 0);
+	
+	tiles_across = map.getTilesAcross();
+	tiles_down = map.getTilesDown();
+	
+	clipping.w = TILESIZE;
+	clipping.h = TILESIZE;
+	
+	tileset = map.getTileset();
+	tilesheet = tileset->getSheet();
+	
+	for (int i = 0; i < tiles_down; i++)
+	{
+		for (int j = 0; j < tiles_across; j++)
+		{
+			// this expression will determine the tile number/position on
+			// the screen
+			tileId = map.getTileId(j + i * tiles_across);
+			applySurface(j * TILESIZE, i * TILESIZE,
+						 tilesheet , buffer2, &clipping);
+		}
+	}
+	
+	// Make a copy of the map
+	//buffer2 = SDL_ConvertSurface(buffer, buffer->format, SDL_SWSURFACE);
+}
+
+void Graphics::copyMapToBuffer() {
+	buffer = SDL_ConvertSurface(buffer2, buffer2->format, SDL_SWSURFACE);
 }

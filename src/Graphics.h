@@ -1,4 +1,8 @@
-/** @file
+/**
+ * Graphics core
+ * Responsible for setting up the buffer and provides functions to 
+ * manipulate graphics.
+ * @file
  */
 
 #ifndef __GRAPHICS_H__
@@ -13,6 +17,9 @@
 #include "Creature.h"
 #include "Input.h"
 
+#include <iostream>
+#include <string>
+#include "Map.h"
 
 using namespace std;
 
@@ -117,6 +124,25 @@ public:
 	// Alpha blending <~test~>
 	LTexture* getMyBackground();
 	LTexture* getMyForeground();
+
+	bool init();
+	bool isRunning() const { return running; }
+
+	void drawToBuffer(int x, int y, SDL_Surface* source, SDL_Rect* clip = NULL);
+	void drawMapToBuffer(int x, int y, SDL_Rect* clip = NULL);
+	void displayBuffer();
+	
+	void drawMap(Map& map);
+	void copyMapToBuffer();
+
+	SDL_Surface* getBuffer() { return buffer; };
+	SDL_Surface* getGameLogo() const { return logo; } ;
+
+
+	SDL_Surface* loadImage(string filename);
+
+	// void setColorKey();
+	// resize
 	
 private:
 	SDL_Surface* screenSurface;
@@ -150,6 +176,16 @@ private:
 	SDL_Texture* image_bmp;
 	
 	LTexture playerCharset;
+
+	bool running;
+
+	// This will be changed as the game goes
+	SDL_Surface* buffer;
+	// This is a copy of the buffer to keep the map surface
+	SDL_Surface* buffer2;
+	//SDL_Surface* map_buffer;
+
+	SDL_Surface* logo;
 };
 
 #endif

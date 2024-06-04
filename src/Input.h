@@ -4,6 +4,8 @@
 #ifndef __INPUT_H__
 #define __INPUT_H__
 
+#include <string>
+#include <sstream>
 #include <iostream>
 
 #include "SDL2/SDL.h"
@@ -59,7 +61,10 @@ public:
 	
 	void checkPlayerMovement(GameMap* gameMap, Creature* c);
 	//void movePlayer(Creature *c);
-	
+
+	void get();
+
+	void readLine(Graphics& graphics);
 private:
 	/**
 	 * Structure to hold input events
@@ -82,6 +87,9 @@ private:
 	Cursor cursor; // to select a certain tile and eventually change it with [, ]
 	
 	Timer timer;
+
+	SDL_Event event;
+	stringstream stream;
 };
 
 #endif

@@ -5,8 +5,12 @@
 #define __TILESET_H__
 
 #include <iostream>
+#include <fstream>
 
 #include "SDL2/SDL.h"
+#include "sdl.h"
+
+#include "Tile.h"
 
 #include "Constants.h"
 
@@ -21,7 +25,11 @@ class Tileset
 public:
 	Tileset();
 	~Tileset();
-	
+
+	bool loadTileDescriptionsTxt(string filename);
+
+	SDL_Surface* getSheet() const;
+	const Tile& getTile(int id) const;
 	/**
 	 * Returns a pointer to a specific sprite, given tileset tile id.
 	 */
@@ -33,6 +41,20 @@ private:
 	SDL_Rect sprite[256];
 	
 	int tiles_across, tiles_down;
+
+	/**
+	 * Surface to hold the image of the tileset sheet
+	 */
+	SDL_Surface* sheet;
+
+	// implement this later
+	//int tilesize;
+
+	/**
+	 * Holds the information for each tile in the set,
+	 * i.e. each tile offset clip.
+	 */
+	Tile tiles[TILESET_TILES];
 };
 
 #endif

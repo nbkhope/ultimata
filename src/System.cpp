@@ -4,10 +4,35 @@ using namespace std;
 
 System::System()
 {
+	// Initializes SDL with all subsystems. 
+	// Note we do not use all of the subsystem in this program.
+	if (!SDL_Init(SDL_INIT_EVERYTHING))
+	{
+		// Initializes font system
+		TTF_Init();
+
+		// Initializes sound mixer, with arguments:
+		// frequency,
+		// sound format,
+		// channels,
+		// and sample rate.
+		//Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+
+		running = true;
+	}
+	else
+		running = false;
 }
 
 System::~System()
 {
+	// Terminates the font system
+	TTF_Quit();
+
+	// Terminates the audio system
+	//Mix_CloseAudio();
+
+	// Terminates SDL, including freeing the screen surface.
 	// Shutdown SDL
 	SDL_Quit();
 }
@@ -66,3 +91,14 @@ int System::init(Graphics* graphics)
 		
 	return error_code;
 }
+
+void System::run()
+{
+	//
+}
+
+bool System::isRunning() const
+{
+	return running;
+}
+
