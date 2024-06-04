@@ -7,6 +7,8 @@
 
 #include "Main.h"
 
+#include "Widget.h"
+
 int main(int argc, char* args[])
 {
 	// Variable declarations
@@ -47,6 +49,9 @@ int main(int argc, char* args[])
 		
 		// Set up cursor
 		input.getCursor()->updateTileInfo(&gameMap);
+
+		Widget widget(32, 32, 256, 256);
+		widget.setTitle("Widget Title");
 		
 		/**
 		 * Begins game loop
@@ -75,7 +80,7 @@ int main(int argc, char* args[])
 #ifndef __TEXTURE_RENDERING__
 				graphics.updateCurrentSurface();
 #else
-				graphics.render(&gameMap, &creature, &input);
+				graphics.render(&gameMap, &creature, &input, &widget);
 #endif
 				
 			}
