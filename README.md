@@ -20,3 +20,17 @@ The following command was set on this repository to eliminate the files from git
 git config core.filemode false
 ```
 
+## MAC OS X Work Environment
+
+When I first started writing Ultimata, I used Dev-Cpp on a Windows machine. To get the project to work with MAC OS X Yosemite, the following had to be done:
+- Get the SDL frameworks to the directory /Library/Frameworks (this includes SDL_image, SDL_ttf, SDL_mixer)
+- Change all the #include headers to point to
+SDL/SDL.h
+SDL_image/SDL_image.h
+SDL_ttf/SDL_ttf.h
+SDL_mixer/SDL_mixer.h
+- Add the frameworks to the build options (Build Phases)
+- Change Framework Search Paths to /Library/Frameworks
+- Change "Objective-C Automatic Reference Counting" to No in Apple LLVM 6.1
+- Use custom working directory (Product->Scheme->Edit Scheme, under Options) 
+~/dev/Ultimata/Ultimata
