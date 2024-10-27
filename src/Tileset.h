@@ -8,7 +8,6 @@
 #include <fstream>
 
 #include "SDL2/SDL.h"
-#include "sdl.h"
 
 #include "Tile.h"
 

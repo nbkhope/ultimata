@@ -7,19 +7,6 @@ Tile::Tile()
 	walkable = true;
 }
 
-Tile::Tile() : id(8)//, startx(0), starty(0), size(32)
-{
-	dimension = new SDL_Rect;
-	dimension->x = TILESIZE * 0;
-	dimension->y = TILESIZE * 0;
-	dimension->w = TILESIZE;
-	dimension->h = TILESIZE;
-
-	type = WALKABLE;
-
-	items = new stack<Item>;
-}
-
 Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(length)
 {
 	dimension = new SDL_Rect;
@@ -30,13 +17,13 @@ Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(lengt
 
 	type = WALKABLE;
 
-	items = new stack<Item>;
+	// items = new stack<Item>;
 }
 
 Tile::~Tile()
 {
 	delete dimension;
-	delete items;
+	// delete items;
 }
 
 int Tile::getId() const
@@ -85,12 +72,6 @@ void Tile::setDimension(int px, int py, int width, int height)
 	dimension->h = height;
 }
 
-
-int Tile::getId() const
-{
-	return id;
-}
-
 int Tile::getType() const
 {
 	return type;
@@ -101,13 +82,8 @@ void Tile::setType(int newType)
 	type = newType;
 }
 
-void Tile::setId(int newId)
-{
-	id = newId;
-}
-
-stack<Item>* Tile::getStack()
-{
-	return items;
-}
+// stack<Item>* Tile::getStack()
+// {
+// 	return items;
+// }
 

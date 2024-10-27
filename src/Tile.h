@@ -10,9 +10,8 @@
  * Tile object has nothing to do with tile images.
  */
 #include <stack>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
-#include "Item.h"
 
 #include "Constants.h"
 
@@ -46,7 +45,6 @@ public:
 
 	int getType() const;
 
-	void setId(int newId);
 	void setType(int newType);
 
 	/* These might be a problem the way they are now
@@ -55,7 +53,7 @@ public:
 	Item& getTopItem();
 	*/
 
-	stack<Item>* getStack();
+	// stack<Item>* getStack();
 	
 private:
 	/**
@@ -89,7 +87,7 @@ private:
 	/**
 	 * Each tile/floor will have a stack of items on it
 	 */
-	stack<Item>* items;
+	// stack<Item>* items;
 	  
 };
 

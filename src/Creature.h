@@ -17,7 +17,6 @@
 #include <string>
 
 #include "SDL2/SDL.h"
-#include "sdl.h"
 
 #include "Constants.h"
 
@@ -158,9 +157,6 @@ public:
 	 * Returns the creature position
 	 */
 	SDL_Rect getPosition() const;
-
-	int getWidth() const { return pos.w; }
-	int getHeight() const { return pos.h; }
 
 	/** Position methods **/
 	void shiftPos(int sx, int sy);

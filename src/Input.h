@@ -64,7 +64,6 @@ public:
 
 	void get();
 
-	void readLine(Graphics& graphics);
 private:
 	/**
 	 * Structure to hold input events

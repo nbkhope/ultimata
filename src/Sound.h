@@ -1,7 +1,7 @@
 #ifndef _SOUND_H_
 #define _SOUND_H_
 
-#include <SDL_mixer/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 class Sound
 {

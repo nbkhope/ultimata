@@ -19,7 +19,6 @@
 
 #include <iostream>
 #include <string>
-#include "Map.h"
 
 using namespace std;
 
@@ -125,21 +124,12 @@ public:
 	LTexture* getMyBackground();
 	LTexture* getMyForeground();
 
-	bool init();
 	bool isRunning() const { return running; }
 
-	void drawToBuffer(int x, int y, SDL_Surface* source, SDL_Rect* clip = NULL);
-	void drawMapToBuffer(int x, int y, SDL_Rect* clip = NULL);
-	void displayBuffer();
-	
-	void drawMap(Map& map);
 	void copyMapToBuffer();
 
 	SDL_Surface* getBuffer() { return buffer; };
 	SDL_Surface* getGameLogo() const { return logo; } ;
-
-
-	SDL_Surface* loadImage(string filename);
 
 	// void setColorKey();
 	// resize

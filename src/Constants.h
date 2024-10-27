@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 using namespace std;
 
@@ -50,6 +50,8 @@ const int PLAYER_MOVEMENT = TILESIZE / 4;
 // tile based movement
 const int PLAYER_MOVEMENT = TILESIZE;
 #endif
+
+const int PLAYER_MOVE_SPEED = TILESIZE / 4;
 
 enum GAME_MODE { GAME_MODE_TEST, GAME_MODE_NORMAL };
 
