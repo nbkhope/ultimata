@@ -690,6 +690,11 @@ void Graphics::drawCursor(Cursor* c)
 
 void Graphics::drawWidget(Widget* widget)
 {
+	// Only draw if widget is visible
+	if (!widget->isVisible()) {
+		return;
+	}
+	
 	SDL_Rect rect;
 	rect.x = widget->getX();
 	rect.y = widget->getY();

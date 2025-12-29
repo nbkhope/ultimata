@@ -12,11 +12,15 @@ public:
     int getHeight();
 
     void setTitle(std::string newTitle);
+    
+    void setVisible(bool visible);
+    bool isVisible() const;
 
 private:
     int x, y;
     int width, height;
     std::string title;
+    bool visible;
 };
 
 #endif

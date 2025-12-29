@@ -82,6 +82,9 @@ int main(int argc, char* args[])
 					quit = true;
 				}
 				
+				// Update widget visibility based on dialogue state
+				widget.setVisible(input.getDialogueToggle());
+				
 #ifndef __TEXTURE_RENDERING__
 				graphics.updateCurrentSurface();
 #else

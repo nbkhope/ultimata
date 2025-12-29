@@ -57,6 +57,9 @@ public:
 	
 	Timer* getTimer();
 	
+	bool getDialogueToggle() const;
+	void setDialogueToggle(bool toggle);
+	
 	void checkPlayerMovement(GameMap* gameMap, Creature* c);
 	//void movePlayer(Creature *c);
 	
@@ -75,6 +78,9 @@ private:
 	
 	// Image Loading Different Types <~test~>
 	int testImageLoad;
+	
+	// Dialogue system
+	bool dialogueToggle;
 	
 	/**
 	 * The screen cursor

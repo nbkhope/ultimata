@@ -9,6 +9,7 @@ Widget::Widget(int x, int y, int width, int height)
     this->y = y;
     this->width = width;
     this->height = height;
+    this->visible = false; // Start hidden
 }
 
 int Widget::getX()
@@ -35,4 +36,14 @@ int Widget::getHeight()
 void Widget::setTitle(std::string newTitle)
 {
     this->title = newTitle;
+}
+
+void Widget::setVisible(bool visible)
+{
+    this->visible = visible;
+}
+
+bool Widget::isVisible() const
+{
+    return visible;
 }
