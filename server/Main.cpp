@@ -49,6 +49,32 @@ void info(std::string message)
     std::cout << message << std::endl;
 }
 
+// Monster system
+const int MAX_MONSTERS_SERVER = 4;
+struct Monster
+{
+    bool active;
+    Position position;
+};
+Monster monsters[MAX_MONSTERS_SERVER];
+
+void initializeMonsters()
+{
+    // Spawn 2 monsters at fixed positions
+    monsters[0].active = true;
+    monsters[0].position.x = 200;
+    monsters[0].position.y = 150;
+    
+    monsters[1].active = true;
+    monsters[1].position.x = 400;
+    monsters[1].position.y = 300;
+    
+    monsters[2].active = false;
+    monsters[3].active = false;
+    
+    info("Monsters initialized.");
+}
+
 void snerror(std::string functionName)
 {
     std::stringstream ss;
@@ -245,6 +271,33 @@ bool acceptSocket(SDLNet_SocketSet& socketSet, TCPsocket& serverSocket, TCPsocke
     std::cout << "> Added client with index " << socketIndex << std::endl;
     playersOnline++;
 
+    // Send initial monster positions immediately to new client
+    struct MonsterPacket {
+        int command;
+        int count;
+        Position positions[MAX_MONSTERS_SERVER];
+    };
+    
+    MonsterPacket monsterData;
+    monsterData.command = 4; // NetworkCommands::MONSTER_UPDATE
+    monsterData.count = 0;
+    
+    for (int i = 0; i < MAX_MONSTERS_SERVER; i++)
+    {
+        if (monsters[i].active)
+        {
+            monsterData.positions[monsterData.count] = monsters[i].position;
+            monsterData.count++;
+        }
+    }
+    
+    int packetSize = sizeof(int) * 2 + sizeof(Position) * monsterData.count;
+    int monsterBytesSent = SDLNet_TCP_Send(clientSocket, &monsterData, packetSize);
+    if (monsterBytesSent >= packetSize)
+    {
+        std::cout << "Sent initial " << monsterData.count << " monster positions to new client " << socketIndex << std::endl;
+    }
+
     return true;
 }
 
@@ -306,6 +359,38 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                     {
                         std::cout << "Sent message to client index " << clientIndex << ": " << message << std::endl;
                         std::cout << "Message length: " << messageLength << std::endl;
+                    }
+                    
+                    // Send monster positions (command + count + positions)
+                    // Format: [MONSTER_UPDATE(4 bytes)][count(4 bytes)][x1(4)][y1(4)][x2(4)][y2(4)]...
+                    struct MonsterPacket {
+                        int command;  // MONSTER_UPDATE = 4
+                        int count;    // Number of active monsters
+                        Position positions[MAX_MONSTERS_SERVER];
+                    };
+                    
+                    MonsterPacket monsterData;
+                    monsterData.command = 4; // NetworkCommands::MONSTER_UPDATE
+                    monsterData.count = 0;
+                    
+                    for (int i = 0; i < MAX_MONSTERS_SERVER; i++)
+                    {
+                        if (monsters[i].active)
+                        {
+                            monsterData.positions[monsterData.count] = monsters[i].position;
+                            monsterData.count++;
+                        }
+                    }
+                    
+                    int packetSize = sizeof(int) * 2 + sizeof(Position) * monsterData.count;
+                    int monsterBytesSent = SDLNet_TCP_Send(clientSocket, &monsterData, packetSize);
+                    if (monsterBytesSent < packetSize)
+                    {
+                        std::cout << "Failed to send monster data to client " << clientIndex << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "Sent " << monsterData.count << " monster positions to client " << clientIndex << std::endl;
                     }
                 }
                 moveTimer = ticks;
@@ -433,6 +518,7 @@ int SDL_main(int argc, char* argv[])
     TCPsocket serverSocket;
     TCPsocket clientSockets[MAX_SOCKETS] = { NULL };
 
+    initializeMonsters();
     establishServer(socketSet, serverSocket);
     listen(socketSet, serverSocket, clientSockets);
     destablishServer(socketSet, serverSocket, clientSockets);

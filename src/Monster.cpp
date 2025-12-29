@@ -4,16 +4,11 @@
 
 Monster::Monster() : Creature()
 {
-	name = "Monster";
-
-	pos.x = 64;
-	pos.y = 64;
-	pos.w = 64;
-	pos.h = 64;	
+	// Use public setters instead of accessing private members
+	setPos(64, 64);
 }
 
 Monster::~Monster()
 {
 
 }
-

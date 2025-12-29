@@ -17,6 +17,8 @@
 #include "Creature.h"
 #include "Input.h"
 
+class Monster;  // Forward declaration
+
 #include <string>
 #include "Widget.h"
 
@@ -75,7 +77,7 @@ public:
 	bool loadMedia();
 
 	void displayImage();
-	void render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget);
+	void render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, class Monster* monsters, int monsterCount);
 	//void testRender(Creature* creature, Input* input);
 	void testRender(Creature* creature, Input* input);
 

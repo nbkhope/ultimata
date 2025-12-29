@@ -77,7 +77,11 @@ namespace NetworkCommands {
     const int MOVE = 1;
     const int STOP = 2;
     const int ATTACK = 3;
+    const int MONSTER_UPDATE = 4;
 }
+
+// Monster constants
+const int MAX_MONSTERS = 4;  // Maximum number of monsters in the game
 
 enum GAME_MODE { GAME_MODE_TEST, GAME_MODE_NORMAL };
 

@@ -101,6 +101,7 @@ void networking() {
 #include "Graphics.h"  // Used for Graphics class
 #include "Widget.h"    // Used for Widget class
 #include "Sound.h"
+#include "Monster.h"
 
 using namespace std;
 
@@ -327,6 +328,8 @@ int main(int argc, char* args[])
 	Graphics graphics;
 	GameMap gameMap;
 	Creature creature;
+	Monster monsters[MAX_MONSTERS];
+	int monsterCount = 0;
 
 	Input input;
 	int error;
@@ -437,7 +440,7 @@ int main(int argc, char* args[])
 						printf("Received: %d bytes\n", bytesReceived);
 
 						// Check if we received a 4-byte integer command
-						if (bytesReceived == sizeof(int))
+						if (bytesReceived >= sizeof(int))
 						{
 							int command = *((int*)message);  // Cast received bytes to int
 							printf("Received command: %d\n", command);
@@ -462,6 +465,28 @@ int main(int argc, char* args[])
 								}
 								movementDirection++; // Cycle to next direction
 							}
+							else if (command == NetworkCommands::MONSTER_UPDATE)
+							{
+								// Parse monster positions
+								// Format: [command(4)][count(4)][x1(4)][y1(4)][x2(4)][y2(4)]...
+								if (bytesReceived >= sizeof(int) * 2)
+								{
+									int* data = (int*)message;
+									int count = data[1];
+									monsterCount = (count < MAX_MONSTERS) ? count : MAX_MONSTERS;
+									
+									printf("Received %d monster positions\n", monsterCount);
+									printf("Current monsterCount variable: %d\n", monsterCount);
+									
+									for (int i = 0; i < monsterCount; i++)
+									{
+										int x = data[2 + i * 2];
+										int y = data[2 + i * 2 + 1];
+										monsters[i].setPos(x, y);
+										printf("Monster %d set to (%d, %d), size: %dx%d\n", i, x, y, monsters[i].getWidth(), monsters[i].getHeight());
+									}
+								}
+							}
 						}
 						else
 						{
@@ -484,7 +509,7 @@ int main(int argc, char* args[])
 #ifndef __TEXTURE_RENDERING__
 				graphics.updateCurrentSurface();
 #else
-				graphics.render(&gameMap, &creature, &input, &widget);
+				graphics.render(&gameMap, &creature, &input, &widget, monsters, monsterCount);
 #endif
 
 			}

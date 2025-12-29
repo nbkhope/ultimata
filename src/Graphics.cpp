@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "Monster.h"
 
 // Define the mutable screen dimensions
 int SCREEN_WIDTH = ResolutionPresets::WIDTH_NORMAL;
@@ -376,7 +377,7 @@ void Graphics::displayImage()
 	SDL_Delay(2000);
 }
 
-void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget)
+void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, Monster* monsters, int monsterCount)
 {
 	// Make sure to re-set RenderDrawColor
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -399,6 +400,28 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 	//drawColorKeyExample();
 
 	drawCursor(input->getCursor());
+
+	// Draw monsters first (behind the player) - red squares
+	for (int i = 0; i < monsterCount; i++)
+	{
+		SDL_Rect rect;
+		rect.x = monsters[i].getPosX();
+		rect.y = monsters[i].getPosY();
+		rect.w = monsters[i].getWidth();
+		rect.h = monsters[i].getHeight();
+
+		std::cout << "Drawing monster " << i << " at (" << rect.x << ", " << rect.y << ") size " << rect.w << "x" << rect.h << std::endl;
+
+		// Bright red with some transparency
+		SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 200);
+		SDL_RenderFillRect(gRenderer, &rect);
+		SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
+
+		// Black border
+		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+		SDL_RenderDrawRect(gRenderer, &rect);
+	}
 
 	drawCreature(creature);
 
