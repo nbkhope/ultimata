@@ -11,6 +11,7 @@
 
 
 #include "SDL2/SDL_net.h"
+#include "SDL2/SDL_ttf.h"
 
 void error(std::string functionName)
 {
@@ -105,6 +106,98 @@ using namespace std;
 // Static variable to track movement direction for deterministic behavior
 static int movementDirection = 0;
 
+// Renders a single line of centered menu text; returns false if render fails
+static bool renderMenuLine(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int y, SDL_Color color)
+{
+	SDL_Surface* textSurface = TTF_RenderText_Blended(font, text.c_str(), color);
+	if (!textSurface)
+	{
+		std::cerr << "Menu text render failed: " << TTF_GetError() << std::endl;
+		return false;
+	}
+
+	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+	if (!textTexture)
+	{
+		std::cerr << "Menu texture create failed: " << SDL_GetError() << std::endl;
+		SDL_FreeSurface(textSurface);
+		return false;
+	}
+
+	int textW = textSurface->w;
+	int textH = textSurface->h;
+	SDL_FreeSurface(textSurface);
+
+	SDL_Rect dst = { (SCREEN_WIDTH - textW) / 2, y, textW, textH };
+	SDL_RenderCopy(renderer, textTexture, nullptr, &dst);
+	SDL_DestroyTexture(textTexture);
+	return true;
+}
+
+// Simple blocking main menu loop; returns true if user chose to play, false if quit
+static bool showMainMenu(Graphics& graphics)
+{
+	SDL_Renderer* renderer = graphics.getRenderer();
+	if (!renderer)
+	{
+		// If renderer is not ready, skip menu and fall back to starting immediately
+		return true;
+	}
+
+	TTF_Font* font = TTF_OpenFont("data/fonts/cour.ttf", 28);
+	if (!font)
+	{
+		std::cerr << "Could not load menu font: " << TTF_GetError() << std::endl;
+		return true;
+	}
+
+	SDL_Event e;
+	bool playRequested = false;
+	bool quitRequested = false;
+
+	while (!playRequested && !quitRequested)
+	{
+		while (SDL_PollEvent(&e))
+		{
+			if (e.type == SDL_QUIT)
+			{
+				quitRequested = true;
+			}
+			else if (e.type == SDL_KEYDOWN)
+			{
+				switch (e.key.keysym.sym)
+				{
+					case SDLK_RETURN:
+					case SDLK_KP_ENTER:
+						playRequested = true;
+						break;
+					case SDLK_ESCAPE:
+						quitRequested = true;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
+		SDL_SetRenderDrawColor(renderer, 18, 20, 28, 255);
+		SDL_RenderClear(renderer);
+
+		// Simple menu layout
+		SDL_Color titleColor = { 200, 230, 255, 255 };
+		SDL_Color bodyColor = { 210, 210, 210, 255 };
+		renderMenuLine(renderer, font, "Ultimata", 120, titleColor);
+		renderMenuLine(renderer, font, "Press Enter to play (connect)", 200, bodyColor);
+		renderMenuLine(renderer, font, "Press Esc to quit", 240, bodyColor);
+
+		SDL_RenderPresent(renderer);
+		SDL_Delay(16); // ~60 FPS cap for the menu loop
+	}
+
+	TTF_CloseFont(font);
+	return playRequested;
+}
+
 int main(int argc, char* args[])
 {
 	// Variable declarations
@@ -112,25 +205,12 @@ int main(int argc, char* args[])
 	Graphics graphics;
 	GameMap gameMap;
 	Creature creature;
-	//todo: Network class
-	if (SDLNet_Init() == -1)
-	{
-		std::cerr << "SDLNet_Init failed: " << SDLNet_GetError() << std::endl;
-		return 1;  // Exit with error code
-	}
-	std::cout << "SDLNet initialized successfully" << std::endl;
-	
-	NetworkClient networkClient;
-	if (!networkClient.connect())
-	{
-		std::cerr << "Failed to initialize networking" << std::endl;
-		return 2;
-	}
 
 	Input input;
 	int error;
 	bool quit;
 	int gameMode;
+	bool networkReady = false;
 
 	//SDL_Event e;
 
@@ -138,10 +218,7 @@ int main(int argc, char* args[])
 	//gameMode = GAME_MODE_TEST;
 	gameMode = GAME_MODE_NORMAL;
 	quit = false;
-
 	error = system.init(&graphics);
-
-
 	if(error > 0) // error
 	{
 		return error;
@@ -153,6 +230,30 @@ int main(int argc, char* args[])
 #ifndef __TEXTURE_RENDERING__
 		graphics.displayImage();
 #endif
+
+		// Show main menu before connecting to the server
+		bool playSelected = showMainMenu(graphics);
+		if (!playSelected)
+		{
+			std::cout << "Exited from main menu before connecting." << std::endl;
+			return 0;
+		}
+
+		// Initialize networking only after the player opts in
+		if (SDLNet_Init() == -1)
+		{
+			std::cerr << "SDLNet_Init failed: " << SDLNet_GetError() << std::endl;
+			return 1;  // Exit with error code
+		}
+		std::cout << "SDLNet initialized successfully" << std::endl;
+
+		NetworkClient networkClient;
+		if (!networkClient.connect())
+		{
+			std::cerr << "Failed to initialize networking" << std::endl;
+			return 2;
+		}
+		networkReady = true;
 
 		// Load Game Map
 		gameMap.loadTxt("data/maps/map.txt");
@@ -276,7 +377,10 @@ int main(int argc, char* args[])
 	}
 
 	//networking
-	SDLNet_Quit();
+	if (networkReady)
+	{
+		SDLNet_Quit();
+	}
 
 	cout << "Finishing program. . ." << endl;
 
