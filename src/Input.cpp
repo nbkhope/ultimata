@@ -485,10 +485,10 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket
 		std::cout << message << std::endl;
 		//note terminating null (+1)...
 		int bytesSent = SDLNet_TCP_Send(socket, message, len + 1);
-		if (bytesSent < len)
+		if (bytesSent != len + 1)  // Check if all bytes including null terminator were sent
 		{
 			//todo: use error lib
-			std::cerr << SDLNet_GetError() << std::endl;
+			std::cerr << "Network send failed: " << SDLNet_GetError() << std::endl;
 		}
 		//todo: error sprintf
 	}
