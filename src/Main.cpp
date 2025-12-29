@@ -24,19 +24,31 @@ void networking() {
 	IPaddress ip;
 	if (SDLNet_ResolveHost(&ip, "localhost", 8099) == -1) {
 		error("SDLNet_ResolveHost");
-	};
+		return;
+	}
 	//todo: error
 	//TCPsocket
 	socket = SDLNet_TCP_Open(&ip);
 	if (socket == NULL)
 	{
 		error("SDLNet_TCP_Open");
+		return;
 	}
 	//todo: error
 	//SDLNet_SocketSet
 	socketSet = SDLNet_AllocSocketSet(1);
-	//todo: error
-	SDLNet_TCP_AddSocket(socketSet, socket);
+	if (socketSet == NULL)
+	{
+		error("SDLNet_AllocSocketSet");
+		return;
+	}
+	
+	if (SDLNet_TCP_AddSocket(socketSet, socket) == -1)
+	{
+		error("SDLNet_TCP_AddSocket");
+		SDLNet_FreeSocketSet(socketSet);
+		return;
+	}
 }
 // Project includes for classes used directly in main()
 #include "Graphics.h"  // Used for Graphics class
