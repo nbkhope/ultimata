@@ -5,7 +5,9 @@
  * @version	0.2
  */
 
-// Some basic libraries
+#include "Main.h"
+
+// Standard library includes
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -15,26 +17,22 @@
 #include <list>
 #include <vector>
 
-// Necessary for SDL
+// Third-party library includes
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
+// Project includes (alphabetically)
 #include "Constants.h"
-//#include "Main.h"
-
-#include "System.h"
-#include "Graphics.h"
 #include "Creature.h"
+#include "Graphics.h"
+#include "System.h"
 #include "Tile.h"
 #include "Timer.h"
+#include "Widget.h"
 
 using namespace std;
-
-#include "Main.h"
-
-#include "Widget.h"
 
 int main(int argc, char* args[])
 {
