@@ -5,7 +5,7 @@
 #define __INPUT_H__
 
 #include <string>
-#include <sstream>
+// #include <sstream>
 #include <iostream>
 
 #include "SDL2/SDL.h"
@@ -93,8 +93,7 @@ private:
 	
 	Timer timer;
 
-	SDL_Event event;
-	stringstream stream;
+	// stringstream stream;
 };
 
 #endif

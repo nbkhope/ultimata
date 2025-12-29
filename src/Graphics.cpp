@@ -778,15 +778,20 @@ void Graphics::copyMapToBuffer() {
 		return;
 	}
 	
-	// Free the old buffer first to prevent memory leak
+	// Attempt to convert the surface
+	SDL_Surface* newBuffer = SDL_ConvertSurface(buffer2, buffer2->format, 0);
+	
+	// Check if conversion was successful
+	if (newBuffer == NULL) {
+		cerr << "Error: Failed to convert surface in copyMapToBuffer(): " << SDL_GetError() << endl;
+		// Keep the existing buffer instead of setting it to NULL
+		// This prevents getting stuck in a failure loop
+		return;
+	}
+	
+	// Only free the old buffer and assign new one if conversion succeeded
 	if (buffer != NULL) {
 		SDL_FreeSurface(buffer);
 	}
-	
-	buffer = SDL_ConvertSurface(buffer2, buffer2->format, 0);
-	
-	// Check if conversion was successful
-	if (buffer == NULL) {
-		cerr << "Error: Failed to convert surface in copyMapToBuffer(): " << SDL_GetError() << endl;
-	}
+	buffer = newBuffer;
 }

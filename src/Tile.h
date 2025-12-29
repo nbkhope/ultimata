@@ -9,7 +9,7 @@
  * about the tile id and whether the tile is walkable. The 
  * Tile object has nothing to do with tile images.
  */
-#include <stack>
+// #include <stack>
 #include <SDL2/SDL.h>
 
 
@@ -47,7 +47,7 @@ public:
 
 	/* These might be a problem the way they are now
 	void addItem(Item& newItem);
-	void removeItem(Item& removedItem = NULL);
+	void removeItem(Item* removedItem = nullptr);  // Fixed: use pointer instead of reference for default parameter
 	Item& getTopItem();
 	*/
 
