@@ -25,7 +25,7 @@ public:
 
 	~Tile();
 
-	SDL_Rect* getDimension() const;
+	const SDL_Rect* getDimension() const;
 	void setDimension(int px, int py, int width = TILESIZE, int height = TILESIZE);
 
 	/**

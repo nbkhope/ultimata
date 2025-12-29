@@ -68,9 +68,9 @@ void Tile::decrementId()
 	id--;
 }
 
-SDL_Rect* Tile::getDimension() const
+const SDL_Rect* Tile::getDimension() const
 {
-	return const_cast<SDL_Rect*>(&dimension);
+	return &dimension;
 }
 
 void Tile::setDimension(int px, int py, int width, int height)
