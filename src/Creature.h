@@ -32,7 +32,7 @@ class Creature
 {
 public:
 	Creature();
-	Creature(string name);
+	Creature(const string& name);
 	/**
 	 * Destructor
 	 *

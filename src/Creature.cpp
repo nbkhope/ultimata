@@ -35,7 +35,7 @@ Creature::Creature()
 	// 	id = 4;
 }
 
-Creature::Creature(string name)
+Creature::Creature(const string& name)
 {
 	init();
 	this->name = name;  // Set the provided name
