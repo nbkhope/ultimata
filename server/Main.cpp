@@ -122,11 +122,12 @@ void closeSocket(SDLNet_SocketSet& socketSet, TCPsocket clientSockets[MAX_SOCKET
         return;
     }
 
-    // Try to remove from socket set - don't exit on failure as it might already be removed
+    // Try to remove from socket set - log and continue on failure to avoid leaks
     if (SDLNet_TCP_DelSocket(socketSet, clientSocket) == -1)
     {
-        // Socket might already be removed, just log but don't exit
-        std::cout << "Warning: Socket already removed from socket set" << std::endl;
+        std::stringstream ss;
+        ss << "SDLNet_TCP_DelSocket (client) failed: " << SDLNet_GetError();
+        error(ss.str());
     }
 
     // todo: can we remove memset here?
@@ -168,9 +169,11 @@ void deallocateSockets(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPs
     info("Deallocating sockets.");
     if (SDLNet_TCP_DelSocket(socketSet, serverSocket) == -1)
     {
-        snerror("SDLNet_TCP_DelSocket");
-        exit(7);
-    };
+        std::stringstream ss;
+        ss << "SDLNet_TCP_DelSocket (server) failed: " << SDLNet_GetError();
+        error(ss.str());
+        // continue cleanup even if removal failed
+    }
     SDLNet_TCP_Close(serverSocket);
 
     closeClientSockets(socketSet, clientSockets);
