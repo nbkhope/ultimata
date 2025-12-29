@@ -2,7 +2,8 @@
 FLAGS=-IC:\Users\nkans\include -LC:\Users\nkans\lib
 
 Ultimata:	Creature.o Cursor.o GameMap.o Graphics.o Main.o HelperFunctions.o Input.o System.o Tile.o Tileset.o Timer.o Widget.o
-	g++ -o build/Ultimata build/*.o -lSDL2 -lSDL2_image
+	g++ $(FLAGS) -o build/Ultimata build/*.o -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+	copy dll\*.dll build
 
 Creature.o: src/Creature.cpp src/Creature.h
 	g++ $(FLAGS) -c src/Creature.cpp -o build/Creature.o
