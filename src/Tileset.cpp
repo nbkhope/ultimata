@@ -9,6 +9,7 @@ Tileset::Tileset()
 
 	tiles_across = 16;
 	tiles_down = 16;
+	sheet = NULL;  // Initialize to prevent undefined behavior
 	
 	// Set up sprite regions
 	for (i = 0; i < tiles_down; i++)
