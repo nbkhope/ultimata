@@ -54,6 +54,7 @@ const int PLAYER_MOVE_SPEED = TILESIZE / 4;
 // Networking constants
 const int MAX_MESSAGE_SIZE = 256;  // Buffer size for network messages
 const int MAX_PACKET_SIZE = 1024;  // Maximum packet size
+const int MAX_PACKET = 0xFF;       // Standard packet size used by client/server (255 bytes)
 
 // Network message types - shared between client and server
 namespace NetworkMessages {

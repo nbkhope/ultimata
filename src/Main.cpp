@@ -8,7 +8,7 @@
 #include "Main.h"
 
 // 255
-#define MAX_PACKET 0xFF
+
 
 #include "SDL2/SDL_net.h"
 

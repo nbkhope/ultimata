@@ -5,6 +5,9 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_net.h"
 
+// Server-local networking constants (do not share client headers)
+const int SERVER_MAX_PACKET = 0xFF; // 255-byte packet size for server buffers
+
 //todo: bug) messed up array acess of sockets and not being present in socket after disconnected.
 
 // 16
@@ -12,8 +15,8 @@
 const int MAX_SOCKETS = 0x10;
 
 // Message buffer constants
-const int MESSAGE_BUFFER_SIZE = 255;
-const int MESSAGE_RECV_SIZE = MESSAGE_BUFFER_SIZE - 1;  // Reserve 1 byte for null terminator
+const int MESSAGE_BUFFER_SIZE = SERVER_MAX_PACKET;       // Server-local packet size (255 bytes)
+const int MESSAGE_RECV_SIZE = MESSAGE_BUFFER_SIZE - 1;   // Reserve 1 byte for null terminator
 
 struct Position
 {
