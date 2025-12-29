@@ -38,21 +38,21 @@ public:
 		std::cout << "Networking." << std::endl;
 		IPaddress ip;
 		if (SDLNet_ResolveHost(&ip, "localhost", 8099) == -1) {
-			error("SDLNet_ResolveHost");
+			std::cerr << "SDLNet_ResolveHost error: " << SDLNet_GetError() << std::endl;
 			return false;
 		}
 		
 		socket = SDLNet_TCP_Open(&ip);
 		if (socket == NULL)
 		{
-			error("SDLNet_TCP_Open");
+			std::cerr << "SDLNet_TCP_Open error: " << SDLNet_GetError() << std::endl;
 			return false;
 		}
 		
 		socketSet = SDLNet_AllocSocketSet(1);
 		if (socketSet == NULL)
 		{
-			error("SDLNet_AllocSocketSet");
+			std::cerr << "SDLNet_AllocSocketSet error: " << SDLNet_GetError() << std::endl;
 			SDLNet_TCP_Close(socket);
 			socket = nullptr;
 			return false;
@@ -60,7 +60,7 @@ public:
 		
 		if (SDLNet_TCP_AddSocket(socketSet, socket) == -1)
 		{
-			error("SDLNet_TCP_AddSocket");
+			std::cerr << "SDLNet_TCP_AddSocket error: " << SDLNet_GetError() << std::endl;
 			cleanup();
 			return false;
 		}
@@ -69,7 +69,7 @@ public:
 		return true;
 	}
 	
-	TCPsocket getSocket() const { return socket; }
+	TCPsocket& getSocket() { return socket; }
 	SDLNet_SocketSet getSocketSet() const { return socketSet; }
 	bool isInitialized() const { return initialized; }
 	
@@ -101,6 +101,9 @@ void networking() {
 #include "Widget.h"    // Used for Widget class
 
 using namespace std;
+
+// Static variable to track movement direction for deterministic behavior
+static int movementDirection = 0;
 
 int main(int argc, char* args[])
 {
@@ -192,7 +195,7 @@ int main(int argc, char* args[])
 				int socketCheckResult = SDLNet_CheckSockets(networkClient.getSocketSet(), 0);
 				if (socketCheckResult == -1)
 				{
-					error("SDLNet_CheckSockets");
+					std::cerr << "SDLNet_CheckSockets error: " << SDLNet_GetError() << std::endl;
 					quit = true;
 				}
 				else if (SDLNet_SocketReady(networkClient.getSocket()))
@@ -218,14 +221,23 @@ int main(int argc, char* args[])
 
 							if (command == NetworkCommands::MOVE)  // Use named constant
 							{
-								if (SDL_GetTicks() % 2 == 0)
+								// Cycle through movement directions: 0=right, 1=down, 2=left, 3=up
+								switch (movementDirection % 4)
 								{
-									creature.shiftPosX(32);
+									case 0: // Move right
+										creature.shiftPosX(32);
+										break;
+									case 1: // Move down
+										creature.shiftPosY(32);
+										break;
+									case 2: // Move left
+										creature.shiftPosX(-32);
+										break;
+									case 3: // Move up
+										creature.shiftPosY(-32);
+										break;
 								}
-								else
-								{
-									creature.shiftPosY(32);
-								};
+								movementDirection++; // Cycle to next direction
 							}
 						}
 						else
