@@ -4,7 +4,7 @@ Tile::Tile()
 {
 	id = 17;
 	//id = 23;
-	walkable = true;
+	walkable = true;  // Primary walkability mechanism
 	
 	// Initialize dimension directly (no heap allocation needed)
 	dimension.x = 0;
@@ -12,19 +12,19 @@ Tile::Tile()
 	dimension.w = TILESIZE;
 	dimension.h = TILESIZE;
 	
-	type = WALKABLE;
+	type = WALKABLE;  // Legacy field, kept for compatibility
 }
 
 Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(length)
 {
-	walkable = true;        // Initialize walkable for consistency
+	walkable = true;  // Primary walkability mechanism
 	
 	dimension.x = x;
 	dimension.y = y;
 	dimension.w = length;
 	dimension.h = length;
 
-	type = WALKABLE;
+	type = WALKABLE;  // Legacy field, kept for compatibility
 
 	// items = new stack<Item>;
 }
@@ -55,6 +55,7 @@ void Tile::setId(int newId)
 void Tile::setWalkable(bool canWalk)
 {
 	walkable = canWalk;
+	// Note: type field is maintained separately and not used for walkability
 }
 
 void Tile::incrementId()

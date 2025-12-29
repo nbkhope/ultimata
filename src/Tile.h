@@ -63,10 +63,9 @@ private:
 	 */ 
 	int id;
 	
-	bool walkable;
-	// you could: check whether each tile is walkable with this
-	// or let the tileset define which tile ids are walkable
-	// we will use the first approach
+	bool walkable;  // Primary walkability mechanism
+	// Note: For future improvement, consider separating tile identity from properties
+	// (see docs/Tile-Design-Improvements.md)
 
 	//int startx;
 	//int starty;
@@ -78,9 +77,10 @@ private:
 	SDL_Rect dimension;
 	//int size;
 
-	// Collision
+	// Legacy collision type - kept for compatibility but not used for walkability
 	/**
-	 * In essence, determines whether the tile is walkable
+	 * Legacy type field - consider using for tile identity in future
+	 * Currently not used for walkability determination
 	 */
 	int type;
 
