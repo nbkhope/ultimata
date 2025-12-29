@@ -498,7 +498,7 @@ void Input::movePlayer(Creature* c)
 		//	quit = true;
 		if (event.type == SDL_KEYDOWN) // A key was pressed
 		{
-			switch (event.key.keysym.key)
+			switch (event.key.keysym.sym)  // Fixed: SDL2 uses 'sym' not 'key'
 			{
 				default:
 			}
