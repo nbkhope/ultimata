@@ -90,7 +90,6 @@ bool Tileset::loadTileDescriptionsTxt(const string& filename)
 	return false;
 }
 
-// cant return reference, why? use const before tile
 const Tile& Tileset::getTile(int id) const
 {
 	// Bounds checking to prevent out-of-bounds access
