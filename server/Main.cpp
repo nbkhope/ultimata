@@ -110,11 +110,17 @@ void closeSocket(SDLNet_SocketSet& socketSet, TCPsocket clientSockets[MAX_SOCKET
 {
     TCPsocket clientSocket = clientSockets[socketIndex];
 
-    if (clientSocket && SDLNet_TCP_DelSocket(socketSet, clientSocket) == -1)
+    if (!clientSocket) {
+        // Socket already closed
+        return;
+    }
+
+    // Try to remove from socket set - don't exit on failure as it might already be removed
+    if (SDLNet_TCP_DelSocket(socketSet, clientSocket) == -1)
     {
-        snerror("closeSocket: SDLNet_TCP_DelSocket");
-        exit(7);
-    };
+        // Socket might already be removed, just log but don't exit
+        std::cout << "Warning: Socket already removed from socket set" << std::endl;
+    }
 
     // todo: can we remove memset here?
     memset(&clients[socketIndex], 0x00, sizeof(Client));
@@ -283,9 +289,9 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                     int bytesSent = SDLNet_TCP_Send(clientSocket, &message, messageLength);//4 + 1
                     if (bytesSent < messageLength)
                     {
-                        snerror("listen: move character: SDLNet_TCP_Send");
-                        info("Disconnecting client");
+                        std::cout << "Client " << clientIndex << " disconnected during send" << std::endl;
                         closeSocket(socketSet, clientSockets, clientIndex);
+                        playersOnline--; // Decrement since we lost a player
                     }
                     else
                     {
@@ -351,18 +357,9 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                     {
                         //TODO handling
                         // TCP Connection is broken. (because of error or closure)
-                        int socketsUsed = SDLNet_TCP_DelSocket(socketSet, clientSocket);
-                        if (socketsUsed == -1)
-                        {
-                            snerror("SDLNet_TCP_DelSocket");
-                        }
-                        //todo: error
-                        SDLNet_TCP_Close(clientSocket);
-                        //clientSocket = NULL;
-                        clientSockets[playerIndex] = NULL;
-                        //todo: big problem. Array is not dynamic. So it wont shift elements down...
-                        playersOnline--;
                         std::cout << "Client disconnected: " << SDLNet_GetError() << std::endl;
+                        closeSocket(socketSet, clientSockets, playerIndex);
+                        playersOnline--;
                     }
                     else
                     {
