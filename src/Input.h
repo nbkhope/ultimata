@@ -7,8 +7,10 @@
 #include <string>
 // #include <sstream>
 #include <iostream>
+#include <cstring>  // For strncpy
 
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_net.h"
 
 #include "Constants.h"
 #include "Creature.h"
@@ -29,40 +31,40 @@ class Input
 public:
 	Input();
 	~Input();
-	
+
 	/**
 	 * Handles input from the player
 	 */
-	bool get(GameMap* gameMap, Creature *c);
-	
+	bool get(GameMap* gameMap, Creature *c, TCPsocket& socket);
+
 	/**
 	 * Handles input from the player (test version)
 	 */
 	bool testGet(GameMap* gameMap, Creature *c);
-	
+
 	// Alpha blending <~test~>
 	Uint8 getAlpha() const;
 	void setAlpha(Uint8 a);
 	Uint8* getColor();
 	void setColor(Uint8* color);
-	
+
 	// Change tile <~test~>
 	int getTestTileId() const;
-	
+
 	// Image Loading Different Types <~test~>
 	int getTestImageLoad() const;
-	
+
 	/**
 	 * @return	a pointer to the cursor
 	 */
 	Cursor* getCursor();
-	
+
 	Timer* getTimer();
-	
+
 	bool getDialogueToggle() const;
 	void setDialogueToggle(bool toggle);
 	
-	void checkPlayerMovement(GameMap* gameMap, Creature* c);
+	void checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket);
 	//void movePlayer(Creature *c);
 
 	// void get();
@@ -72,14 +74,14 @@ private:
 	 * Structure to hold input events
 	 */
 	SDL_Event e;
-	
+
 	// Alpha blending <~test~>
 	Uint8 alpha;
 	Uint8 color[3];
-	
+
 	// Change tile <~test~>
 	int testTileId;
-	
+
 	// Image Loading Different Types <~test~>
 	int testImageLoad;
 	
@@ -90,7 +92,7 @@ private:
 	 * The screen cursor
 	 */
 	Cursor cursor; // to select a certain tile and eventually change it with [, ]
-	
+
 	Timer timer;
 
 	// stringstream stream;

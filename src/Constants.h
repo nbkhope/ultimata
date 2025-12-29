@@ -51,6 +51,26 @@ const int PLAYER_MOVEMENT = TILESIZE;
 
 const int PLAYER_MOVE_SPEED = TILESIZE / 4;
 
+// Networking constants
+const int MAX_MESSAGE_SIZE = 256;  // Buffer size for network messages
+const int MAX_PACKET_SIZE = 1024;  // Maximum packet size
+const int MAX_PACKET = 0xFF;       // Standard packet size used by client/server (255 bytes)
+
+// Network message types - shared between client and server
+namespace NetworkMessages {
+    const char* const DISCONNECT = "disconnect";
+    const char* const PLAYER_POSITION = "player_position";
+    const char* const PLAYER_CONNECT = "player_connect";
+    const char* const SERVER_WELCOME = "server_welcome";
+}
+
+// Network command constants (binary protocol)
+namespace NetworkCommands {
+    const int MOVE = 1;
+    const int STOP = 2;
+    const int ATTACK = 3;
+}
+
 enum GAME_MODE { GAME_MODE_TEST, GAME_MODE_NORMAL };
 
 /**
