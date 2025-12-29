@@ -23,6 +23,7 @@ Tileset::Tileset()
 	
 	cout << "Tileset constructed." << endl;
 
+	// Initialize game tile types (8x8 grid = 64 types)
 	for (int i = 0; i < TILESET_TILES; i++)
 		tiles[i].setDimension(i % 8 * TILESIZE, i / 8 * TILESIZE);
 		

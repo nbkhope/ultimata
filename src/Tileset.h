@@ -36,6 +36,7 @@ public:
 private:
 	/**
 	 * To hold clipping data for each individual tile in the tilesheet image
+	 * 16x16 grid = 256 sprites for the full tileset image
 	 */
 	SDL_Rect sprite[256];
 	
@@ -50,8 +51,8 @@ private:
 	//int tilesize;
 
 	/**
-	 * Holds the information for each tile in the set,
-	 * i.e. each tile offset clip.
+	 * Holds the information for game tile types/properties
+	 * 8x8 grid = 64 tile types used by the game logic
 	 */
 	Tile tiles[TILESET_TILES];
 };
