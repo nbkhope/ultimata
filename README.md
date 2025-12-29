@@ -34,3 +34,25 @@ SDL_mixer/SDL_mixer.h
 - Change "Objective-C Automatic Reference Counting" to No in Apple LLVM 6.1
 - Use custom working directory (Product->Scheme->Edit Scheme, under Options) 
 ~/dev/Ultimata/Ultimata
+
+## Setting up bzr
+
+go to branch directory, then
+
+```
+bzr init 
+bzr add *
+bzr commit -m "Initial commit"
+bzr push lp:~nbkhope/ultimata/2.0
+```
+
+```
+git init
+git add *
+git commit -m "Initial commit"
+
+git remote add github git@github.com:nbkhope/ultimata.git
+git clone git@github.com:nbkhope/ultimata.git
+
+git push ultimata master
+```
