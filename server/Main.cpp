@@ -235,8 +235,6 @@ bool acceptSocket(SDLNet_SocketSet& socketSet, TCPsocket& serverSocket, TCPsocke
     std::cout << "> Added client with index " << socketIndex << std::endl;
     playersOnline++;
 
-    SDL_Delay(3000);
-
     return true;
 }
 
