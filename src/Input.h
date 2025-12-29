@@ -4,6 +4,8 @@
 #ifndef __INPUT_H__
 #define __INPUT_H__
 
+#include <string>
+// #include <sstream>
 #include <iostream>
 
 #include "SDL2/SDL.h"
@@ -58,8 +60,13 @@ public:
 
 	Timer* getTimer();
 
+	bool getDialogueToggle() const;
+	void setDialogueToggle(bool toggle);
+	
 	void checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket);
 	//void movePlayer(Creature *c);
+
+	// void get();
 
 private:
 	/**
@@ -76,13 +83,18 @@ private:
 
 	// Image Loading Different Types <~test~>
 	int testImageLoad;
-
+	
+	// Dialogue system
+	bool dialogueToggle;
+	
 	/**
 	 * The screen cursor
 	 */
 	Cursor cursor; // to select a certain tile and eventually change it with [, ]
 
 	Timer timer;
+
+	// stringstream stream;
 };
 
 #endif

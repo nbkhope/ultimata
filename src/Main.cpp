@@ -38,6 +38,11 @@ void networking() {
 	//todo: error
 	SDLNet_TCP_AddSocket(socketSet, socket);
 }
+// Project includes for classes used directly in main()
+#include "Graphics.h"  // Used for Graphics class
+#include "Widget.h"    // Used for Widget class
+
+using namespace std;
 
 int main(int argc, char* args[])
 {
@@ -84,6 +89,14 @@ int main(int argc, char* args[])
 		// Set up cursor
 		input.getCursor()->updateTileInfo(&gameMap);
 
+		// Create dialogue box widget at bottom of screen
+		int dialogueHeight = SCREEN_HEIGHT / 4;  // 1/4 of screen height
+		int dialogueWidth = SCREEN_WIDTH - 32;   // Full width with 16px margin on each side
+		int dialogueX = 16;                      // 16px margin from left
+		int dialogueY = SCREEN_HEIGHT - dialogueHeight - 16; // 16px margin from bottom
+		Widget widget(dialogueX, dialogueY, dialogueWidth, dialogueHeight);
+		widget.setTitle("Dialogue Box");
+		
 		/**
 		 * Begins game loop
 		 */
@@ -147,10 +160,14 @@ int main(int argc, char* args[])
 					}
 				};
 
+				
+				// Update widget visibility based on dialogue state
+				widget.setVisible(input.getDialogueToggle());
+				
 #ifndef __TEXTURE_RENDERING__
 				graphics.updateCurrentSurface();
 #else
-				graphics.render(&gameMap, &creature, &input);
+				graphics.render(&gameMap, &creature, &input, &widget);
 #endif
 
 			}

@@ -12,7 +12,10 @@ Input::Input()
 
 	// Image Loading Different Types <~test~>
 	testImageLoad = 0;
-
+	
+	// Dialogue system
+	dialogueToggle = false;
+	
 	// Set initial cursor position
 	cursor.setPosX(0);
 	cursor.setPosY(0);
@@ -139,6 +142,10 @@ bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
 					break;
 				case SDLK_SLASH: // reset timer
 					timer.reset();
+					break;
+				case SDLK_SPACE: // toggle dialogue box
+					dialogueToggle = !dialogueToggle;
+					cout << "Dialogue " << (dialogueToggle ? "shown" : "hidden") << endl;
 					break;
 				default:
 					// do nothing
@@ -516,3 +523,31 @@ void Input::movePlayer(Creature* c)
 	}
 }
  */
+
+/*void Input::get()
+{
+	// Go through all the events, one by one
+	while (SDL_PollEvent(&event))
+	{
+		//if (event.type == SDL_QUIT)
+		//	quit = true;
+		if (event.type == SDL_KEYDOWN) // A key was pressed
+		{
+			switch (event.key.keysym.sym)  // Fixed: SDL2 uses 'sym' not 'key'
+			{
+				default:
+			}
+		}
+	}
+}
+*/
+
+bool Input::getDialogueToggle() const
+{
+	return dialogueToggle;
+}
+
+void Input::setDialogueToggle(bool toggle)
+{
+	dialogueToggle = toggle;
+}

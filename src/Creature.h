@@ -1,15 +1,26 @@
 /** @file
  * Contains the declaration of the Creature class
+ * 
+ * Creature class declaration
+ * 
+ * An object of Creature type represents any entity or living being in the game.
+ * It is the base class for the following game entities: 
+ * 	Player -- the main playable character
+ * 	Monster -- the monsters in the game (enemies)
+ *	Npc -- the Non-Playable Characters in the game (e.g. shopkeeper)
  */
 
 #ifndef __CREATURE_H__
 #define __CREATURE_H__
 
 #include <iostream>
+#include <string>
 
 #include "SDL2/SDL.h"
 
 #include "Constants.h"
+
+//#include "Main.h"
 
 using namespace std;
 
@@ -21,7 +32,14 @@ class Creature
 {
 public:
 	Creature();
-	~Creature();
+	Creature(const string& name);
+	/**
+	 * Destructor
+	 *
+	 * The virtual keyword fixes the problem of the derived classes
+	 * calling the right destructor.
+	 */
+	virtual ~Creature();
 	
 	/**
 	 * @return the position of the creature
@@ -128,7 +146,61 @@ public:
 	void setHealthMax(int newHealthMax);
 	void setMana(int newMana);
 	void setManaMax(int newManaMax);
+
+	// Movement functions ///////////////////////////////////
+	// To be able to use virtual functions and dynamic binding,
+	// objects have to be allocated dynamically with new.
+//	virtual void checkMovement(SDL_Event &event) = 0;
+	//virtual void move();
+
+	/**
+	 * Returns the creature position
+	 */
+	SDL_Rect getPosition() const;
+
+	/** Position methods **/
+	void shiftPos(int sx, int sy);
+
+
+	int getMovSpeedX() const;
+	int getMovSpeedY() const;
+	void getMovSpeed(int& xmov, int& ymov) const;
+/*
+	void setPosition(int py) { pos.y = py; }
+	void setPosition(int px, int py);  // No default parameter - both x,y required
+*/
+
+/*
+	void shiftPosition(int sy) { pos.y += sy; }
+	void shiftPosition(int sx, int sy = 0) { pos.x += sx; pos.y += sy; }
+*/
+
+	////////////////////////////////////////////////////////
+
+	SDL_Surface* getCharset() const;
+//	SDL_Rect** getCharsetClipping();
+
+	/**
+	 * Displays the name of the creature on the screen, above its head
+	 */
+	void displayName(SDL_Surface* surface) const;//, SDL_Rect &camera) const;
+
+
+
+	// Camera
+	SDL_Rect* getCamera();// const;
+	//void updateCamera(Map &map);//, SDL_Rect &camera);
+
+	int getId() const;
+	void setId(int newId);
+
 private:
+	/**
+	 * Common initialization for all constructors
+	 * Eliminates code duplication between constructors
+	 */
+	void init();
+	
 	/*
 	 * Rectangle structure to hold creature position and area
 	 */
@@ -160,6 +232,22 @@ private:
 	int healthMax;
 	int mana;
 	int manaMax;
+
+protected:
+	int attack;
+	int defense;
+
+	int frame;
+
+	// To be substituted by a charset later...
+	SDL_Surface* charset;
+//	SDL_Rect charsetclip[4][3];
+
+	//Charset charset;
+
+	SDL_Rect camera;
+
+	int id;
 };
 
 #endif

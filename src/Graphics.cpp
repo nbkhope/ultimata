@@ -29,16 +29,16 @@ LTexture::~LTexture()
 bool LTexture::loadFromFile(string filename, SDL_Renderer* gRenderer)
 {
 	SDL_Texture* newTexture = NULL;
-	
+
 	// Gets rid of whatever was loaded before
 	free();
-	
-	
+
+
 #ifdef __DEBUG_MODE__
 	cout << "(LTexture) Loading texture " << filename << ". . ." << endl;
 #endif
 	SDL_Surface* loadedSurface = IMG_Load(filename.c_str());
-	
+
 	if (loadedSurface == NULL)
 	{
 		cerr << "Surface could not be loaded" << endl;
@@ -49,9 +49,9 @@ bool LTexture::loadFromFile(string filename, SDL_Renderer* gRenderer)
 		// Color key image before creating texture (Cyan: #00FFFF)
 		// Purple color key: #C00080
 		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0xC0, 0x00, 0x80));
-		
+
 		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-		
+
 		if (newTexture == NULL)
 		{
 			cerr << "Texture could not be created" << endl;
@@ -61,17 +61,17 @@ bool LTexture::loadFromFile(string filename, SDL_Renderer* gRenderer)
 		{
 			mWidth = loadedSurface->w;
 			mHeight = loadedSurface->h;
-			
+
 #ifdef __DEBUG_MODE__
 			cout << "Texture loaded." << endl;
 #endif
 		}
-		
+
 		SDL_FreeSurface(loadedSurface);
 	}
-	
+
 	mTexture = newTexture;
-	
+
 	return mTexture != NULL;
 }
 
@@ -95,13 +95,13 @@ void LTexture::free()
 void LTexture::render(int x, int y, SDL_Renderer* gRenderer, SDL_Rect* clip)
 {
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
-	
+
 	if (clip != NULL)
 	{
 		renderQuad.w = clip->w;
 		renderQuad.h = clip->h;
 	}
-	
+
 	SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
 }
 
@@ -156,18 +156,23 @@ Graphics::Graphics()
 {
 	window = NULL;
 	screenSurface = NULL;
-	
+
 	gRenderer = NULL;
 	gTexture = NULL;
 
 	gameIcon = NULL;
 	gameLogo = NULL;
 	image = NULL;
-	
+
 	// Image Loading Different Types <~test~>
 	image_jpg = NULL;
 	image_tiff = NULL;
 	image_bmp = NULL;
+
+	buffer = NULL;
+	buffer2 = NULL;
+	logo = NULL;
+	running = false;
 }
 
 Graphics::~Graphics()
@@ -176,21 +181,25 @@ Graphics::~Graphics()
 	image = NULL;
 	SDL_FreeSurface(gameIcon);
 	SDL_FreeSurface(gameLogo);
+
+	SDL_FreeSurface(buffer);
+	SDL_FreeSurface(buffer2);
+	SDL_FreeSurface(logo);
 	
 	// The issue was: if currentSurface is associated with the window, then it will automatically be
 	// freed along with the window?
 	//SDL_FreeSurface(currentSurface);
 	//currentSurface = NULL;
-	
+
 	SDL_DestroyTexture(gTexture);
 	SDL_DestroyRenderer(gRenderer);
 	gTexture = NULL; // Is this really necessary?
 	gRenderer = NULL;
-	
+
 	// Clean up (takes care of window and window surface (screenSurface)
 	SDL_DestroyWindow(window);
 	window = NULL; // Is this really necessary?
-	
+
 	// Image Loading Different Types <~test~>
 	SDL_DestroyTexture(image_jpg);
 	SDL_DestroyTexture(image_tiff);
@@ -208,7 +217,7 @@ void Graphics::setUpWindow()
 							  SCREEN_WIDTH,
 							  SCREEN_HEIGHT,
 							  SDL_WINDOW_SHOWN);
-	
+
 	if (window == NULL) // if there is an error, function returns NULL
 	{
 		cerr << "Window could not be created:" << endl;
@@ -226,16 +235,16 @@ void Graphics::setUpWindow()
 
 		// Paints the screen surface white (#FFFFFF)
 		SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-		
+
 		// Updates the window surface after the changes made above
 		SDL_UpdateWindowSurface(window);
-		
+
 		// Wait 2000 ms (2 s)
 		SDL_Delay(2000);
 #else
 		// Use Texture Rendering
 		gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-		
+
 		if (gRenderer == NULL)
 		{
 			cerr << "Could not create renderer:" << endl;
@@ -255,11 +264,11 @@ void Graphics::setUpWindow()
 bool Graphics::loadMedia()
 {
 	bool success;
-	
+
 	success = true;
-	
+
 	cout << "Loading media. . ." << endl;
-	
+
 	Uint16 pixels[16*16] = {
 		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
 		0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff, 0x0fff,
@@ -297,16 +306,16 @@ bool Graphics::loadMedia()
 	gameIcon = SDL_CreateRGBSurfaceFrom(pixels, 16, 16, 16, 16*2,
 										0x0f00, 0x00f0, 0x000f, 0xf000);
 	//gameIcon = loadSurface("data/images/gameicon.png");
-	
+
 	gameLogo = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0x0f00, 0x00f0, 0x000f, 0xf000);
-	
+
 #ifndef __TEXTURE_RENDERING__
 	image = loadSurface("data/images/image.bmp");
-	
+
 #endif
-	
+
 	//tileSheet = loadTexture("data/images/PathAndObjects.png");
-	
+
 	//if (tileSheet == NULL)
 	if(!tileSheet.loadFromFile("data/images/PathAndObjects.png", gRenderer))
 	{
@@ -314,66 +323,66 @@ bool Graphics::loadMedia()
 		cerr << SDL_GetError();
 		success = false;
 	}
-	
+
 	if(!playerCharset.loadFromFile("data/images/player_charset.png", gRenderer))
 	{
 		cerr << "Could not load player charset:" << endl;
 		cerr << SDL_GetError();
 		success = false;
 	}
-	
+
 	// Alpha blending <~test~>
 	myBackground.loadFromFile("data/images/shakyamuni.png", gRenderer); // should check if failed
 	myForeground.loadFromFile("data/images/kongokai.png", gRenderer);
 	// Set blend mode; the background texture doesn't need to be set, only the foreground
 	myForeground.setBlendMode(SDL_BLENDMODE_BLEND);
-	
+
 	// Image Loading Different Types <~test~>
 	image_jpg = loadTexture("data/images/taizokai.jpg");
 	image_tiff = loadTexture("data/images/taizokai.tiff");
 	image_bmp = loadTexture("data/images/image.bmp");
-	
+
 	return success;
 }
 
 void Graphics::displayImage()
 {
 	cout << "Displaying image . . ." << endl;
-	
+
 	// Apply image
 	SDL_BlitSurface(image, NULL, screenSurface, NULL);
-	
+
 	SDL_UpdateWindowSurface(window);
-	
+
 	SDL_Delay(2000);
 }
 
-void Graphics::render(GameMap* gameMap, Creature* creature, Input* input)
+void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget)
 {
 	// Make sure to re-set RenderDrawColor
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer); // Fills the screen with the DrawColor
 	//SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
-	
+
 	// For the timer
 	string title;
 	title = "Ultimata :: " + to_string(input->getTimer()->getTicks() / 1000.);
 	SDL_SetWindowTitle(window, title.c_str());
-	
+
 	//drawPrimitiveTiles();
 	//drawTiles(gameMap->getTileset(), input->getTestTileId());
 	drawGameMap(gameMap);
-	
+
 	// Set viewports. Viewports work with texture. Drawing primitive tiles using SDL_SetRenderXXXX does
 	// not make use of any textures.
 	//setViewport();
-	
+
 	//drawColorKeyExample();
-	
+
 	drawCursor(input->getCursor());
 
 	drawCreature(creature);
-	
+
 	// Image Loading Different Types <~test~>
 	switch (input->getTestImageLoad())
 	{
@@ -390,7 +399,9 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input)
 			// no image
 			break;
 	}
-	
+
+	drawWidget(widget);
+
 	SDL_RenderPresent(gRenderer);
 }
 
@@ -403,29 +414,29 @@ void Graphics::testRender(Creature* creature, Input* input)
 	r = input->getColor()[0];
 	g = input->getColor()[1];
 	b = input->getColor()[2];
-	
+
 	// Make sure to re-set RenderDrawColor
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer); // Fills the screen with the DrawColor
 	//SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
-	
+
 	//drawPrimitiveTiles();
 	// Remember myBackground is a LTexture object
 	myBackground.render(0, 0, gRenderer);
-	
+
 	// Set viewports. Viewports work with texture. Drawing primitive tiles using SDL_SetRenderXXXX does
 	// not make use of any textures.
 	//setViewport();
-	
+
 	//drawColorKeyExample();
-	
+
 	// Set foreground alpha
 	myForeground.setAlpha(input->getAlpha());
 	myForeground.setColor(r, g, b);
-	
+
 	//drawCreature(creature);
 	myForeground.render(0, 0, gRenderer);
-	
+
 	SDL_RenderPresent(gRenderer);
 }
 
@@ -442,7 +453,7 @@ SDL_Surface* Graphics::loadSurface(string filename)
 	cout << "Loading surface . . ." << endl;
 	#endif
 	SDL_Surface* loadedSurface = IMG_Load(filename.c_str());
-	
+
 	if (loadedSurface == NULL)
 	{
 		cerr << "Surface could not be loaded" << endl;
@@ -458,14 +469,14 @@ SDL_Surface* Graphics::loadSurface(string filename)
 			cerr << "Surface could not be converted" << endl;
 			cerr << SDL_GetError();
 		}
-		
+
 		SDL_FreeSurface(loadedSurface);
 	}
-	
+
 	#ifdef __DEBUG_MODE__
 	cout << "Surface loaded." << endl;
 	#endif
-	
+
 	return optimizedSurface;
 }
 
@@ -491,16 +502,16 @@ SDL_Texture* Graphics::loadTexture(string filename)
 	else
 	{
 		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-		
+
 		if (newTexture == NULL)
 		{
 			cerr << "Texture could not be created" << endl;
 			cerr << SDL_GetError();
 		}
-		
+
 		SDL_FreeSurface(loadedSurface);
 	}
-	
+
 	#ifdef __DEBUG_MODE__
 	cout << "Texture loaded." << endl;
 	#endif
@@ -521,16 +532,16 @@ void Graphics::drawPrimitiveTiles()
 	cout << "Drawing primitive tiles . . ." << endl;
 	SDL_Delay(1000);
 #endif
-	
+
 	tiles_across = SCREEN_WIDTH / TILESIZE;
 	tiles_down = SCREEN_HEIGHT / TILESIZE;
-	
+
 	tile_shape.w = TILESIZE;
 	tile_shape.h = TILESIZE;
-	
+
 	// #4C91A8
 	//SDL_SetRenderDrawColor(gRenderer, 0x4C, 0x91, 0xA8, 0xFF);
-	
+
 	for (i = 0; i < tiles_down; i++)
 	{
 		tile_shape.y = i * TILESIZE;
@@ -539,7 +550,7 @@ void Graphics::drawPrimitiveTiles()
 			SDL_SetRenderDrawColor(gRenderer, 0x4C, 0x91, 0xA8, 0xFF);
 			tile_shape.x = j * TILESIZE;
 			SDL_RenderFillRect(gRenderer, &tile_shape);
-			
+
 			// Add borders
 			SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 			SDL_RenderDrawRect(gRenderer, &tile_shape);
@@ -556,19 +567,19 @@ void Graphics::drawGameMap(GameMap* gameMap)
 	int spriteIndex;
 	int tileIndex;
 	Tileset* tileset;
-	
+
 	tileset = gameMap->getTileset();
-	
+
 #ifdef __DEBUG_MODE__
 	// this is not good. Makes everything way too slow. (too many operations)
 	//cout << "Drawing tiles from game map . . ." << endl;
 	//SDL_Delay(1000);
 #endif
-	
+
 	tiles_across = SCREEN_WIDTH / TILESIZE;
 	tiles_down = SCREEN_HEIGHT / TILESIZE;
-	
-	
+
+
 	for (i = 0; i < tiles_down; i++)
 	{
 		for (j = 0; j < tiles_across; j++)
@@ -587,16 +598,16 @@ void Graphics::drawTiles(Tileset* tileset, int index)
 	int tiles_across;
 	int tiles_down;
 	int i, j;
-	
+
 #ifdef __DEBUG_MODE__
 	//cout << "Drawing tiles . . ." << endl;
 	//SDL_Delay(1000);
 #endif
-	
+
 	tiles_across = SCREEN_WIDTH / TILESIZE;
 	tiles_down = SCREEN_HEIGHT / TILESIZE;
-	
-	
+
+
 	for (i = 0; i < tiles_down; i++)
 	{
 		for (j = 0; j < tiles_across; j++)
@@ -612,7 +623,7 @@ void Graphics::drawTiles(Tileset* tileset, int index)
 void Graphics::drawCreature(Creature* c)
 {
 	SDL_Rect poseClip;
-	
+
 	/**
 	 * Determines which part of the charset image to clip
 	 * Note the player image has the width of a tile and the height of two tiles
@@ -621,7 +632,7 @@ void Graphics::drawCreature(Creature* c)
 	poseClip.y = c->getDirection() * c->getHeight();
 	poseClip.w = c->getWidth();
 	poseClip.h = c->getHeight();
-	
+
 	/**
 	 * TODO later: make charset class and generalize drawCreature() for any creature
 	 */
@@ -637,13 +648,13 @@ void Graphics::drawSquareCreature(Creature* c)
 	//int x, y;
 	//int w, h;
 	SDL_Rect rect;
-	
+
 	rect.x = c->getPosX();
 	rect.y = c->getPosY();
 	rect.w = c->getWidth();
 	rect.h = c->getHeight();
-	
-	
+
+
 	// we need this for the top image to blend and become transparent
 	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
 	// tile: #CCCCCC, With some transparency (75%, 191)
@@ -651,7 +662,7 @@ void Graphics::drawSquareCreature(Creature* c)
 	SDL_RenderFillRect(gRenderer, &rect);
 	// set it back to NONE, just in case . . .
 	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
-	
+
 	// Add borders
 	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderDrawRect(gRenderer, &rect);
@@ -666,13 +677,13 @@ void Graphics::drawCursor(Cursor* c)
 	//int x, y;
 	//int w, h;
 	SDL_Rect rect;
-	
+
 	rect.x = c->getPosX();
 	rect.y = c->getPosY();
 	rect.w = c->getWidth();
 	rect.h = c->getHeight();
-	
-	
+
+
 	// we need this for the top image to blend and become transparent
 	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
 	// tile, with some transparency (25%, 63)
@@ -680,10 +691,43 @@ void Graphics::drawCursor(Cursor* c)
 	SDL_RenderFillRect(gRenderer, &rect);
 	// set it back to NONE, just in case . . .
 	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
-	
+
 	// Add borders
 	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderDrawRect(gRenderer, &rect);
+}
+
+void Graphics::drawWidget(Widget* widget)
+{
+	// Only draw if widget is visible
+	if (!widget->isVisible()) {
+		return;
+	}
+	
+	SDL_Rect rect;
+	rect.x = widget->getX();
+	rect.y = widget->getY();
+	rect.w = widget->getWidth();
+	rect.h = widget->getHeight();
+
+	// Enable blending for semi-transparent background
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+	
+	// Draw semi-transparent dark background for dialogue box
+	SDL_SetRenderDrawColor(gRenderer, 0x20, 0x20, 0x40, 200); // Dark blue-gray with transparency
+	SDL_RenderFillRect(gRenderer, &rect);
+	
+	// Draw border for the dialogue box
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 255); // White border
+	SDL_RenderDrawRect(gRenderer, &rect);
+	
+	// Draw inner border for a more refined look
+	SDL_Rect innerRect = {rect.x + 2, rect.y + 2, rect.w - 4, rect.h - 4};
+	SDL_SetRenderDrawColor(gRenderer, 0xC0, 0xC0, 0xC0, 255); // Light gray inner border
+	SDL_RenderDrawRect(gRenderer, &innerRect);
+	
+	// Reset blend mode
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
 }
 
 void Graphics::setViewport()
@@ -725,4 +769,29 @@ void Graphics::setViewport()
 SDL_Renderer* Graphics::getRenderer()
 {
 	return gRenderer;
+}
+
+void Graphics::copyMapToBuffer() {
+	// Check if buffer2 is valid before using it
+	if (buffer2 == NULL) {
+		cerr << "Error: buffer2 is NULL in copyMapToBuffer()" << endl;
+		return;
+	}
+	
+	// Attempt to convert the surface
+	SDL_Surface* newBuffer = SDL_ConvertSurface(buffer2, buffer2->format, 0);
+	
+	// Check if conversion was successful
+	if (newBuffer == NULL) {
+		cerr << "Error: Failed to convert surface in copyMapToBuffer(): " << SDL_GetError() << endl;
+		// Keep the existing buffer instead of setting it to NULL
+		// This prevents getting stuck in a failure loop
+		return;
+	}
+	
+	// Only free the old buffer and assign new one if conversion succeeded
+	if (buffer != NULL) {
+		SDL_FreeSurface(buffer);
+	}
+	buffer = newBuffer;
 }

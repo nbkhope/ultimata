@@ -1,9 +1,16 @@
 /** @file
+ * System core class.
+ * Responsible for initializing SDL. Should not be responsible for
+ * initializing sound, graphics, fonts, etc.
  */
 
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <iostream>
 
 /*#ifdef __APPLE__
@@ -42,8 +49,24 @@ public:
 	 */
 	int init(Graphics* graphics);
 
-private:
+	bool isRunning() const;
+	void run();
 	
+
+private:
+
+	enum GameState
+	{
+		INTRO,
+		NEWGAME,
+		INGAME,
+		GAMEOVER
+	};
+
+//	SDL_Surface* buffer;
+
+	bool running;
+	bool ttfInitialized;  // Track whether TTF_Init() succeeded
 };
 
 #endif
