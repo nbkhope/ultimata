@@ -772,10 +772,21 @@ SDL_Renderer* Graphics::getRenderer()
 }
 
 void Graphics::copyMapToBuffer() {
+	// Check if buffer2 is valid before using it
+	if (buffer2 == NULL) {
+		cerr << "Error: buffer2 is NULL in copyMapToBuffer()" << endl;
+		return;
+	}
+	
 	// Free the old buffer first to prevent memory leak
 	if (buffer != NULL) {
 		SDL_FreeSurface(buffer);
 	}
 	
 	buffer = SDL_ConvertSurface(buffer2, buffer2->format, SDL_SWSURFACE);
+	
+	// Check if conversion was successful
+	if (buffer == NULL) {
+		cerr << "Error: Failed to convert surface in copyMapToBuffer(): " << SDL_GetError() << endl;
+	}
 }
