@@ -71,10 +71,10 @@ bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
 			std::cout << message << std::endl;
 			//note terminating null (+1)...
 			int bytesSent = SDLNet_TCP_Send(socket, message, len);
-			if (bytesSent < len)
+			if (bytesSent != len)  // Check if exactly the expected number of bytes were sent
 			{
 				//todo: use error lib
-				std::cerr << SDLNet_GetError() << std::endl;
+				std::cerr << "Network send failed: " << SDLNet_GetError() << std::endl;
 			}
 			//todo: error sprintf
 		}
