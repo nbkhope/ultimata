@@ -221,15 +221,16 @@ bool acceptSocket(SDLNet_SocketSet& socketSet, TCPsocket& serverSocket, TCPsocke
         return false;
     }
 
+    // Assign the new socket BEFORE adding it to the socket set
+    clientSockets[socketIndex] = clientSocket;
     clients[socketIndex].active = true;
+    
     int socketsUsed = SDLNet_TCP_AddSocket(socketSet, clientSockets[socketIndex]);
     if (socketsUsed == -1)
     {
         error("Failed to add socket.");
         exit(12);
     }
-
-    clientSockets[socketIndex] = clientSocket;
 
     std::cout << "> Added client with index " << socketIndex << std::endl;
     playersOnline++;
