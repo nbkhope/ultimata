@@ -42,6 +42,11 @@ Tileset::~Tileset()
 	}
 }
 
+SDL_Surface* Tileset::getSheet() const
+{
+	return sheet;
+}
+
 SDL_Rect* Tileset::getSprite(int index)
 {
 	// Bounds checking to prevent out-of-bounds access
