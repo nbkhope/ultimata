@@ -21,13 +21,12 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "constants.h"
+#include "Constants.h"
 //#include "Main.h"
 
 #include "System.h"
 #include "Graphics.h"
 #include "Creature.h"
-#include "Sound.h"
 #include "Tile.h"
 #include "Timer.h"
 

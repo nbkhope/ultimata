@@ -5,6 +5,15 @@ Tile::Tile()
 	id = 17;
 	//id = 23;
 	walkable = true;
+	
+	// Initialize dimension pointer to prevent crash in setDimension()
+	dimension = new SDL_Rect;
+	dimension->x = 0;
+	dimension->y = 0;
+	dimension->w = TILESIZE;
+	dimension->h = TILESIZE;
+	
+	type = WALKABLE;
 }
 
 Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(length)
