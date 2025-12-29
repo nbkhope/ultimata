@@ -1,5 +1,6 @@
 #include "Graphics.h"
 #include "Monster.h"
+#include "Camera.h"
 
 // Define the mutable screen dimensions
 int SCREEN_WIDTH = ResolutionPresets::WIDTH_NORMAL;
@@ -377,7 +378,7 @@ void Graphics::displayImage()
 	SDL_Delay(2000);
 }
 
-void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, Monster* monsters, int monsterCount)
+void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, Monster* monsters, int monsterCount, Camera* camera)
 {
 	// Make sure to re-set RenderDrawColor
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -389,9 +390,38 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 	title = "Ultimata :: " + to_string(input->getTimer()->getTicks() / 1000.);
 	SDL_SetWindowTitle(window, title.c_str());
 
+	int camX = camera ? camera->getX() : 0;
+	int camY = camera ? camera->getY() : 0;
+
 	//drawPrimitiveTiles();
 	//drawTiles(gameMap->getTileset(), input->getTestTileId());
-	drawGameMap(gameMap);
+	
+	// Draw game map with camera offset
+	Tileset* tileset = gameMap->getTileset();
+	int tiles_across = SCREEN_WIDTH / TILESIZE;
+	int tiles_down = SCREEN_HEIGHT / TILESIZE;
+	int startTileX = camX / TILESIZE;
+	int startTileY = camY / TILESIZE;
+	int offsetX = camX % TILESIZE;
+	int offsetY = camY % TILESIZE;
+	int mapTilesAcross = gameMap->getWidth() / TILESIZE;
+	
+	for (int i = 0; i <= tiles_down; i++)
+	{
+		for (int j = 0; j <= tiles_across; j++)
+		{
+			int mapTileX = startTileX + j;
+			int mapTileY = startTileY + i;
+			
+			// Check bounds
+			if (mapTileX >= 0 && mapTileX < mapTilesAcross && mapTileY >= 0 && mapTileY < (gameMap->getHeight() / TILESIZE))
+			{
+				int tileIndex = mapTileY * mapTilesAcross + mapTileX;
+				int spriteIndex = gameMap->getTile(tileIndex)->getId();
+				tileSheet.render(j * TILESIZE - offsetX, i * TILESIZE - offsetY, gRenderer, tileset->getSprite(spriteIndex));
+			}
+		}
+	}
 
 	// Set viewports. Viewports work with texture. Drawing primitive tiles using SDL_SetRenderXXXX does
 	// not make use of any textures.
@@ -399,14 +429,25 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 
 	//drawColorKeyExample();
 
-	drawCursor(input->getCursor());
+	// Draw cursor with camera offset
+	SDL_Rect cursorRect;
+	cursorRect.x = input->getCursor()->getPosX() - camX;
+	cursorRect.y = input->getCursor()->getPosY() - camY;
+	cursorRect.w = input->getCursor()->getWidth();
+	cursorRect.h = input->getCursor()->getHeight();
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 63);
+	SDL_RenderFillRect(gRenderer, &cursorRect);
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	SDL_RenderDrawRect(gRenderer, &cursorRect);
 
-	// Draw monsters first (behind the player) - red squares
+	// Draw monsters first (behind the player) - red squares with camera offset
 	for (int i = 0; i < monsterCount; i++)
 	{
 		SDL_Rect rect;
-		rect.x = monsters[i].getPosX();
-		rect.y = monsters[i].getPosY();
+		rect.x = monsters[i].getPosX() - camX;
+		rect.y = monsters[i].getPosY() - camY;
 		rect.w = monsters[i].getWidth();
 		rect.h = monsters[i].getHeight();
 
@@ -423,7 +464,13 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 		SDL_RenderDrawRect(gRenderer, &rect);
 	}
 
-	drawCreature(creature);
+	// Draw creature with camera offset
+	SDL_Rect poseClip;
+	poseClip.x = creature->getStep() * creature->getWidth();
+	poseClip.y = creature->getDirection() * creature->getHeight();
+	poseClip.w = creature->getWidth();
+	poseClip.h = creature->getHeight();
+	playerCharset.render(creature->getPosX() - camX, creature->getPosY() - camY, gRenderer, &poseClip);
 
 	// Image Loading Different Types <~test~>
 	switch (input->getTestImageLoad())

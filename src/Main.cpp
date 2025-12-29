@@ -102,6 +102,7 @@ void networking() {
 #include "Widget.h"    // Used for Widget class
 #include "Sound.h"
 #include "Monster.h"
+#include "Camera.h"
 
 using namespace std;
 
@@ -330,6 +331,7 @@ int main(int argc, char* args[])
 	Creature creature;
 	Monster monsters[MAX_MONSTERS];
 	int monsterCount = 0;
+	Camera camera;
 
 	Input input;
 	int error;
@@ -506,10 +508,17 @@ int main(int argc, char* args[])
 				// Update widget visibility based on dialogue state
 				widget.setVisible(input.getDialogueToggle());
 				
+				// Update camera to follow player
+				int mapWidth = gameMap.getWidth();
+				int mapHeight = gameMap.getHeight();
+				camera.centerOnTarget(creature.getPosX() + creature.getWidth()/2, 
+				                      creature.getPosY() + creature.getHeight()/2,
+				                      mapWidth, mapHeight);
+				
 #ifndef __TEXTURE_RENDERING__
 				graphics.updateCurrentSurface();
 #else
-				graphics.render(&gameMap, &creature, &input, &widget, monsters, monsterCount);
+				graphics.render(&gameMap, &creature, &input, &widget, monsters, monsterCount, &camera);
 #endif
 
 			}

@@ -12,6 +12,9 @@ public:
 	~Camera();
 
 	SDL_Rect* getCamera();
+	void centerOnTarget(int targetX, int targetY, int mapWidth, int mapHeight);
+	int getX() const { return camera.x; }
+	int getY() const { return camera.y; }
 private:
 	SDL_Rect camera;
 };

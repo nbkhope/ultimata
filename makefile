@@ -15,7 +15,8 @@ OBJS= \
 	build/Timer.o \
 	build/Widget.o \
 	build/Sound.o \
-	build/Monster.o
+	build/Monster.o \
+	build/Camera.o
 
 DEPS=$(OBJS:.o=.d)
 
