@@ -84,7 +84,7 @@ int System::init(Graphics* graphics)
 		{
 			cerr << "SDL_ttf could not initialize:" << endl;
 			cerr << TTF_GetError() << endl;
-			error_code = 44;
+			return 44;  // Return early on TTF failure to prevent crashes
 		}
 		else
 		{

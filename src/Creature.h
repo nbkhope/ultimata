@@ -167,7 +167,7 @@ public:
 	void getMovSpeed(int& xmov, int& ymov) const;
 /*
 	void setPosition(int py) { pos.y = py; }
-	void setPosition(int px, int py = pos.y);
+	void setPosition(int px, int py);  // No default parameter - both x,y required
 */
 
 /*

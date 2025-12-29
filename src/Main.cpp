@@ -7,30 +7,9 @@
 
 #include "Main.h"
 
-// Standard library includes
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <iomanip>
-#include <ctime>
-#include <list>
-#include <vector>
-
-// Third-party library includes
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_mixer.h>
-
-// Project includes (alphabetically)
-#include "Constants.h"
-#include "Creature.h"
-#include "Graphics.h"
-#include "System.h"
-#include "Tile.h"
-#include "Timer.h"
-#include "Widget.h"
+// Project includes for classes used directly in main()
+#include "Graphics.h"  // Used for Graphics class
+#include "Widget.h"    // Used for Widget class
 
 using namespace std;
 
