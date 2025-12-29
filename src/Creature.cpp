@@ -314,7 +314,7 @@ SDL_Rect* Creature::getCamera()// const
 
 void Creature::updateCamera(Map &map)//, SDL_Rect &camera)
 {
-	// Ceneter camera around player
+	// Center camera around player
 //	camera.x = (pos.x + pos.w)/2 - SCREEN_WIDTH/2;
 //	camera.y = (pos.y + pos.h)/2 - SCREEN_HEIGHT/2;
 
@@ -324,7 +324,7 @@ void Creature::updateCamera(Map &map)//, SDL_Rect &camera)
 	if (camera.x < 0)
 		camera.x = 0;
 
-	// OMG! All the trouble because of a unseen semicolor right after this
+	// OMG! All the trouble because of a unseen semicolon right after this
 	// if statement condition...
 	if (camera.y < 0)
 		camera.y = 0;
