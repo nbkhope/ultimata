@@ -135,6 +135,89 @@ static bool renderMenuLine(SDL_Renderer* renderer, TTF_Font* font, const std::st
 	return true;
 }
 
+// Settings submenu for resolution changes; returns false if user wants to go back
+static void showSettingsMenu(Graphics& graphics)
+{
+	SDL_Renderer* renderer = graphics.getRenderer();
+	if (!renderer)
+	{
+		return;
+	}
+
+	TTF_Font* font = TTF_OpenFont("data/fonts/cour.ttf", 24);
+	if (!font)
+	{
+		std::cerr << "Could not load settings font: " << TTF_GetError() << std::endl;
+		return;
+	}
+
+	SDL_Event e;
+	bool backRequested = false;
+	int selectedOption = 0;  // 0 = Normal (720x480), 1 = Large (1280x720)
+
+	while (!backRequested)
+	{
+		while (SDL_PollEvent(&e))
+		{
+			if (e.type == SDL_QUIT)
+			{
+				backRequested = true;
+			}
+			else if (e.type == SDL_KEYDOWN)
+			{
+				switch (e.key.keysym.sym)
+				{
+					case SDLK_UP:
+						selectedOption = (selectedOption - 1 + 2) % 2;
+						break;
+					case SDLK_DOWN:
+						selectedOption = (selectedOption + 1) % 2;
+						break;
+					case SDLK_RETURN:
+					case SDLK_KP_ENTER:
+						// Apply selected resolution
+						if (selectedOption == 0)
+						{
+							graphics.resizeWindow(ResolutionPresets::WIDTH_NORMAL, ResolutionPresets::HEIGHT_NORMAL);
+						}
+						else
+						{
+							graphics.resizeWindow(ResolutionPresets::WIDTH_LARGE, ResolutionPresets::HEIGHT_LARGE);
+						}
+						break;
+					case SDLK_ESCAPE:
+						backRequested = true;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
+		SDL_SetRenderDrawColor(renderer, 18, 20, 28, 255);
+		SDL_RenderClear(renderer);
+
+		SDL_Color titleColor = { 200, 230, 255, 255 };
+		SDL_Color normalColor = { 210, 210, 210, 255 };
+		SDL_Color selectedColor = { 255, 255, 100, 255 };
+
+		renderMenuLine(renderer, font, "Settings - Resolution", 100, titleColor);
+		
+		std::string option0 = selectedOption == 0 ? "> Normal (720x480)" : "  Normal (720x480)";
+		std::string option1 = selectedOption == 1 ? "> Large (1280x720)" : "  Large (1280x720)";
+		
+		renderMenuLine(renderer, font, option0, 180, selectedOption == 0 ? selectedColor : normalColor);
+		renderMenuLine(renderer, font, option1, 220, selectedOption == 1 ? selectedColor : normalColor);
+		
+		renderMenuLine(renderer, font, "Press Enter to apply, Esc to go back", 300, normalColor);
+
+		SDL_RenderPresent(renderer);
+		SDL_Delay(16);
+	}
+
+	TTF_CloseFont(font);
+}
+
 // Simple blocking main menu loop; returns true if user chose to play, false if quit
 static bool showMainMenu(Graphics& graphics)
 {
@@ -161,6 +244,7 @@ static bool showMainMenu(Graphics& graphics)
 	SDL_Event e;
 	bool playRequested = false;
 	bool quitRequested = false;
+	int selectedOption = 0;  // 0 = Play, 1 = Settings, 2 = Quit
 
 	while (!playRequested && !quitRequested)
 	{
@@ -174,9 +258,26 @@ static bool showMainMenu(Graphics& graphics)
 			{
 				switch (e.key.keysym.sym)
 				{
+					case SDLK_UP:
+						selectedOption = (selectedOption - 1 + 3) % 3;
+						break;
+					case SDLK_DOWN:
+						selectedOption = (selectedOption + 1) % 3;
+						break;
 					case SDLK_RETURN:
 					case SDLK_KP_ENTER:
-						playRequested = true;
+						if (selectedOption == 0)
+						{
+							playRequested = true;
+						}
+						else if (selectedOption == 1)
+						{
+							showSettingsMenu(graphics);
+						}
+						else if (selectedOption == 2)
+						{
+							quitRequested = true;
+						}
 						break;
 					case SDLK_ESCAPE:
 						quitRequested = true;
@@ -192,10 +293,19 @@ static bool showMainMenu(Graphics& graphics)
 
 		// Simple menu layout
 		SDL_Color titleColor = { 200, 230, 255, 255 };
-		SDL_Color bodyColor = { 210, 210, 210, 255 };
+		SDL_Color normalColor = { 210, 210, 210, 255 };
+		SDL_Color selectedColor = { 255, 255, 100, 255 };
+		
 		renderMenuLine(renderer, font, "Ultimata", 120, titleColor);
-		renderMenuLine(renderer, font, "Press Enter to play (connect)", 200, bodyColor);
-		renderMenuLine(renderer, font, "Press Esc to quit", 240, bodyColor);
+		
+		std::string playText = selectedOption == 0 ? "> Play (connect to server)" : "  Play (connect to server)";
+		std::string settingsText = selectedOption == 1 ? "> Settings" : "  Settings";
+		std::string quitText = selectedOption == 2 ? "> Quit" : "  Quit";
+		
+		renderMenuLine(renderer, font, playText, 200, selectedOption == 0 ? selectedColor : normalColor);
+		renderMenuLine(renderer, font, settingsText, 240, selectedOption == 1 ? selectedColor : normalColor);
+		renderMenuLine(renderer, font, quitText, 280, selectedOption == 2 ? selectedColor : normalColor);
+		renderMenuLine(renderer, font, "Use Arrow Keys and Enter", 360, normalColor);
 
 		SDL_RenderPresent(renderer);
 		SDL_Delay(16); // ~60 FPS cap for the menu loop

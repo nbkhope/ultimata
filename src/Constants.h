@@ -14,9 +14,17 @@
 // Global constants to hold the screen settings
 /* The screen dimensions */
 //const int SCREEN_WIDTH = 640;
-const int SCREEN_WIDTH = 720;
-const int SCREEN_HEIGHT = 480;
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
 const int SCREEN_BPP = 32;
+
+// Resolution presets
+namespace ResolutionPresets {
+	const int WIDTH_NORMAL = 720;
+	const int HEIGHT_NORMAL = 480;
+	const int WIDTH_LARGE = 1280;
+	const int HEIGHT_LARGE = 720;
+}
 
 // a little fix for xcode now:
 //#define __TILEMOVE__

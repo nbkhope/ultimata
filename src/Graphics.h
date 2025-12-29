@@ -63,6 +63,11 @@ public:
 	 * Sets up the game window.
 	 */
 	void setUpWindow();
+	
+	/**
+	 * Resizes the game window to new dimensions.
+	 */
+	void resizeWindow(int width, int height);
 
 	/**
 	 * Loads the necessary graphical resources such as images, etc.

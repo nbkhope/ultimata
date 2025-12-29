@@ -1,5 +1,9 @@
 #include "Graphics.h"
 
+// Define the mutable screen dimensions
+int SCREEN_WIDTH = ResolutionPresets::WIDTH_NORMAL;
+int SCREEN_HEIGHT = ResolutionPresets::HEIGHT_NORMAL;
+
 LTexture* Graphics::getMyBackground()
 {
 	return &myBackground;
@@ -226,6 +230,7 @@ void Graphics::setUpWindow()
 	else // all ok
 	{
 		SDL_SetWindowIcon(window, gameIcon);
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 #ifndef __TEXTURE_RENDERING__
 		// note: this surface will be freed when the window is destroyed
@@ -258,6 +263,20 @@ void Graphics::setUpWindow()
 			SDL_Delay(1000);
 		}
 #endif
+	}
+}
+
+void Graphics::resizeWindow(int width, int height)
+{
+	// Update global resolution variables
+	SCREEN_WIDTH = width;
+	SCREEN_HEIGHT = height;
+	
+	// Resize the existing window
+	if (window)
+	{
+		SDL_SetWindowSize(window, width, height);
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 	}
 }
 
