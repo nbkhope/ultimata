@@ -152,22 +152,36 @@ int main(int argc, char* args[])
 					}
 					else
 					{
-						// add null terminator to set the end of message
-						message[bytesReceived] = 0;
-						printf("Received: \"%s\"\n", message);
+						printf("Received: %d bytes\n", bytesReceived);
 
-						if (strcmp(message, "move") == 0)
+						// Check if we received a 4-byte integer command
+						if (bytesReceived == sizeof(int))
 						{
-							if (SDL_GetTicks() % 2 == 0)
+							int command = *((int*)message);  // Cast received bytes to int
+							printf("Received command: %d\n", command);
+
+							if (command == NetworkCommands::MOVE)  // Use named constant
 							{
-								creature.shiftPosX(32);
+								if (SDL_GetTicks() % 2 == 0)
+								{
+									creature.shiftPosX(32);
+								}
+								else
+								{
+									creature.shiftPosY(32);
+								};
 							}
-							else
+						}
+						else
+						{
+							// Handle string messages (null terminate for safety)
+							if (bytesReceived < MAX_PACKET_SIZE - 1)
 							{
-								creature.shiftPosY(32);
-							};
-
-
+								message[bytesReceived] = 0;
+								printf("Received text: \"%s\"\n", message);
+								
+								// Handle text-based commands here if needed
+							}
 						}
 					}
 				};

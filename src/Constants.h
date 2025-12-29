@@ -63,6 +63,13 @@ namespace NetworkMessages {
     const char* const SERVER_WELCOME = "server_welcome";
 }
 
+// Network command constants (binary protocol)
+namespace NetworkCommands {
+    const int MOVE = 1;
+    const int STOP = 2;
+    const int ATTACK = 3;
+}
+
 enum GAME_MODE { GAME_MODE_TEST, GAME_MODE_NORMAL };
 
 /**
