@@ -347,16 +347,17 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                 // }
             }
 
-            int playerIndex = 0;
-            while (playerIndex < playersOnline)
+            for (int playerIndex = 0; playerIndex < MAX_SOCKETS; ++playerIndex)
             {
                 TCPsocket clientSocket = clientSockets[playerIndex];
 
                 if (!clientSocket)
                 {
-                    std::cout << "> Client socket is NULL: " << playerIndex << std::endl;
+                    // Skip empty slots; gaps occur when clients disconnect
+                    continue;
                 }
-                else if (SDLNet_SocketReady(clientSocket))// != NULL
+
+                if (SDLNet_SocketReady(clientSocket))
                 {
                     std::cout << "> Working on client socket" << std::endl;
 
@@ -364,7 +365,6 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                     int bytesReceived = SDLNet_TCP_Recv(clientSocket, message, MESSAGE_RECV_SIZE);
                     if (bytesReceived <= 0)
                     {
-                        //TODO handling
                         // TCP Connection is broken. (because of error or closure)
                         std::cout << "Client disconnected: " << SDLNet_GetError() << std::endl;
                         closeSocket(socketSet, clientSockets, playerIndex);
@@ -386,8 +386,6 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                 {
                     std::cout << "> Client socket " << playerIndex << " is not ready." << std::endl;
                 }
-
-                playerIndex++;
             }
 
         }
