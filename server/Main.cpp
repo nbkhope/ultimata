@@ -350,8 +350,8 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                 {
                     std::cout << "> Working on client socket" << std::endl;
 
-                    char message[255];
-                    int bytesReceived = SDLNet_TCP_Recv(clientSocket, message, 255 - 1);
+                    char message[255];  // 255 byte buffer
+                    int bytesReceived = SDLNet_TCP_Recv(clientSocket, message, 254);  // Reserve 1 byte for null terminator
                     if (bytesReceived <= 0)
                     {
                         //TODO handling
