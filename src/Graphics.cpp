@@ -391,7 +391,7 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 			break;
 	}
 
-	// drawWidget(widget);
+	drawWidget(widget);
 
 	SDL_RenderPresent(gRenderer);
 }
@@ -690,19 +690,30 @@ void Graphics::drawCursor(Cursor* c)
 
 void Graphics::drawWidget(Widget* widget)
 {
-	SDL_Rect rect;// = {
-		rect.x = widget->getX();
-		rect.y = widget->getY();
-		rect.w = widget->getWidth();
-		rect.h = widget->getHeight();
-	//};
+	SDL_Rect rect;
+	rect.x = widget->getX();
+	rect.y = widget->getY();
+	rect.w = widget->getWidth();
+	rect.h = widget->getHeight();
 
-
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-	SDL_RenderClear(gRenderer);
-	// SDL_RenderCopy();
+	// Enable blending for semi-transparent background
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+	
+	// Draw semi-transparent dark background for dialogue box
+	SDL_SetRenderDrawColor(gRenderer, 0x20, 0x20, 0x40, 200); // Dark blue-gray with transparency
 	SDL_RenderFillRect(gRenderer, &rect);
-	// SDL_RenderPresent(gRenderer);
+	
+	// Draw border for the dialogue box
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 255); // White border
+	SDL_RenderDrawRect(gRenderer, &rect);
+	
+	// Draw inner border for a more refined look
+	SDL_Rect innerRect = {rect.x + 2, rect.y + 2, rect.w - 4, rect.h - 4};
+	SDL_SetRenderDrawColor(gRenderer, 0xC0, 0xC0, 0xC0, 255); // Light gray inner border
+	SDL_RenderDrawRect(gRenderer, &innerRect);
+	
+	// Reset blend mode
+	SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
 }
 
 void Graphics::setViewport()
