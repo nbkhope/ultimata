@@ -66,6 +66,7 @@ private:
 //	SDL_Surface* buffer;
 
 	bool running;
+	bool ttfInitialized;  // Track whether TTF_Init() succeeded
 };
 
 #endif

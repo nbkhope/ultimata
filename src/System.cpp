@@ -5,12 +5,16 @@ using namespace std;
 System::System()
 {
 	running = false;
+	ttfInitialized = false;
 }
 
 System::~System()
 {
-	// Terminates the font system
-	TTF_Quit();
+	// Terminates the font system (only if it was successfully initialized)
+	if (ttfInitialized)
+	{
+		TTF_Quit();
+	}
 
 	// Terminates the audio system
 	//Mix_CloseAudio();
@@ -77,6 +81,10 @@ int System::init(Graphics* graphics)
 			cerr << "SDL_ttf could not initialize:" << endl;
 			cerr << TTF_GetError() << endl;
 			error_code = 44;
+		}
+		else
+		{
+			ttfInitialized = true;  // Mark TTF as successfully initialized
 		}
 
 		// Initializes sound mixer, with arguments:
