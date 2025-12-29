@@ -195,6 +195,12 @@ public:
 	void setId(int newId) { id = newId; }
 
 private:
+	/**
+	 * Common initialization for all constructors
+	 * Eliminates code duplication between constructors
+	 */
+	void init();
+	
 	/*
 	 * Rectangle structure to hold creature position and area
 	 */

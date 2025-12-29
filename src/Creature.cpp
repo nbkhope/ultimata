@@ -5,38 +5,8 @@ using namespace std;
 
 Creature::Creature() 
 {
-	/**
-	 * Position attributes
-	 */
-	pos.w = TILESIZE;
-	pos.h = TILESIZE*2;
-	
-	// Right at the center
-	pos.x = SCREEN_WIDTH / 2 - (SCREEN_WIDTH / 2) % TILESIZE;
-	pos.y = SCREEN_HEIGHT / 2 - (SCREEN_HEIGHT/ 2) % TILESIZE;
-	
-	/**
-	 * Movement attributes
-	 */
-	xspeed = 0;
-	yspeed = 0;
-	step = 0;
-	direction = DIRECTION_SOUTH;
-	newDirection = false;
-	
-	/**
-	 * Stats attributes
-	 */
-	name = "Unknown";
-	level = 1;
-	experience = 0;
-	health = healthMax = 120;
-	mana = manaMax = 40;
-	
-	/**
-	 * Graphics attributes
-	 */
-	charset = NULL;  // Initialize to prevent crash in destructor
+	init();
+	name = "Unknown";  // Set default name
 
 	// 	attack = 10;
 	// 	defense = 4;
@@ -65,9 +35,49 @@ Creature::Creature()
 	// 	id = 4;
 }
 
-Creature::Creature(string name) : Creature()  // Delegate to default constructor
+Creature::Creature(string name)
 {
-	this->name = name;  // Override the name
+	init();
+	this->name = name;  // Set the provided name
+}
+
+/**
+ * Common initialization for all constructors
+ * This eliminates code duplication and ensures consistent initialization
+ */
+void Creature::init()
+{
+	/**
+	 * Position attributes
+	 */
+	pos.w = TILESIZE;
+	pos.h = TILESIZE*2;
+	
+	// Right at the center
+	pos.x = SCREEN_WIDTH / 2 - (SCREEN_WIDTH / 2) % TILESIZE;
+	pos.y = SCREEN_HEIGHT / 2 - (SCREEN_HEIGHT/ 2) % TILESIZE;
+	
+	/**
+	 * Movement attributes
+	 */
+	xspeed = 0;
+	yspeed = 0;
+	step = 0;
+	direction = DIRECTION_SOUTH;
+	newDirection = false;
+	
+	/**
+	 * Stats attributes
+	 */
+	level = 1;
+	experience = 0;
+	health = healthMax = 120;
+	mana = manaMax = 40;
+	
+	/**
+	 * Graphics attributes
+	 */
+	charset = NULL;  // Initialize to prevent crash in destructor
 }
 
 Creature::~Creature()
