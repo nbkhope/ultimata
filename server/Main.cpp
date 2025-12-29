@@ -60,10 +60,13 @@ void initialize()
         printf("SDL_Init: %s\n", SDL_GetError());
         exit(1);
     }
+    info("SDL initialized successfully.");
     if (SDLNet_Init() == -1) {
         printf("SDLNet_Init: %s\n", SDLNet_GetError());
+        printf("Make sure SDL2_net.dll is in the same directory as the server executable.\n");
         exit(2);
     }
+    info("SDLNet initialized successfully.");
 }
 
 void openServerSocket(TCPsocket& serverSocket)
@@ -417,7 +420,7 @@ void registerSignalHandlers()
 //
 // }
 
-int main()
+int SDL_main(int argc, char* argv[])
 {
     initialize();
     registerSignalHandlers();
