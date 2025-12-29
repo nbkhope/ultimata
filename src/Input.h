@@ -65,7 +65,7 @@ public:
 	void checkPlayerMovement(GameMap* gameMap, Creature* c);
 	//void movePlayer(Creature *c);
 
-	void get();
+	// void get();
 
 private:
 	/**
