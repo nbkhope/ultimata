@@ -103,6 +103,8 @@ void networking() {
 #include "Sound.h"
 #include "Monster.h"
 #include "Camera.h"
+#include "Equipment.h"
+#include "EquipmentOverlay.h"
 
 using namespace std;
 
@@ -396,6 +398,14 @@ int main(int argc, char* args[])
 		Widget widget(dialogueX, dialogueY, dialogueWidth, dialogueHeight);
 		widget.setTitle("Dialogue Box");
 		
+		// Create equipment system
+		Equipment equipment;
+		equipment.setWeapon("Iron Sword");
+		equipment.setShield("Wooden Shield");
+		equipment.setHelmet("Leather Cap");
+		
+		EquipmentOverlay equipmentOverlay;
+		
 		/**
 		 * Begins game loop
 		 */
@@ -508,6 +518,12 @@ int main(int argc, char* args[])
 				// Update widget visibility based on dialogue state
 				widget.setVisible(input.getDialogueToggle());
 				
+				// Update equipment overlay visibility - sync with input toggle state
+				if (input.getEquipmentToggle() != equipmentOverlay.isVisible())
+				{
+					equipmentOverlay.toggle();
+				}
+				
 				// Update camera to follow player
 				int mapWidth = gameMap.getWidth();
 				int mapHeight = gameMap.getHeight();
@@ -518,7 +534,7 @@ int main(int argc, char* args[])
 #ifndef __TEXTURE_RENDERING__
 				graphics.updateCurrentSurface();
 #else
-				graphics.render(&gameMap, &creature, &input, &widget, monsters, monsterCount, &camera);
+				graphics.render(&gameMap, &creature, &input, &widget, monsters, monsterCount, &camera, &equipment, &equipmentOverlay);
 #endif
 
 			}

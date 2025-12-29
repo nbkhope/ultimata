@@ -16,6 +16,9 @@ Input::Input()
 	// Dialogue system
 	dialogueToggle = false;
 	
+	// Equipment overlay
+	equipmentToggle = false;
+	
 	// Set initial cursor position
 	cursor.setPosX(0);
 	cursor.setPosY(0);
@@ -148,6 +151,10 @@ bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
 				case SDLK_SPACE: // toggle dialogue box
 					dialogueToggle = !dialogueToggle;
 					cout << "Dialogue " << (dialogueToggle ? "shown" : "hidden") << endl;
+					break;
+				case SDLK_e: // toggle equipment overlay
+					equipmentToggle = !equipmentToggle;
+					cout << "Equipment overlay " << (equipmentToggle ? "shown" : "hidden") << endl;
 					break;
 				default:
 					// do nothing
@@ -552,4 +559,14 @@ bool Input::getDialogueToggle() const
 void Input::setDialogueToggle(bool toggle)
 {
 	dialogueToggle = toggle;
+}
+
+bool Input::getEquipmentToggle() const
+{
+	return equipmentToggle;
+}
+
+void Input::setEquipmentToggle(bool toggle)
+{
+	equipmentToggle = toggle;
 }

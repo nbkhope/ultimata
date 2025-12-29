@@ -64,6 +64,9 @@ public:
 	bool getDialogueToggle() const;
 	void setDialogueToggle(bool toggle);
 	
+	bool getEquipmentToggle() const;
+	void setEquipmentToggle(bool toggle);
+	
 	void checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket);
 	//void movePlayer(Creature *c);
 
@@ -87,6 +90,9 @@ private:
 	
 	// Dialogue system
 	bool dialogueToggle;
+	
+	// Equipment overlay
+	bool equipmentToggle;
 	
 	/**
 	 * The screen cursor

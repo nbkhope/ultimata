@@ -1,6 +1,10 @@
 #include "Graphics.h"
+#include "GameMap.h"
 #include "Monster.h"
 #include "Camera.h"
+#include "Equipment.h"
+#include "EquipmentOverlay.h"
+#include "SDL2/SDL_ttf.h"
 
 // Define the mutable screen dimensions
 int SCREEN_WIDTH = ResolutionPresets::WIDTH_NORMAL;
@@ -378,7 +382,7 @@ void Graphics::displayImage()
 	SDL_Delay(2000);
 }
 
-void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, Monster* monsters, int monsterCount, Camera* camera)
+void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, Monster* monsters, int monsterCount, Camera* camera, Equipment* equipment, EquipmentOverlay* equipmentOverlay)
 {
 	// Make sure to re-set RenderDrawColor
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -490,6 +494,18 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 	}
 
 	drawWidget(widget);
+
+	// Draw equipment overlay on top of everything else
+	if (equipmentOverlay && equipment)
+	{
+		// Load font for equipment overlay
+		TTF_Font* font = TTF_OpenFont("data/fonts/cour.ttf", 16);
+		if (font)
+		{
+			equipmentOverlay->render(gRenderer, font, *equipment);
+			TTF_CloseFont(font);
+		}
+	}
 
 	SDL_RenderPresent(gRenderer);
 }
