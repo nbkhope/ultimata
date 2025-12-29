@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 using namespace std;
 

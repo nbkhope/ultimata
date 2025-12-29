@@ -489,6 +489,24 @@ void Input::movePlayer(Creature* c)
 }
  */
 
+/*void Input::get()
+{
+	// Go through all the events, one by one
+	while (SDL_PollEvent(&event))
+	{
+		//if (event.type == SDL_QUIT)
+		//	quit = true;
+		if (event.type == SDL_KEYDOWN) // A key was pressed
+		{
+			switch (event.key.keysym.sym)  // Fixed: SDL2 uses 'sym' not 'key'
+			{
+				default:
+			}
+		}
+	}
+}
+*/
+
 bool Input::getDialogueToggle() const
 {
 	return dialogueToggle;

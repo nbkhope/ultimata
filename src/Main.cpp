@@ -7,7 +7,11 @@
 
 #include "Main.h"
 
-#include "Widget.h"
+// Project includes for classes used directly in main()
+#include "Graphics.h"  // Used for Graphics class
+#include "Widget.h"    // Used for Widget class
+
+using namespace std;
 
 int main(int argc, char* args[])
 {

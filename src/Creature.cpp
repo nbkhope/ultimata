@@ -1,6 +1,51 @@
 #include "Creature.h"
+#include <iostream>
 
-Creature::Creature()
+using namespace std;
+
+Creature::Creature() 
+{
+	init();
+	name = "Unknown";  // Set default name
+
+	// 	attack = 10;
+	// 	defense = 4;
+	// 	frame = 0;
+
+	// 	camera.x = 0;
+	// 	camera.y = 0;
+	// 	camera.w = SCREEN_WIDTH;
+	// 	camera.h = SCREEN_HEIGHT;
+
+	// //	charset = NULL;
+	// 	charset = loadImage("data/graphics/charset2.png");
+	// /*
+	// 	// Set up the clipping
+	// 	for (int j = 0; j < 4; j++)
+	// 	{
+	// 		for (int i = 0; i < 3; i++)
+	// 		{
+	// 			charsetclip[j][i].x = i * 32;
+	// 			charsetclip[j][i].y = j * 64;
+	// 			charsetclip[j][i].w = 32;
+	// 			charsetclip[j][i].h = 64;
+	// 		}
+	// 	}*/
+
+	// 	id = 4;
+}
+
+Creature::Creature(const string& name)
+{
+	init();
+	this->name = name;  // Set the provided name
+}
+
+/**
+ * Common initialization for all constructors
+ * This eliminates code duplication and ensures consistent initialization
+ */
+void Creature::init()
 {
 	/**
 	 * Position attributes
@@ -24,16 +69,39 @@ Creature::Creature()
 	/**
 	 * Stats attributes
 	 */
-	name = "Unknown";
 	level = 1;
 	experience = 0;
 	health = healthMax = 120;
 	mana = manaMax = 40;
+	
+	/**
+	 * Graphics attributes
+	 */
+	charset = NULL;  // Initialize to prevent crash in destructor
+	
+	/**
+	 * Protected member initialization
+	 */
+	attack = 10;
+	defense = 4;
+	frame = 0;
+	
+	// Initialize camera dimensions
+	camera.x = 0;
+	camera.y = 0;
+	camera.w = SCREEN_WIDTH;
+	camera.h = SCREEN_HEIGHT;
+	
+	id = 0;  // Default creature ID
 }
 
 Creature::~Creature()
 {
-	//
+	// Only free if charset was actually allocated
+	if (charset != NULL)
+	{
+		SDL_FreeSurface(charset);
+	}
 }
 
 int Creature::getPosX() const
@@ -91,6 +159,32 @@ int Creature::getDirection() const
 bool Creature::getNewDirection() const
 {
 	return newDirection;
+}
+
+int Creature::getMovSpeedX() const
+{
+	return xspeed;
+}
+
+int Creature::getMovSpeedY() const
+{
+	return yspeed;
+}
+
+void Creature::getMovSpeed(int& xmov, int& ymov) const
+{
+	xmov = xspeed;
+	ymov = yspeed;
+}
+
+int Creature::getId() const
+{
+	return id;
+}
+
+void Creature::setId(int newId)
+{
+	id = newId;
 }
 
 void Creature::setPosX(int x)
@@ -220,3 +314,74 @@ void Creature::setManaMax(int newManaMax)
 {
 	manaMax = newManaMax;
 }
+/*
+SDL_Rect Creature::getPosition() const
+{
+	return pos;
+}
+*/
+
+
+///////////////////////////
+
+void Creature::shiftPos(int sx, int sy)
+{
+	pos.x += sx;
+	pos.y += sy;
+}
+
+////////////////////////////////////
+/*
+void Creature::setPosition(int px, int py)
+{
+	pos.x = px;
+	pos.y = py;	
+}*/
+
+
+SDL_Surface* Creature::getCharset() const
+{
+	return charset;
+}
+
+// Camera is now part of the base class Creature instead of derived class Player
+SDL_Rect* Creature::getCamera()// const
+{
+	return &camera;
+}
+
+/* This function had to be moved to the map class due to conflicting headers files when trying to add the monster class and
+   list of creatures in the map class
+
+void Creature::updateCamera(Map &map)//, SDL_Rect &camera)
+{
+	// Center camera around player
+//	camera.x = (pos.x + pos.w)/2 - SCREEN_WIDTH/2;
+//	camera.y = (pos.y + pos.h)/2 - SCREEN_HEIGHT/2;
+
+	camera.x = (pos.x + pos.w/2) - camera.w/2;
+	camera.y = (pos.y + pos.h/2) - camera.h/2;
+
+	if (camera.x < 0)
+		camera.x = 0;
+
+	// OMG! All the trouble because of a unseen semicolon right after this
+	// if statement condition...
+	if (camera.y < 0)
+		camera.y = 0;
+
+	if (camera.x > (map.getWidth() - camera.w))
+		camera.x = (map.getWidth() - camera.w);
+
+	if (camera.y > (map.getHeight() - camera.h))
+		camera.y = (map.getHeight() - camera.h);
+
+// Problematic: wrong..
+/*	if (camera.x > (pos.x + pos.w/2) - camera.w/2)
+		camera.x = map.getWidth() - camera.w;
+
+	if (camera.y > (pos.y + pos.h/2) - camera.h/2)
+		camera.y = (map.getHeight() - camera.h);
+}
+*/
+

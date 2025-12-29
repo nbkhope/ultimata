@@ -168,6 +168,11 @@ Graphics::Graphics()
 	image_jpg = NULL;
 	image_tiff = NULL;
 	image_bmp = NULL;
+
+	buffer = NULL;
+	buffer2 = NULL;
+	logo = NULL;
+	running = false;
 }
 
 Graphics::~Graphics()
@@ -177,6 +182,10 @@ Graphics::~Graphics()
 	SDL_FreeSurface(gameIcon);
 	SDL_FreeSurface(gameLogo);
 
+	SDL_FreeSurface(buffer);
+	SDL_FreeSurface(buffer2);
+	SDL_FreeSurface(logo);
+	
 	// The issue was: if currentSurface is associated with the window, then it will automatically be
 	// freed along with the window?
 	//SDL_FreeSurface(currentSurface);
@@ -760,4 +769,29 @@ void Graphics::setViewport()
 SDL_Renderer* Graphics::getRenderer()
 {
 	return gRenderer;
+}
+
+void Graphics::copyMapToBuffer() {
+	// Check if buffer2 is valid before using it
+	if (buffer2 == NULL) {
+		cerr << "Error: buffer2 is NULL in copyMapToBuffer()" << endl;
+		return;
+	}
+	
+	// Attempt to convert the surface
+	SDL_Surface* newBuffer = SDL_ConvertSurface(buffer2, buffer2->format, 0);
+	
+	// Check if conversion was successful
+	if (newBuffer == NULL) {
+		cerr << "Error: Failed to convert surface in copyMapToBuffer(): " << SDL_GetError() << endl;
+		// Keep the existing buffer instead of setting it to NULL
+		// This prevents getting stuck in a failure loop
+		return;
+	}
+	
+	// Only free the old buffer and assign new one if conversion succeeded
+	if (buffer != NULL) {
+		SDL_FreeSurface(buffer);
+	}
+	buffer = newBuffer;
 }

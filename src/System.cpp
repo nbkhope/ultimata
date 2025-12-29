@@ -4,10 +4,22 @@ using namespace std;
 
 System::System()
 {
+	running = false;
+	ttfInitialized = false;
 }
 
 System::~System()
 {
+	// Terminates the font system (only if it was successfully initialized)
+	if (ttfInitialized)
+	{
+		TTF_Quit();
+	}
+
+	// Terminates the audio system
+	//Mix_CloseAudio();
+
+	// Terminates SDL, including freeing the screen surface.
 	// Shutdown SDL
 	SDL_Quit();
 }
@@ -28,7 +40,11 @@ int System::init(Graphics* graphics)
 	
 	cout << "Initializing SDL. . ." << endl;
 	
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	// Initialize only the required SDL subsystems for better performance
+	// VIDEO: Required for windows, rendering, surfaces, textures
+	// TIMER: Required for SDL_GetTicks() and SDL_Delay() 
+	// EVENTS: Required for input handling (keyboard, mouse)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0)
 	{
 		cerr << "SDL could not initialize:" << endl;
 		// SDL_GetError() returns the latest error produced by a SDL function
@@ -61,8 +77,40 @@ int System::init(Graphics* graphics)
 				return 43;
 			}
 		}
-			
+
+		// Initializes font system
+		cout << "Initializing SDL_ttf" << endl;
+		if (TTF_Init() == -1)
+		{
+			cerr << "SDL_ttf could not initialize:" << endl;
+			cerr << TTF_GetError() << endl;
+			return 44;  // Return early on TTF failure to prevent crashes
+		}
+		else
+		{
+			ttfInitialized = true;  // Mark TTF as successfully initialized
+		}
+
+		// Initializes sound mixer, with arguments:
+		// frequency,
+		// sound format,
+		// channels,
+		// and sample rate.
+		//Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+
+		running = true;
 	}
 		
 	return error_code;
 }
+
+void System::run()
+{
+	//
+}
+
+bool System::isRunning() const
+{
+	return running;
+}
+
