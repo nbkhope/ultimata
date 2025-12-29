@@ -17,38 +17,84 @@ void error(std::string functionName)
 	std::cerr << functionName << " error: " << SDLNet_GetError() << std::endl;
 }
 
-SDLNet_SocketSet socketSet;
-TCPsocket socket;
-void networking() {
-	std::cout << "Networking." << std::endl;
-	IPaddress ip;
-	if (SDLNet_ResolveHost(&ip, "localhost", 8099) == -1) {
-		error("SDLNet_ResolveHost");
-		return;
-	}
-	//todo: error
-	//TCPsocket
-	socket = SDLNet_TCP_Open(&ip);
-	if (socket == NULL)
+// NetworkClient class for proper resource management
+class NetworkClient
+{
+private:
+	SDLNet_SocketSet socketSet;
+	TCPsocket socket;
+	bool initialized;
+
+public:
+	NetworkClient() : socketSet(nullptr), socket(nullptr), initialized(false) {}
+	
+	~NetworkClient()
 	{
-		error("SDLNet_TCP_Open");
-		return;
-	}
-	//todo: error
-	//SDLNet_SocketSet
-	socketSet = SDLNet_AllocSocketSet(1);
-	if (socketSet == NULL)
-	{
-		error("SDLNet_AllocSocketSet");
-		return;
+		cleanup();
 	}
 	
-	if (SDLNet_TCP_AddSocket(socketSet, socket) == -1)
+	bool connect()
 	{
-		error("SDLNet_TCP_AddSocket");
-		SDLNet_FreeSocketSet(socketSet);
-		return;
+		std::cout << "Networking." << std::endl;
+		IPaddress ip;
+		if (SDLNet_ResolveHost(&ip, "localhost", 8099) == -1) {
+			error("SDLNet_ResolveHost");
+			return false;
+		}
+		
+		socket = SDLNet_TCP_Open(&ip);
+		if (socket == NULL)
+		{
+			error("SDLNet_TCP_Open");
+			return false;
+		}
+		
+		socketSet = SDLNet_AllocSocketSet(1);
+		if (socketSet == NULL)
+		{
+			error("SDLNet_AllocSocketSet");
+			SDLNet_TCP_Close(socket);
+			socket = nullptr;
+			return false;
+		}
+		
+		if (SDLNet_TCP_AddSocket(socketSet, socket) == -1)
+		{
+			error("SDLNet_TCP_AddSocket");
+			cleanup();
+			return false;
+		}
+		
+		initialized = true;
+		return true;
 	}
+	
+	TCPsocket getSocket() const { return socket; }
+	SDLNet_SocketSet getSocketSet() const { return socketSet; }
+	bool isInitialized() const { return initialized; }
+	
+	void cleanup()
+	{
+		if (socket && socketSet)
+		{
+			SDLNet_TCP_DelSocket(socketSet, socket);
+		}
+		if (socketSet)
+		{
+			SDLNet_FreeSocketSet(socketSet);
+			socketSet = nullptr;
+		}
+		if (socket)
+		{
+			SDLNet_TCP_Close(socket);
+			socket = nullptr;
+		}
+		initialized = false;
+	}
+};
+
+void networking() {
+	// This function is now deprecated - use NetworkClient class instead
 }
 // Project includes for classes used directly in main()
 #include "Graphics.h"  // Used for Graphics class
@@ -71,7 +117,12 @@ int main(int argc, char* args[])
 	}
 	std::cout << "SDLNet initialized successfully" << std::endl;
 	
-	networking();
+	NetworkClient networkClient;
+	if (!networkClient.connect())
+	{
+		std::cerr << "Failed to initialize networking" << std::endl;
+		return 2;
+	}
 
 	Input input;
 	int error;
@@ -133,30 +184,26 @@ int main(int argc, char* args[])
 			else
 			{
 				// Handle Input
-				if (input.get(&gameMap, &creature, socket))
+				if (input.get(&gameMap, &creature, networkClient.getSocket()))
 				{
 					quit = true;
 				}
 
-				int socketCheckResult = SDLNet_CheckSockets(socketSet, 0);
+				int socketCheckResult = SDLNet_CheckSockets(networkClient.getSocketSet(), 0);
 				if (socketCheckResult == -1)
 				{
 					error("SDLNet_CheckSockets");
 					quit = true;
 				}
-				else if (SDLNet_SocketReady(socket))
+				else if (SDLNet_SocketReady(networkClient.getSocket()))
 				{
 					char message[MAX_PACKET];
-					int bytesReceived = SDLNet_TCP_Recv(socket, message, MAX_PACKET);
+					int bytesReceived = SDLNet_TCP_Recv(networkClient.getSocket(), message, MAX_PACKET);
 
 					if (bytesReceived <= 0)
 					{
 						// TCP Connection is broken. (because of error or closure)
-						//todo: close socket and shutdown
-						SDLNet_TCP_DelSocket(socketSet, socket);
-						// todo: error
-						SDLNet_FreeSocketSet(socketSet);
-						SDLNet_TCP_Close(socket);
+						networkClient.cleanup();
 						quit = true;
 					}
 					else
