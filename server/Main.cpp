@@ -11,6 +11,10 @@
 // #define MAX_SOCKETS 0x10
 const int MAX_SOCKETS = 0x10;
 
+// Message buffer constants
+const int MESSAGE_BUFFER_SIZE = 255;
+const int MESSAGE_RECV_SIZE = MESSAGE_BUFFER_SIZE - 1;  // Reserve 1 byte for null terminator
+
 struct Position
 {
     int x;
@@ -350,8 +354,8 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                 {
                     std::cout << "> Working on client socket" << std::endl;
 
-                    char message[255];  // 255 byte buffer
-                    int bytesReceived = SDLNet_TCP_Recv(clientSocket, message, 254);  // Reserve 1 byte for null terminator
+                    char message[MESSAGE_BUFFER_SIZE];
+                    int bytesReceived = SDLNet_TCP_Recv(clientSocket, message, MESSAGE_RECV_SIZE);
                     if (bytesReceived <= 0)
                     {
                         //TODO handling
