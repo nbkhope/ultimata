@@ -71,7 +71,13 @@ int System::init(Graphics* graphics)
 		}
 
 		// Initializes font system
-		TTF_Init();
+		cout << "Initializing SDL_ttf" << endl;
+		if (TTF_Init() == -1)
+		{
+			cerr << "SDL_ttf could not initialize:" << endl;
+			cerr << TTF_GetError() << endl;
+			error_code = 44;
+		}
 
 		// Initializes sound mixer, with arguments:
 		// frequency,
