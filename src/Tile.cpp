@@ -89,7 +89,20 @@ int Tile::getType() const
 
 void Tile::setType(int newType)
 {
-	type = newType;
+	// Validate type parameter against TileType enum values
+	if (newType >= WALKABLE && newType <= WATER)
+	{
+		type = newType;
+	}
+	else
+	{
+		cerr << "Warning: Invalid tile type " << newType 
+		     << ". Valid types are: WALKABLE(" << WALKABLE 
+		     << "), NONWALKABLE(" << NONWALKABLE 
+		     << "), WATER(" << WATER << ")" << endl;
+		// Set to default safe value
+		type = WALKABLE;
+	}
 }
 
 // stack<Item>* Tile::getStack()
