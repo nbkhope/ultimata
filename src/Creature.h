@@ -164,7 +164,7 @@ public:
 
 	int getMovSpeedX() const;
 	int getMovSpeedY() const;
-	void getMovSpeed(int& xmov, int&ymov) const;
+	void getMovSpeed(int& xmov, int& ymov) const;
 /*
 	void setPosition(int py) { pos.y = py; }
 	void setPosition(int px, int py = pos.y);
