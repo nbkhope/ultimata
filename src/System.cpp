@@ -4,24 +4,7 @@ using namespace std;
 
 System::System()
 {
-	// Initializes SDL with all subsystems. 
-	// Note we do not use all of the subsystem in this program.
-	if (!SDL_Init(SDL_INIT_EVERYTHING))
-	{
-		// Initializes font system
-		TTF_Init();
-
-		// Initializes sound mixer, with arguments:
-		// frequency,
-		// sound format,
-		// channels,
-		// and sample rate.
-		//Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
-
-		running = true;
-	}
-	else
-		running = false;
+	running = false;
 }
 
 System::~System()
@@ -53,7 +36,7 @@ int System::init(Graphics* graphics)
 	
 	cout << "Initializing SDL. . ." << endl;
 	
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		cerr << "SDL could not initialize:" << endl;
 		// SDL_GetError() returns the latest error produced by a SDL function
@@ -86,7 +69,18 @@ int System::init(Graphics* graphics)
 				return 43;
 			}
 		}
-			
+
+		// Initializes font system
+		TTF_Init();
+
+		// Initializes sound mixer, with arguments:
+		// frequency,
+		// sound format,
+		// channels,
+		// and sample rate.
+		//Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+
+		running = true;
 	}
 		
 	return error_code;
