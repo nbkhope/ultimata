@@ -15,14 +15,14 @@ Tile::Tile()
 	type = WALKABLE;  // Legacy field, kept for compatibility
 }
 
-Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(length)
+Tile::Tile(int dimX, int dimY, int dimSize) : id(8)
 {
 	walkable = true;  // Primary walkability mechanism
 	
-	dimension.x = x;
-	dimension.y = y;
-	dimension.w = length;
-	dimension.h = length;
+	dimension.x = dimX;
+	dimension.y = dimY;
+	dimension.w = dimSize;
+	dimension.h = dimSize;
 
 	type = WALKABLE;  // Legacy field, kept for compatibility
 

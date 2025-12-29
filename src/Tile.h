@@ -19,7 +19,7 @@ class Tile
 {
 public:
 	Tile();
-	Tile(int x, int y, int length);
+	Tile(int dimX, int dimY, int dimSize);
 
 	~Tile();
 
