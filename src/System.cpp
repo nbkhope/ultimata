@@ -40,7 +40,11 @@ int System::init(Graphics* graphics)
 	
 	cout << "Initializing SDL. . ." << endl;
 	
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+	// Initialize only the required SDL subsystems for better performance
+	// VIDEO: Required for windows, rendering, surfaces, textures
+	// TIMER: Required for SDL_GetTicks() and SDL_Delay() 
+	// EVENTS: Required for input handling (keyboard, mouse)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0)
 	{
 		cerr << "SDL could not initialize:" << endl;
 		// SDL_GetError() returns the latest error produced by a SDL function
