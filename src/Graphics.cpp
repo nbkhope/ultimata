@@ -783,7 +783,7 @@ void Graphics::copyMapToBuffer() {
 		SDL_FreeSurface(buffer);
 	}
 	
-	buffer = SDL_ConvertSurface(buffer2, buffer2->format, SDL_SWSURFACE);
+	buffer = SDL_ConvertSurface(buffer2, buffer2->format, 0);
 	
 	// Check if conversion was successful
 	if (buffer == NULL) {
