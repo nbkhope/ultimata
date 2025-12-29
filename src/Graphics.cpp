@@ -772,5 +772,10 @@ SDL_Renderer* Graphics::getRenderer()
 }
 
 void Graphics::copyMapToBuffer() {
+	// Free the old buffer first to prevent memory leak
+	if (buffer != NULL) {
+		SDL_FreeSurface(buffer);
+	}
+	
 	buffer = SDL_ConvertSurface(buffer2, buffer2->format, SDL_SWSURFACE);
 }
