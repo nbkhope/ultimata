@@ -25,7 +25,7 @@ public:
 	Tileset();
 	~Tileset();
 
-	bool loadTileDescriptionsTxt(string filename);
+	bool loadTileDescriptionsTxt(const string& filename);
 
 	SDL_Surface* getSheet() const;
 	const Tile& getTile(int id) const;

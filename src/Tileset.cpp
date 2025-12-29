@@ -54,7 +54,7 @@ SDL_Rect* Tileset::getSprite(int index)
 	}
 }
 
-bool Tileset::loadTileDescriptionsTxt(string filename)
+bool Tileset::loadTileDescriptionsTxt(const string& filename)
 {
 	ifstream input;
 
