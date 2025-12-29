@@ -64,8 +64,13 @@ int main(int argc, char* args[])
 	GameMap gameMap;
 	Creature creature;
 	//todo: Network class
-	SDLNet_Init();
-	//todo : error
+	if (SDLNet_Init() == -1)
+	{
+		std::cerr << "SDLNet_Init failed: " << SDLNet_GetError() << std::endl;
+		return 1;  // Exit with error code
+	}
+	std::cout << "SDLNet initialized successfully" << std::endl;
+	
 	networking();
 
 	Input input;
