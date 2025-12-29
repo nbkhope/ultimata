@@ -53,7 +53,16 @@ bool Tileset::loadTileDescriptionsTxt(string filename)
 	{
 		while (input >> id && input >> type)
 		{
-			tiles[id].setType(type);
+			// Validate id is within valid range
+			if (id >= 0 && id < TILESET_TILES)
+			{
+				tiles[id].setType(type);
+			}
+			else
+			{
+				cerr << "Warning: Invalid tile id " << id << " in " << filename 
+				     << " (valid range: 0-" << (TILESET_TILES-1) << ")" << endl;
+			}
 		}
 		input.close();
 		return true;	
