@@ -13,12 +13,13 @@ OBJS= \
 	build/Tile.o \
 	build/Tileset.o \
 	build/Timer.o \
-	build/Widget.o
+	build/Widget.o \
+	build/Sound.o
 
 DEPS=$(OBJS:.o=.d)
 
 Ultimata: $(OBJS)
-	g++ $(FLAGS) -o build/Ultimata $(OBJS) -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_net
+	g++ $(FLAGS) -o build/Ultimata $(OBJS) -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2_net
 	copy dll\*.dll build
 
 build:

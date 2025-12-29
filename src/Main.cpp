@@ -100,6 +100,7 @@ void networking() {
 // Project includes for classes used directly in main()
 #include "Graphics.h"  // Used for Graphics class
 #include "Widget.h"    // Used for Widget class
+#include "Sound.h"
 
 using namespace std;
 
@@ -151,6 +152,12 @@ static bool showMainMenu(Graphics& graphics)
 		return true;
 	}
 
+	Sound menuMusic;
+	if (menuMusic.isReady() && !menuMusic.isPlaying())
+	{
+		menuMusic.play();
+	}
+
 	SDL_Event e;
 	bool playRequested = false;
 	bool quitRequested = false;
@@ -192,6 +199,11 @@ static bool showMainMenu(Graphics& graphics)
 
 		SDL_RenderPresent(renderer);
 		SDL_Delay(16); // ~60 FPS cap for the menu loop
+	}
+
+	if (menuMusic.isPlaying())
+	{
+		Mix_HaltMusic();
 	}
 
 	TTF_CloseFont(font);

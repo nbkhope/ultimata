@@ -11,9 +11,11 @@ public:
 	
 	void play();
 	bool isPlaying() const;
+	bool isReady() const { return available; }
 private:    
 	// Our music structure
 	Mix_Music* music;
+	bool available;
 };
 
 #endif
