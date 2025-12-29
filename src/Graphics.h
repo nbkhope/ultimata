@@ -17,7 +17,6 @@
 #include "Creature.h"
 #include "Input.h"
 
-#include <iostream>
 #include <string>
 #include "Widget.h"
 

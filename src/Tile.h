@@ -15,8 +15,6 @@
 
 #include "Constants.h"
 
-using namespace std;
-
 class Tile
 {
 public:

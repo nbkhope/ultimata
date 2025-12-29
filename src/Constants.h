@@ -11,8 +11,6 @@
 
 #include <SDL2/SDL.h>
 
-using namespace std;
-
 // Global constants to hold the screen settings
 /* The screen dimensions */
 //const int SCREEN_WIDTH = 640;
@@ -40,7 +38,7 @@ const int TILESET_SIZE = 256;
 const int TILESET_TILES = 64;
 
 //const char DEFAULT_FONT[] = "cour.ttf";
-const string DEFAULT_FONT = "data/fonts/cour.ttf";
+const std::string DEFAULT_FONT = "data/fonts/cour.ttf";
 const int FONTSIZE = 24;
 
 #ifndef __TILEMOVE__
