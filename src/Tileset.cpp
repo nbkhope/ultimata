@@ -24,7 +24,12 @@ Tileset::Tileset()
 
 	for (int i = 0; i < TILESET_TILES; i++)
 		tiles[i].setDimension(i % 8 * TILESIZE, i / 8 * TILESIZE);
-	loadTileDescriptionsTxt("data/tileset_description.txt");
+		
+	if (!loadTileDescriptionsTxt("data/tileset_description.txt"))
+	{
+		cerr << "Warning: Failed to load tile descriptions from data/tileset_description.txt" << endl;
+		cerr << "Tiles will use default type settings." << endl;
+	}
 }
 
 Tileset::~Tileset()
