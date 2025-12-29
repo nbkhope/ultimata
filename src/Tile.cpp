@@ -17,6 +17,8 @@ Tile::Tile()
 
 Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(length)
 {
+	walkable = true;        // Initialize walkable for consistency
+	
 	dimension.x = x;
 	dimension.y = y;
 	dimension.w = length;
