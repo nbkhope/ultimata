@@ -131,8 +131,8 @@ public:
 
 	void copyMapToBuffer();
 
-	SDL_Surface* getBuffer() { return buffer; };
-	SDL_Surface* getGameLogo() const { return logo; } ;
+	const SDL_Surface* getBuffer() const { return buffer; };
+	const SDL_Surface* getGameLogo() const { return logo; };
 
 	// void setColorKey();
 	// resize
