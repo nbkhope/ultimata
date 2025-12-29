@@ -35,6 +35,11 @@ Tileset::Tileset()
 
 Tileset::~Tileset()
 {
+	// Free the sheet surface if it was allocated
+	if (sheet != NULL)
+	{
+		SDL_FreeSurface(sheet);
+	}
 }
 
 SDL_Rect* Tileset::getSprite(int index)
