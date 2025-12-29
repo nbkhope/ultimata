@@ -6,23 +6,21 @@ Tile::Tile()
 	//id = 23;
 	walkable = true;
 	
-	// Initialize dimension pointer to prevent crash in setDimension()
-	dimension = new SDL_Rect;
-	dimension->x = 0;
-	dimension->y = 0;
-	dimension->w = TILESIZE;
-	dimension->h = TILESIZE;
+	// Initialize dimension directly (no heap allocation needed)
+	dimension.x = 0;
+	dimension.y = 0;
+	dimension.w = TILESIZE;
+	dimension.h = TILESIZE;
 	
 	type = WALKABLE;
 }
 
 Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(length)
 {
-	dimension = new SDL_Rect;
-	dimension->x = x;
-	dimension->y = y;
-	dimension->w = length;
-	dimension->h = length;
+	dimension.x = x;
+	dimension.y = y;
+	dimension.w = length;
+	dimension.h = length;
 
 	type = WALKABLE;
 
@@ -31,7 +29,7 @@ Tile::Tile(int x, int y, int length) : id(8)//, startx(x), starty(y), size(lengt
 
 Tile::~Tile()
 {
-	delete dimension;
+	// No manual cleanup needed for value types
 	// delete items;
 }
 
@@ -70,15 +68,15 @@ void Tile::decrementId()
 
 SDL_Rect* Tile::getDimension() const
 {
-	return dimension;
+	return const_cast<SDL_Rect*>(&dimension);
 }
 
 void Tile::setDimension(int px, int py, int width, int height)
 {
-	dimension->x = px;
-	dimension->y = py;
-	dimension->w = width;
-	dimension->h = height;
+	dimension.x = px;
+	dimension.y = py;
+	dimension.w = width;
+	dimension.h = height;
 }
 
 int Tile::getType() const

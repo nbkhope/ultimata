@@ -75,7 +75,7 @@ private:
 	 * Each tile needs the clipping position and a size.
 	 * The tileset will be clipped according to the coordinates x and y of the rectangle its width and height.
 	 */
-	SDL_Rect* dimension;
+	SDL_Rect dimension;
 	//int size;
 
 	// Collision
