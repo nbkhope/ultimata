@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <string>
+#include "Widget.h"
 
 using namespace std;
 
@@ -70,7 +71,7 @@ public:
 	bool loadMedia();
 	
 	void displayImage();
-	void render(GameMap* gameMap, Creature* creature, Input* input);
+	void render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget);
 	//void testRender(Creature* creature, Input* input);
 	void testRender(Creature* creature, Input* input);
 	
@@ -114,6 +115,8 @@ public:
 	void drawCursor(Cursor* c);
 	void setViewport();
 	void drawColorKeyExample();
+
+	void drawWidget(Widget* widget);
 	
 	/**
 	 * @return the renderer

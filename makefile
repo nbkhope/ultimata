@@ -1,6 +1,8 @@
-FLAGS=-IC:\Users\someone\include -LC:\Users\someone\lib
 
-Ultimata:	Creature.o Cursor.o GameMap.o Graphics.o Main.o HelperFunctions.o Input.o System.o Tile.o Tileset.o Timer.o
+FLAGS=-IC:\Users\nkans\include -LC:\Users\nkans\lib
+
+Ultimata:	Creature.o Cursor.o GameMap.o Graphics.o Main.o HelperFunctions.o Input.o System.o Tile.o Tileset.o Timer.o Widget.o
+
 	g++ $(FLAGS) -o build/Ultimata build/*.o -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 	copy dll\*.dll build
 
@@ -36,6 +38,9 @@ Tileset.o: src/Tileset.cpp src/Tileset.h
 
 Timer.o: src/Timer.cpp src/Timer.h
 	g++ $(FLAGS) -c src/Timer.cpp -o build/Timer.o
+
+Widget.o: src/Widget.cpp src/Widget.h
+	g++ $(FLAGS) -c src/Widget.cpp -o build/Widget.o
 
 clean:
 	$(RM) build/Ultimata build/*.o

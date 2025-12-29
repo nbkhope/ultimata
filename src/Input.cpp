@@ -13,6 +13,9 @@ Input::Input()
 	// Image Loading Different Types <~test~>
 	testImageLoad = 0;
 	
+	// Dialogue system
+	dialogueToggle = false;
+	
 	// Set initial cursor position
 	cursor.setPosX(0);
 	cursor.setPosY(0);
@@ -124,6 +127,10 @@ bool Input::get(GameMap* gameMap, Creature *c)
 					break;
 				case SDLK_SLASH: // reset timer
 					timer.reset();
+					break;
+				case SDLK_SPACE: // toggle dialogue box
+					dialogueToggle = !dialogueToggle;
+					cout << "Dialogue " << (dialogueToggle ? "shown" : "hidden") << endl;
 					break;
 				default:
 					// do nothing
@@ -500,3 +507,12 @@ void Input::movePlayer(Creature* c)
 }
 */
 
+bool Input::getDialogueToggle() const
+{
+	return dialogueToggle;
+}
+
+void Input::setDialogueToggle(bool toggle)
+{
+	dialogueToggle = toggle;
+}

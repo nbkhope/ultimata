@@ -56,3 +56,13 @@ git clone git@github.com:nbkhope/ultimata.git
 
 git push ultimata master
 ```
+
+## Windows 11 Development
+
+```
+make
+```
+
+```
+build\Ultimata.exe
+```
