@@ -162,9 +162,9 @@ public:
 	void shiftPos(int sx, int sy);
 
 
-	int getMovSpeedX() const { return xspeed; }
-	int getMovSpeedY() const { return yspeed; }
-	void getMovSpeed(int& xmov, int&ymov) const { xmov = xspeed; ymov = yspeed; }
+	int getMovSpeedX() const;
+	int getMovSpeedY() const;
+	void getMovSpeed(int& xmov, int&ymov) const;
 /*
 	void setPosition(int py) { pos.y = py; }
 	void setPosition(int px, int py = pos.y);
@@ -191,8 +191,8 @@ public:
 	SDL_Rect* getCamera();// const;
 	//void updateCamera(Map &map);//, SDL_Rect &camera);
 
-	int getId() const { return id; }
-	void setId(int newId) { id = newId; }
+	int getId() const;
+	void setId(int newId);
 
 private:
 	/**

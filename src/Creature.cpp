@@ -146,6 +146,32 @@ bool Creature::getNewDirection() const
 	return newDirection;
 }
 
+int Creature::getMovSpeedX() const
+{
+	return xspeed;
+}
+
+int Creature::getMovSpeedY() const
+{
+	return yspeed;
+}
+
+void Creature::getMovSpeed(int& xmov, int& ymov) const
+{
+	xmov = xspeed;
+	ymov = yspeed;
+}
+
+int Creature::getId() const
+{
+	return id;
+}
+
+void Creature::setId(int newId)
+{
+	id = newId;
+}
+
 void Creature::setPosX(int x)
 {
 	pos.x = x;
