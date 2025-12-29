@@ -138,9 +138,13 @@ int main(int argc, char* args[])
 					quit = true;
 				}
 
-				SDLNet_CheckSockets(socketSet, 0);
-				//todo: error
-				if (SDLNet_SocketReady(socket))
+				int socketCheckResult = SDLNet_CheckSockets(socketSet, 0);
+				if (socketCheckResult == -1)
+				{
+					error("SDLNet_CheckSockets");
+					quit = true;
+				}
+				else if (SDLNet_SocketReady(socket))
 				{
 					char message[MAX_PACKET];
 					int bytesReceived = SDLNet_TCP_Recv(socket, message, MAX_PACKET);
