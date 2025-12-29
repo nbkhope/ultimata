@@ -78,6 +78,21 @@ void Creature::init()
 	 * Graphics attributes
 	 */
 	charset = NULL;  // Initialize to prevent crash in destructor
+	
+	/**
+	 * Protected member initialization
+	 */
+	attack = 10;
+	defense = 4;
+	frame = 0;
+	
+	// Initialize camera dimensions
+	camera.x = 0;
+	camera.y = 0;
+	camera.w = SCREEN_WIDTH;
+	camera.h = SCREEN_HEIGHT;
+	
+	id = 0;  // Default creature ID
 }
 
 Creature::~Creature()
