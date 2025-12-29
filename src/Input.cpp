@@ -63,7 +63,9 @@ bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
 
 			// position changed
 			//todo: throttling. this is called many times due to speed...
-			char message[255] = "disconnect";
+			char message[MAX_MESSAGE_SIZE];
+			strncpy(message, NetworkMessages::DISCONNECT, MAX_MESSAGE_SIZE - 1);
+			message[MAX_MESSAGE_SIZE - 1] = '\0';  // Ensure null termination
 			int len = strlen(message);
 			// int len = sprintf(message, "player position is (%d, %d)", c->getPosX(), c->getPosY());
 			std::cout << message << std::endl;
@@ -478,8 +480,8 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket
 	{
 		// position changed
 		//todo: throttling. this is called many times due to speed...
-		char message[255];
-		int len = sprintf(message, "player position is (%d, %d)", c->getPosX(), c->getPosY());
+		char message[MAX_MESSAGE_SIZE];
+		int len = snprintf(message, MAX_MESSAGE_SIZE, "player position is (%d, %d)", c->getPosX(), c->getPosY());
 		std::cout << message << std::endl;
 		//note terminating null (+1)...
 		int bytesSent = SDLNet_TCP_Send(socket, message, len + 1);
