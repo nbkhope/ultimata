@@ -38,7 +38,20 @@ Tileset::~Tileset()
 
 SDL_Rect* Tileset::getSprite(int index)
 {
-	return &sprite[index];
+	// Bounds checking to prevent out-of-bounds access
+	if (index >= 0 && index < 256)
+	{
+		return &sprite[index];
+	}
+	else
+	{
+		// Log the error for debugging
+		cerr << "Warning: getSprite() called with invalid index " << index 
+		     << " (valid range: 0-255)" << endl;
+		
+		// Return the first sprite as a safe fallback
+		return &sprite[0];
+	}
 }
 
 bool Tileset::loadTileDescriptionsTxt(string filename)
@@ -74,6 +87,19 @@ bool Tileset::loadTileDescriptionsTxt(string filename)
 // cant return reference, why? use const before tile
 const Tile& Tileset::getTile(int id) const
 {
-	return tiles[id];
+	// Bounds checking to prevent out-of-bounds access
+	if (id >= 0 && id < TILESET_TILES)
+	{
+		return tiles[id];
+	}
+	else
+	{
+		// Log the error for debugging
+		cerr << "Warning: getTile() called with invalid id " << id 
+		     << " (valid range: 0-" << (TILESET_TILES-1) << ")" << endl;
+		
+		// Return the first tile as a safe fallback
+		return tiles[0];
+	}
 }
 
