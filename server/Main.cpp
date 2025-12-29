@@ -277,7 +277,7 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
 
                     // char message[255] = "move";
                     //todo: uint8_t not working
-                    int message = 1; // move
+                    int message = 1; // move - should use NetworkCommands::MOVE constant from Constants.h
                     //int is 4 bytes... in my sys
                     int messageLength = sizeof(message);
                     int bytesSent = SDLNet_TCP_Send(clientSocket, &message, messageLength);//4 + 1
