@@ -81,6 +81,14 @@ bool GameMap::loadTxt(string filename)
 		ifs >> width;
 		ifs >> height;
 		
+		// Recalculate tiles based on loaded dimensions
+		tiles_across = width / TILESIZE;
+		tiles_down = height / TILESIZE;
+		
+		// Reallocate tile array if needed
+		delete[] tiles;
+		tiles = new Tile[tiles_across * tiles_down];
+		
 		total_tiles = tiles_across * tiles_down;
 		
 		for (int i = 0; i < total_tiles; i++)
