@@ -3,8 +3,24 @@
 # Download SDL2_net from: https://www.libsdl.org/projects/SDL_net/
 FLAGS=-IC:\Users\nkans\include -LC:\Users\nkans\lib
 
-Server: Main.o
-	g++ $(FLAGS) -o server.exe Main.o -lSDL2main -lSDL2 -lSDL2_net
+OBJS=build/Main.o
+DEPS=$(OBJS:.o=.d)
 
-Main.o: Main.cpp
-	g++ $(FLAGS) -c Main.cpp
+Server: $(OBJS)
+	g++ $(FLAGS) -o build/server.exe $(OBJS) -lSDL2main -lSDL2 -lSDL2_net
+
+build:
+	@if not exist build mkdir build
+
+build/%.o: %.cpp | build
+	g++ $(FLAGS) -MMD -MP -c $< -o $@
+
+clean:
+	@if exist build\server.exe del /Q build\server.exe
+	@if exist build\*.o del /Q build\*.o
+	@if exist build\*.d del /Q build\*.d
+	@if exist build rmdir /S /Q build
+
+.PHONY: clean
+
+-include $(DEPS)
