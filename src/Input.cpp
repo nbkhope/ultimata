@@ -1,4 +1,5 @@
 #include "Input.h"
+#include "ChatOverlay.h"
 
 Input::Input()
 {
@@ -19,6 +20,9 @@ Input::Input()
 	// Equipment overlay
 	equipmentToggle = false;
 	
+	// Chat overlay
+	chatToggle = false;
+	
 	// Set initial cursor position
 	cursor.setPosX(0);
 	cursor.setPosY(0);
@@ -34,7 +38,7 @@ Input::~Input()
 /**
  * Handles input for a non-scrolling, fixed-screen map.
  */
-bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
+bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket, ChatOverlay* chatOverlay)
 {
 	int mouse_x, mouse_y;
 	//int cursorTileIndex;
@@ -53,10 +57,37 @@ bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
 	// Keeps doing while there are still events left
 	while (SDL_PollEvent(&e))
 	{
+		// Handle chat input first if chat is active
+		if (chatOverlay && chatOverlay->isActive())
+		{
+			if (e.type == SDL_TEXTINPUT)
+			{
+				chatOverlay->appendChar(e.text.text[0]);
+				continue; // Skip other processing
+			}
+			else if (e.type == SDL_KEYDOWN)
+			{
+				if (e.key.keysym.sym == SDLK_BACKSPACE)
+				{
+					chatOverlay->backspace();
+					continue;
+				}
+				else if (e.key.keysym.sym == SDLK_ESCAPE)
+				{
+					chatToggle = false;
+					continue;
+				}
+				// ENTER is handled below to allow sending
+			}
+		}
+		
 		/**
 		 * Note: checkPlayerMovement() checks e.type for SDL_KEYDOWN and SDL_KEYUP
 		 */
-		checkPlayerMovement(gameMap, c, socket);
+		if (!chatOverlay || !chatOverlay->isActive())
+		{
+			checkPlayerMovement(gameMap, c, socket);
+		}
 		// issue here ... ( don't want to do switch check again)
 
 		if (e.type == SDL_QUIT)
@@ -155,6 +186,16 @@ bool Input::get(GameMap* gameMap, Creature *c, TCPsocket& socket)
 				case SDLK_e: // toggle equipment overlay
 					equipmentToggle = !equipmentToggle;
 					cout << "Equipment overlay " << (equipmentToggle ? "shown" : "hidden") << endl;
+					break;
+				case SDLK_RETURN: // toggle chat overlay or send message
+				case SDLK_KP_ENTER:
+					if (chatOverlay && chatOverlay->isActive())
+					{
+						// Chat is active, this means send the message
+						// The actual sending is handled in Main.cpp
+					}
+					chatToggle = !chatToggle;
+					cout << "Chat overlay " << (chatToggle ? "shown" : "hidden") << endl;
 					break;
 				default:
 					// do nothing
@@ -569,4 +610,14 @@ bool Input::getEquipmentToggle() const
 void Input::setEquipmentToggle(bool toggle)
 {
 	equipmentToggle = toggle;
+}
+
+bool Input::getChatToggle() const
+{
+	return chatToggle;
+}
+
+void Input::setChatToggle(bool toggle)
+{
+	chatToggle = toggle;
 }

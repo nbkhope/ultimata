@@ -77,7 +77,7 @@ public:
 	bool loadMedia();
 
 	void displayImage();
-	void render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, class Monster* monsters, int monsterCount, class Camera* camera, class Equipment* equipment, class EquipmentOverlay* equipmentOverlay);
+	void render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, class Monster* monsters, int monsterCount, class Camera* camera, class Equipment* equipment, class EquipmentOverlay* equipmentOverlay, class ChatOverlay* chatOverlay);
 	//void testRender(Creature* creature, Input* input);
 	void testRender(Creature* creature, Input* input);
 

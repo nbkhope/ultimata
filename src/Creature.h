@@ -19,6 +19,7 @@
 #include "SDL2/SDL.h"
 
 #include "Constants.h"
+#include "ChatMessage.h"
 
 //#include "Main.h"
 
@@ -175,6 +176,13 @@ public:
 	void shiftPosition(int sx, int sy = 0) { pos.x += sx; pos.y += sy; }
 */
 
+	/**
+	 * Chat message functions
+	 */
+	void setChatMessage(const std::string& message);
+	ChatMessage* getChatMessage();
+	bool hasChatMessage() const;
+
 	////////////////////////////////////////////////////////
 
 	SDL_Surface* getCharset() const;
@@ -222,6 +230,9 @@ private:
 	 */
 	int direction;
 	bool newDirection;
+	
+	// Chat message
+	ChatMessage chatMessage;
 	
 	string name;
 	

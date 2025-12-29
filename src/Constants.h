@@ -78,6 +78,7 @@ namespace NetworkCommands {
     const int STOP = 2;
     const int ATTACK = 3;
     const int MONSTER_UPDATE = 4;
+    const int CHAT_MESSAGE = 5;
 }
 
 // Monster constants

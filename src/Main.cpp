@@ -105,6 +105,7 @@ void networking() {
 #include "Camera.h"
 #include "Equipment.h"
 #include "EquipmentOverlay.h"
+#include "ChatOverlay.h"
 
 using namespace std;
 
@@ -406,6 +407,9 @@ int main(int argc, char* args[])
 		
 		EquipmentOverlay equipmentOverlay;
 		
+		// Create chat overlay
+		ChatOverlay chatOverlay;
+		
 		/**
 		 * Begins game loop
 		 */
@@ -424,10 +428,50 @@ int main(int argc, char* args[])
 			}
 			else
 			{
+				// Check if chat is about to be sent (active and user just toggled)
+				bool shouldSendChat = false;
+				std::string chatMsg = "";
+				
+				if (chatOverlay.isActive() && input.getChatToggle())
+				{
+					// Chat is active and user pressed ENTER - capture message before closing
+					chatMsg = chatOverlay.getMessage();
+					shouldSendChat = !chatMsg.empty();
+				}
+				
 				// Handle Input
-				if (input.get(&gameMap, &creature, networkClient.getSocket()))
+				if (input.get(&gameMap, &creature, networkClient.getSocket(), &chatOverlay))
 				{
 					quit = true;
+				}
+				
+				// Update chat overlay visibility - sync with input toggle state
+				if (input.getChatToggle() != chatOverlay.isVisible())
+				{
+					chatOverlay.toggle();
+				}
+				
+				// Send the chat message if we captured one
+				if (shouldSendChat)
+				{
+					// Set local player's chat message
+					creature.setChatMessage(chatMsg);
+					
+					// Send to server
+					unsigned char packet[MAX_PACKET_SIZE];
+					packet[0] = NetworkCommands::CHAT_MESSAGE;
+					packet[1] = chatMsg.length();
+					memcpy(packet + 2, chatMsg.c_str(), chatMsg.length());
+					
+					int bytesSent = SDLNet_TCP_Send(networkClient.getSocket(), packet, 2 + chatMsg.length());
+					if (bytesSent < 2 + chatMsg.length())
+					{
+						std::cerr << "Failed to send chat message: " << SDLNet_GetError() << std::endl;
+					}
+					else
+					{
+						std::cout << "Sent chat message: " << chatMsg << std::endl;
+					}
 				}
 
 				int socketCheckResult = SDLNet_CheckSockets(networkClient.getSocketSet(), 0);
@@ -499,6 +543,23 @@ int main(int argc, char* args[])
 									}
 								}
 							}
+							else if (command == NetworkCommands::CHAT_MESSAGE)
+							{
+								// Parse chat message
+								// Format: [command(4)][length(1)][message(length)]
+								if (bytesReceived >= 2)
+								{
+									unsigned char* udata = (unsigned char*)message;
+									unsigned char msgLength = udata[1];
+									if (bytesReceived >= 2 + msgLength)
+									{
+										std::string chatMsg((char*)(udata + 2), msgLength);
+										std::cout << "Received chat from another player: " << chatMsg << std::endl;
+										// Display on player (in multiplayer, you'd show on the sender)
+										creature.setChatMessage(chatMsg);
+									}
+								}
+							}
 						}
 						else
 						{
@@ -524,6 +585,8 @@ int main(int argc, char* args[])
 					equipmentOverlay.toggle();
 				}
 				
+				// Chat overlay visibility is already handled above before message sending
+				
 				// Update camera to follow player
 				int mapWidth = gameMap.getWidth();
 				int mapHeight = gameMap.getHeight();
@@ -534,7 +597,7 @@ int main(int argc, char* args[])
 #ifndef __TEXTURE_RENDERING__
 				graphics.updateCurrentSurface();
 #else
-				graphics.render(&gameMap, &creature, &input, &widget, monsters, monsterCount, &camera, &equipment, &equipmentOverlay);
+				graphics.render(&gameMap, &creature, &input, &widget, monsters, monsterCount, &camera, &equipment, &equipmentOverlay, &chatOverlay);
 #endif
 
 			}

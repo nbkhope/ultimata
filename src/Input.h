@@ -35,7 +35,7 @@ public:
 	/**
 	 * Handles input from the player
 	 */
-	bool get(GameMap* gameMap, Creature *c, TCPsocket& socket);
+	bool get(GameMap* gameMap, Creature *c, TCPsocket& socket, class ChatOverlay* chatOverlay);
 
 	/**
 	 * Handles input from the player (test version)
@@ -67,6 +67,9 @@ public:
 	bool getEquipmentToggle() const;
 	void setEquipmentToggle(bool toggle);
 	
+	bool getChatToggle() const;
+	void setChatToggle(bool toggle);
+	
 	void checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket);
 	//void movePlayer(Creature *c);
 
@@ -93,6 +96,9 @@ private:
 	
 	// Equipment overlay
 	bool equipmentToggle;
+	
+	// Chat overlay
+	bool chatToggle;
 	
 	/**
 	 * The screen cursor

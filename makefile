@@ -18,7 +18,8 @@ OBJS= \
 	build/Monster.o \
 	build/Camera.o \
 	build/Equipment.o \
-	build/EquipmentOverlay.o
+	build/EquipmentOverlay.o \
+	build/ChatOverlay.o
 
 DEPS=$(OBJS:.o=.d)
 

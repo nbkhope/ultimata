@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Equipment.h"
 #include "EquipmentOverlay.h"
+#include "ChatOverlay.h"
 #include "SDL2/SDL_ttf.h"
 
 // Define the mutable screen dimensions
@@ -382,7 +383,7 @@ void Graphics::displayImage()
 	SDL_Delay(2000);
 }
 
-void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, Monster* monsters, int monsterCount, Camera* camera, Equipment* equipment, EquipmentOverlay* equipmentOverlay)
+void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget* widget, Monster* monsters, int monsterCount, Camera* camera, Equipment* equipment, EquipmentOverlay* equipmentOverlay, ChatOverlay* chatOverlay)
 {
 	// Make sure to re-set RenderDrawColor
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -476,6 +477,44 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 	poseClip.h = creature->getHeight();
 	playerCharset.render(creature->getPosX() - camX, creature->getPosY() - camY, gRenderer, &poseClip);
 
+	// Draw chat message above player if it exists
+	if (creature->hasChatMessage())
+	{
+		TTF_Font* chatFont = TTF_OpenFont("data/fonts/cour.ttf", 14);
+		if (chatFont)
+		{
+			std::string chatText = creature->getChatMessage()->text;
+			SDL_Color chatColor = { 255, 255, 255, 255 };
+			SDL_Surface* chatSurface = TTF_RenderText_Blended(chatFont, chatText.c_str(), chatColor);
+			
+			if (chatSurface)
+			{
+				SDL_Texture* chatTexture = SDL_CreateTextureFromSurface(gRenderer, chatSurface);
+				if (chatTexture)
+				{
+					int textX = creature->getPosX() - camX + (creature->getWidth() - chatSurface->w) / 2;
+					int textY = creature->getPosY() - camY - chatSurface->h - 5;
+					
+					// Draw background bubble
+					SDL_Rect bubbleRect = { textX - 4, textY - 2, chatSurface->w + 8, chatSurface->h + 4 };
+					SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+					SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 200);
+					SDL_RenderFillRect(gRenderer, &bubbleRect);
+					SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+					SDL_RenderDrawRect(gRenderer, &bubbleRect);
+					SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
+					
+					// Draw text
+					SDL_Rect chatRect = { textX, textY, chatSurface->w, chatSurface->h };
+					SDL_RenderCopy(gRenderer, chatTexture, nullptr, &chatRect);
+					SDL_DestroyTexture(chatTexture);
+				}
+				SDL_FreeSurface(chatSurface);
+			}
+			TTF_CloseFont(chatFont);
+		}
+	}
+
 	// Image Loading Different Types <~test~>
 	switch (input->getTestImageLoad())
 	{
@@ -503,6 +542,17 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 		if (font)
 		{
 			equipmentOverlay->render(gRenderer, font, *equipment);
+			TTF_CloseFont(font);
+		}
+	}
+	
+	// Draw chat overlay on top of everything
+	if (chatOverlay)
+	{
+		TTF_Font* font = TTF_OpenFont("data/fonts/cour.ttf", 18);
+		if (font)
+		{
+			chatOverlay->render(gRenderer, font);
 			TTF_CloseFont(font);
 		}
 	}

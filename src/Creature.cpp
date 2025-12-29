@@ -186,7 +186,20 @@ void Creature::setId(int newId)
 {
 	id = newId;
 }
+void Creature::setChatMessage(const std::string& message)
+{
+	chatMessage = ChatMessage(message, 5000);
+}
 
+ChatMessage* Creature::getChatMessage()
+{
+	return &chatMessage;
+}
+
+bool Creature::hasChatMessage() const
+{
+	return !chatMessage.text.empty() && !chatMessage.isExpired();
+}
 void Creature::setPosX(int x)
 {
 	pos.x = x;
