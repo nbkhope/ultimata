@@ -32,6 +32,11 @@ Creature::Creature()
 	experience = 0;
 	health = healthMax = 120;
 	mana = manaMax = 40;
+	
+	/**
+	 * Graphics attributes
+	 */
+	charset = NULL;  // Initialize to prevent crash in destructor
 
 	// 	attack = 10;
 	// 	defense = 4;
@@ -60,14 +65,18 @@ Creature::Creature()
 	// 	id = 4;
 }
 
-Creature::Creature(string name) //: Creature()
+Creature::Creature(string name) : Creature()  // Delegate to default constructor
 {
-	name = name;
+	this->name = name;  // Override the name
 }
 
 Creature::~Creature()
 {
-	SDL_FreeSurface(charset);
+	// Only free if charset was actually allocated
+	if (charset != NULL)
+	{
+		SDL_FreeSurface(charset);
+	}
 }
 
 int Creature::getPosX() const
