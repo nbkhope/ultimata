@@ -81,6 +81,26 @@ namespace NetworkCommands {
     const int CHAT_MESSAGE = 5;
 }
 
+// --- Multiplayer Player State Packet Format ---
+// Used for synchronizing all players between server and clients
+// Format (all fields are int unless noted):
+// [command (4 bytes)] [player_id (4)] [x (4)] [y (4)] [direction (4)] [nameLen (1)] [name (nameLen bytes)]
+// command: NetworkCommands::PLAYER_STATE (define below)
+// player_id: unique id for each player (assigned by server)
+// x, y: player position
+// direction: see enum Direction
+// nameLen: length of player name (max 32)
+// name: player name (not null-terminated)
+
+namespace NetworkCommands {
+	const int PLAYER_STATE = 6; // New: player state sync
+	const int PLAYER_DISCONNECT = 7; // Player disconnection notification
+}
+
+const int MAX_PLAYERS = 16;
+const int MAX_PLAYER_NAME = 32;
+// ---------------------------------------------
+
 // Monster constants
 const int MAX_MONSTERS = 4;  // Maximum number of monsters in the game
 

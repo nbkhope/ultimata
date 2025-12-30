@@ -1,5 +1,25 @@
 #include "Input.h"
 #include "ChatOverlay.h"
+#include "Constants.h"
+#include "SDL2/SDL_net.h"
+#include <string.h>
+
+// Multiplayer: send player state packet
+void sendPlayerState(TCPsocket& socket, int id, int x, int y, int direction, const char* name) {
+	unsigned char packet[64];
+	int offset = 0;
+	int cmd = NetworkCommands::PLAYER_STATE;
+	memcpy(packet + offset, &cmd, 4); offset += 4;
+	memcpy(packet + offset, &id, 4); offset += 4;
+	memcpy(packet + offset, &x, 4); offset += 4;
+	memcpy(packet + offset, &y, 4); offset += 4;
+	memcpy(packet + offset, &direction, 4); offset += 4;
+	unsigned char nameLen = (unsigned char)strnlen(name, 32);
+	packet[offset++] = nameLen;
+	memcpy(packet + offset, name, nameLen);
+	int total = offset + nameLen;
+	SDLNet_TCP_Send(socket, packet, total);
+}
 
 Input::Input()
 {
@@ -526,19 +546,9 @@ void Input::checkPlayerMovement(GameMap* gameMap, Creature* c, TCPsocket& socket
 	//networking stuff
 	if (pos_x != c->getPosX() || pos_y != c->getPosY())
 	{
-		// position changed
-		//todo: throttling. this is called many times due to speed...
-		char message[MAX_MESSAGE_SIZE];
-		int len = snprintf(message, MAX_MESSAGE_SIZE, "player position is (%d, %d)", c->getPosX(), c->getPosY());
-		std::cout << message << std::endl;
-		//note terminating null (+1)...
-		int bytesSent = SDLNet_TCP_Send(socket, message, len + 1);
-		if (bytesSent != len + 1)  // Check if all bytes including null terminator were sent
-		{
-			//todo: use error lib
-			std::cerr << "Network send failed: " << SDLNet_GetError() << std::endl;
-		}
-		//todo: error sprintf
+		// Send player state to server
+		// TODO: assign a real player id and name
+		sendPlayerState(socket, 0, c->getPosX(), c->getPosY(), c->getDirection(), "Player");
 	}
 
 }

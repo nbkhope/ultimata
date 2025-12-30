@@ -5,7 +5,17 @@
 #include "Equipment.h"
 #include "EquipmentOverlay.h"
 #include "ChatOverlay.h"
+#include <map>
 #include "SDL2/SDL_ttf.h"
+
+// Remote player structure for multiplayer
+struct RemotePlayer {
+	int id;
+	int x, y;
+	int direction;
+	std::string name;
+};
+extern std::map<int, RemotePlayer> remotePlayers;
 
 // Define the mutable screen dimensions
 int SCREEN_WIDTH = ResolutionPresets::WIDTH_NORMAL;
@@ -467,6 +477,45 @@ void Graphics::render(GameMap* gameMap, Creature* creature, Input* input, Widget
 		// Black border
 		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 		SDL_RenderDrawRect(gRenderer, &rect);
+	}
+
+	// --- Multiplayer: Draw remote players ---
+	for (auto it = remotePlayers.begin(); it != remotePlayers.end(); ++it) {
+		int id = it->first;
+		const RemotePlayer& rp = it->second;
+		// Remote players are already filtered by the client, so draw all of them
+		SDL_Rect rect;
+		rect.x = rp.x - camX;
+		rect.y = rp.y - camY;
+		rect.w = 32;
+		rect.h = 48;
+		// Blue rectangle for remote player
+		SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(gRenderer, 0, 128, 255, 200);
+		SDL_RenderFillRect(gRenderer, &rect);
+		SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		SDL_RenderDrawRect(gRenderer, &rect);
+		// Draw name above head
+		if (!rp.name.empty()) {
+			TTF_Font* font = TTF_OpenFont("data/fonts/cour.ttf", 14);
+			if (font) {
+				SDL_Color nameColor = { 200, 230, 255, 255 };
+				SDL_Surface* nameSurface = TTF_RenderText_Blended(font, rp.name.c_str(), nameColor);
+				if (nameSurface) {
+					SDL_Texture* nameTexture = SDL_CreateTextureFromSurface(gRenderer, nameSurface);
+					if (nameTexture) {
+						int textX = rect.x + (rect.w - nameSurface->w) / 2;
+						int textY = rect.y - nameSurface->h - 2;
+						SDL_Rect nameRect = { textX, textY, nameSurface->w, nameSurface->h };
+						SDL_RenderCopy(gRenderer, nameTexture, nullptr, &nameRect);
+						SDL_DestroyTexture(nameTexture);
+					}
+					SDL_FreeSurface(nameSurface);
+				}
+				TTF_CloseFont(font);
+			}
+		}
 	}
 
 	// Draw creature with camera offset
