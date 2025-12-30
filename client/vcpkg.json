@@ -1,0 +1,13 @@
+{
+    "name": "ultimata-client",
+    "version": "1.0.0",
+    "description": "A simple 2D RPG game built with SDL2",
+    "dependencies": [
+        "sdl2",
+        "sdl2-image",
+        "sdl2-ttf",
+        "sdl2-mixer",
+        "sdl2-net"
+    ],
+    "builtin-baseline": "55fab67aea1027f7179ae6b5c54a5ba9091c16aa"
+}

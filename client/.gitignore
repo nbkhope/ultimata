@@ -1,0 +1,30 @@
+# CMake build directories
+build/
+out/
+cmake-build-*/
+
+# Visual Studio / VS Code files
+.vs/
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+*.vcxproj*
+*.sln
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+
+# Dependency files
+*.d
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# vcpkg installed directory (if using classic mode)
+vcpkg_installed/
