@@ -6,6 +6,7 @@
 
 // Multiplayer: send player state packet
 void sendPlayerState(TCPsocket& socket, int id, int x, int y, int direction, const char* name) {
+	printf("sendPlayerState called: id=%d pos=(%d,%d) dir=%d name=%s\n", id, x, y, direction, name);
 	unsigned char packet[64];
 	int offset = 0;
 	int cmd = NetworkCommands::PLAYER_STATE;
@@ -18,6 +19,7 @@ void sendPlayerState(TCPsocket& socket, int id, int x, int y, int direction, con
 	packet[offset++] = nameLen;
 	memcpy(packet + offset, name, nameLen);
 	int total = offset + nameLen;
+	printf("Sending %d bytes with command %d\n", total, cmd);
 	SDLNet_TCP_Send(socket, packet, total);
 }
 
