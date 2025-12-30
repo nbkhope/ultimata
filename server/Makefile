@@ -9,10 +9,14 @@ DEPS=$(OBJS:.o=.d)
 Server: $(OBJS)
 	g++ $(FLAGS) -o build/server.exe $(OBJS) -lSDL2main -lSDL2 -lSDL2_net
 
+run: Server
+	@echo Starting server...
+	build/server.exe
+
 build:
 	@if not exist build mkdir build
 
-build/%.o: %.cpp | build
+build/%.o: src/%.cpp | build
 	g++ $(FLAGS) -MMD -MP -c $< -o $@
 
 clean:
@@ -21,6 +25,6 @@ clean:
 	@if exist build\*.d del /Q build\*.d
 	@if exist build rmdir /S /Q build
 
-.PHONY: clean
+.PHONY: clean run
 
 -include $(DEPS)

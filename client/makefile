@@ -25,7 +25,7 @@ DEPS=$(OBJS:.o=.d)
 
 Ultimata: $(OBJS)
 	g++ $(FLAGS) -o build/Ultimata $(OBJS) -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2_net
-	copy dll\*.dll build
+	copy *.dll build
 
 build:
 	@if not exist build mkdir build
