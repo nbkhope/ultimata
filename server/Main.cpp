@@ -25,12 +25,37 @@ struct Position
 };
 
 
-struct Client
-{
+struct PlayerState {
     bool active;
-    Position position;
+    int id;
+    int x, y;
+    int direction;
+    char name[33]; // MAX_PLAYER_NAME+1
 };
-Client clients[MAX_SOCKETS];
+PlayerState playerStates[MAX_SOCKETS];
+// Helper: broadcast all player states to all clients
+void broadcastPlayerStates(TCPsocket clientSockets[MAX_SOCKETS]) {
+    for (int i = 0; i < MAX_SOCKETS; ++i) {
+        if (!clientSockets[i]) continue;
+        for (int j = 0; j < MAX_SOCKETS; ++j) {
+            if (playerStates[j].active) {
+                unsigned char packet[64];
+                int offset = 0;
+                int cmd = 6; // PLAYER_STATE
+                memcpy(packet + offset, &cmd, 4); offset += 4;
+                memcpy(packet + offset, &playerStates[j].id, 4); offset += 4;
+                memcpy(packet + offset, &playerStates[j].x, 4); offset += 4;
+                memcpy(packet + offset, &playerStates[j].y, 4); offset += 4;
+                memcpy(packet + offset, &playerStates[j].direction, 4); offset += 4;
+                unsigned char nameLen = (unsigned char)strnlen(playerStates[j].name, 32);
+                packet[offset++] = nameLen;
+                memcpy(packet + offset, playerStates[j].name, nameLen);
+                int total = offset + nameLen;
+                SDLNet_TCP_Send(clientSockets[i], packet, total);
+            }
+        }
+    }
+}
 int playersOnline = 0;
 int freeSocketIndex = 0;
 
@@ -156,8 +181,23 @@ void closeSocket(SDLNet_SocketSet& socketSet, TCPsocket clientSockets[MAX_SOCKET
         error(ss.str());
     }
 
-    // todo: can we remove memset here?
-    memset(&clients[socketIndex], 0x00, sizeof(Client));
+    // Broadcast player disconnection to all remaining clients before clearing state
+    if (playerStates[socketIndex].active) {
+        for (int i = 0; i < MAX_SOCKETS; i++) {
+            if (i != socketIndex && clientSockets[i] && playerStates[i].active) {
+                unsigned char packet[8];
+                int cmd = 7; // PLAYER_DISCONNECT
+                int playerId = socketIndex;
+                memcpy(packet, &cmd, 4);
+                memcpy(packet + 4, &playerId, 4);
+                SDLNet_TCP_Send(clientSockets[i], packet, 8);
+            }
+        }
+        printf("Broadcasted disconnection of player %d to remaining clients\n", socketIndex);
+    }
+
+    // Clear player state when socket is closed
+    memset(&playerStates[socketIndex], 0x00, sizeof(PlayerState));
     SDLNet_TCP_Close(clientSocket);
     clientSockets[socketIndex] = NULL;
 }
@@ -259,7 +299,12 @@ bool acceptSocket(SDLNet_SocketSet& socketSet, TCPsocket& serverSocket, TCPsocke
 
     // Assign the new socket BEFORE adding it to the socket set
     clientSockets[socketIndex] = clientSocket;
-    clients[socketIndex].active = true;
+    playerStates[socketIndex].active = true;
+    playerStates[socketIndex].id = socketIndex;
+    playerStates[socketIndex].x = 200; // Set reasonable default spawn position
+    playerStates[socketIndex].y = 200; 
+    playerStates[socketIndex].direction = 0;
+    strcpy(playerStates[socketIndex].name, "Player");
     
     int socketsUsed = SDLNet_TCP_AddSocket(socketSet, clientSockets[socketIndex]);
     if (socketsUsed == -1)
@@ -298,6 +343,47 @@ bool acceptSocket(SDLNet_SocketSet& socketSet, TCPsocket& serverSocket, TCPsocke
         std::cout << "Sent initial " << monsterData.count << " monster positions to new client " << socketIndex << std::endl;
     }
 
+    // Send existing player states to the new client immediately
+    for (int i = 0; i < MAX_SOCKETS; i++) {
+        if (i != socketIndex && playerStates[i].active) {
+            unsigned char packet[64];
+            int offset = 0;
+            int cmd = 6; // PLAYER_STATE
+            memcpy(packet + offset, &cmd, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[i].id, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[i].x, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[i].y, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[i].direction, 4); offset += 4;
+            unsigned char nameLen = (unsigned char)strnlen(playerStates[i].name, 32);
+            packet[offset++] = nameLen;
+            memcpy(packet + offset, playerStates[i].name, nameLen);
+            int total = offset + nameLen;
+            SDLNet_TCP_Send(clientSocket, packet, total);
+        }
+    }
+    
+    printf("Sent existing player states to new client %d\n", socketIndex);
+
+    // Immediately broadcast the new player to all existing clients so they see them right away
+    for (int i = 0; i < MAX_SOCKETS; i++) {
+        if (i != socketIndex && clientSockets[i] && playerStates[i].active) {
+            unsigned char packet[64];
+            int offset = 0;
+            int cmd = 6; // PLAYER_STATE
+            memcpy(packet + offset, &cmd, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[socketIndex].id, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[socketIndex].x, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[socketIndex].y, 4); offset += 4;
+            memcpy(packet + offset, &playerStates[socketIndex].direction, 4); offset += 4;
+            unsigned char nameLen = (unsigned char)strnlen(playerStates[socketIndex].name, 32);
+            packet[offset++] = nameLen;
+            memcpy(packet + offset, playerStates[socketIndex].name, nameLen);
+            int total = offset + nameLen;
+            SDLNet_TCP_Send(clientSockets[i], packet, total);
+        }
+    }
+    printf("Broadcasted new player %d to existing clients\n", socketIndex);
+
     return true;
 }
 
@@ -307,6 +393,9 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
 
     //todo: rename var
     Uint32 moveTimer = SDL_GetTicks();
+    Uint32 lastStatusTime = SDL_GetTicks();
+    const Uint32 STATUS_INTERVAL = 10000; // Print status every 10 seconds
+    
     info("Listening...");
     while (running)
     {
@@ -315,17 +404,23 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
             break;
         };
 
-        std::stringstream ss;
-        ss << "Checking sockets..." << " (Players online: " << playersOnline << ")";
-        info(ss.str());
-        int socketsReady = SDLNet_CheckSockets(socketSet, 1000);
+        // Periodic status update instead of constant spam
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime - lastStatusTime > STATUS_INTERVAL) {
+            std::cout << "Server status - Players online: " << playersOnline << std::endl;
+            lastStatusTime = currentTime;
+        }
+
+        // Check sockets with a shorter timeout to reduce CPU usage
+        int socketsReady = SDLNet_CheckSockets(socketSet, 10);
 
         if (socketsReady <= 0)
         {
             // -1 is returned on errors,
             //-1 is also returned for an empty set (nothing to check).
             // process other things
-            info("> No sockets ready.");
+            // Add small delay to prevent CPU spinning
+            SDL_Delay(1);
 
             // e.g. move character
             //todo: the server should be the source of truth for player position...
@@ -355,11 +450,7 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                         closeSocket(socketSet, clientSockets, clientIndex);
                         playersOnline--; // Decrement since we lost a player
                     }
-                    else
-                    {
-                        std::cout << "Sent message to client index " << clientIndex << ": " << message << std::endl;
-                        std::cout << "Message length: " << messageLength << std::endl;
-                    }
+                    // else - Sent move message successfully (no need to spam log)
                     
                     // Send monster positions (command + count + positions)
                     // Format: [MONSTER_UPDATE(4 bytes)][count(4 bytes)][x1(4)][y1(4)][x2(4)][y2(4)]...
@@ -388,10 +479,7 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                     {
                         std::cout << "Failed to send monster data to client " << clientIndex << std::endl;
                     }
-                    else
-                    {
-                        std::cout << "Sent " << monsterData.count << " monster positions to client " << clientIndex << std::endl;
-                    }
+                    // else - Monster data sent successfully (no need to spam log)
                 }
                 moveTimer = ticks;
             }
@@ -444,7 +532,6 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
 
                 if (SDLNet_SocketReady(clientSocket))
                 {
-                    std::cout << "> Working on client socket" << std::endl;
 
                     char message[MESSAGE_BUFFER_SIZE];
                     int bytesReceived = SDLNet_TCP_Recv(clientSocket, message, MESSAGE_RECV_SIZE);
@@ -457,20 +544,78 @@ void listen(SDLNet_SocketSet& socketSet, TCPsocket serverSocket, TCPsocket clien
                     }
                     else
                     {
-                        message[bytesReceived] = 0;
-                        printf("Received from client: \"%s\"", message);
-
-                        if (strcmp(message, "disconnect") == 0)
+                        // Check if we received a binary packet (starts with a command)
+                        if (bytesReceived >= sizeof(int))
                         {
-                            std::cout << "Client " << playerIndex << " asked to disconnect" << std::endl;
-                            closeSocket(socketSet, clientSockets, playerIndex);
+                            int command = *((int*)message);
+                            printf("Received command: %d from client %d\n", command, playerIndex);
+                            
+                            if (command == 6) // PLAYER_STATE
+                            {
+                                // Parse player state packet
+                                // [command(4)][id(4)][x(4)][y(4)][direction(4)][nameLen(1)][name]
+                                if (bytesReceived >= 21)
+                                {
+                                    int id = *((int*)(message + 4));
+                                    int x = *((int*)(message + 8));
+                                    int y = *((int*)(message + 12));
+                                    int direction = *((int*)(message + 16));
+                                    unsigned char nameLen = (unsigned char)message[20];
+                                    
+                                    // Update player state
+                                    playerStates[playerIndex].active = true;
+                                    playerStates[playerIndex].id = playerIndex; // Use socket index as ID
+                                    playerStates[playerIndex].x = x;
+                                    playerStates[playerIndex].y = y;
+                                    playerStates[playerIndex].direction = direction;
+                                    
+                                    if (nameLen > 0 && nameLen <= 32 && bytesReceived >= 21 + nameLen)
+                                    {
+                                        memcpy(playerStates[playerIndex].name, message + 21, nameLen);
+                                        playerStates[playerIndex].name[nameLen] = '\0';
+                                    }
+                                    else
+                                    {
+                                        strcpy(playerStates[playerIndex].name, "Player");
+                                    }
+                                    
+                                    // Only log on first connection or significant changes
+                                    static bool firstUpdate[MAX_SOCKETS] = {false};
+                                    if (!firstUpdate[playerIndex]) {
+                                        printf("Player %d connected: %s at (%d,%d)\n", 
+                                               playerIndex, playerStates[playerIndex].name, x, y);
+                                        firstUpdate[playerIndex] = true;
+                                    } else {
+                                        // Log movement updates occasionally for debugging
+                                        static int moveCount[MAX_SOCKETS] = {0};
+                                        moveCount[playerIndex]++;
+                                        if (moveCount[playerIndex] % 10 == 0) {
+                                            printf("Player %d moved to (%d,%d) [update #%d]\n", 
+                                                   playerIndex, x, y, moveCount[playerIndex]);
+                                        }
+                                    }
+                                    
+                                    // Broadcast all player states to all clients
+                                    broadcastPlayerStates(clientSockets);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Handle text messages
+                            message[bytesReceived] = 0;
+                            // printf("Received text from client: \"%s\"\n", message); // Commented out to reduce spam
+
+                            if (strcmp(message, "disconnect") == 0)
+                            {
+                                std::cout << "Client " << playerIndex << " asked to disconnect" << std::endl;
+                                closeSocket(socketSet, clientSockets, playerIndex);
+                                playersOnline--;
+                            }
                         }
                     }
                 }
-                else
-                {
-                    std::cout << "> Client socket " << playerIndex << " is not ready." << std::endl;
-                }
+                // else - socket not ready (normal, no need to spam log)
             }
 
         }

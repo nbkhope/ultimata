@@ -1,3 +1,13 @@
+// --- Multiplayer: Remote Player State ---
+#include <map>
+#include <string>
+struct RemotePlayer {
+	int id;
+	int x, y;
+	int direction;
+	std::string name;
+};
+std::map<int, RemotePlayer> remotePlayers;
 /** @file
  * Moving player game
  *
@@ -12,6 +22,9 @@
 
 #include "SDL2/SDL_net.h"
 #include "SDL2/SDL_ttf.h"
+
+// Forward declaration for multiplayer functions
+void sendPlayerState(TCPsocket& socket, int id, int x, int y, int direction, const char* name);
 
 void error(std::string functionName)
 {
@@ -341,6 +354,7 @@ int main(int argc, char* args[])
 	bool quit;
 	int gameMode;
 	bool networkReady = false;
+	int myPlayerId = -1; // Will be set when we connect to the server
 
 	//SDL_Event e;
 
@@ -387,6 +401,10 @@ int main(int argc, char* args[])
 
 		// Load Game Map
 		gameMap.loadTxt("data/maps/map.txt");
+
+		// Send initial position immediately after connecting so other players see us right away
+		sendPlayerState(networkClient.getSocket(), 0, creature.getPosX(), creature.getPosY(), creature.getDirection(), "Player");
+		printf("Sent initial position to server: (%d, %d)\n", creature.getPosX(), creature.getPosY());
 
 		// Set up cursor
 		input.getCursor()->updateTileInfo(&gameMap);
@@ -501,52 +519,93 @@ int main(int argc, char* args[])
 							int command = *((int*)message);  // Cast received bytes to int
 							printf("Received command: %d\n", command);
 
-							if (command == NetworkCommands::MOVE)  // Use named constant
+							if (command == NetworkCommands::PLAYER_STATE) {
+								// Parse player state packet
+								// [command(4)][id(4)][x(4)][y(4)][direction(4)][nameLen(1)][name]
+								if (bytesReceived >= 21) {
+									int id = *((int*)(message + 4));
+									int x = *((int*)(message + 8));
+									int y = *((int*)(message + 12));
+									int dir = *((int*)(message + 16));
+									unsigned char nameLen = (unsigned char)message[20];
+									std::string name;
+									if (nameLen > 0 && bytesReceived >= 21 + nameLen) {
+										name.assign(message + 21, nameLen);
+									}
+									
+									printf("Received player state: id=%d pos(%d,%d) name=%s\n", id, x, y, name.c_str());
+									
+									// Set our own ID if not yet known (first player state we receive might be our own)
+									if (myPlayerId == -1) {
+										// We'll determine our ID by comparing with our current position
+										// This is a simple heuristic - in a real game you'd want a proper handshake
+										int myX = creature.getPosX();
+										int myY = creature.getPosY();
+										if (abs(x - myX) < 50 && abs(y - myY) < 50) {
+											myPlayerId = id;
+											printf("Set my player ID to %d\n", myPlayerId);
+										}
+									}
+									
+									// If this is not our own player, update remotePlayers
+								// For now, assume all received player states are from other players
+								// In a real game, the server should tell us our own player ID
+								if (myPlayerId == -1 || id != myPlayerId) {
+										RemotePlayer& rp = remotePlayers[id];
+										rp.id = id;
+										rp.x = x;
+										rp.y = y;
+										rp.direction = dir;
+										rp.name = name;
+										printf("Updated remote player %d at (%d,%d)\n", id, x, y);
+									}
+								}
+							}
+							else if (command == NetworkCommands::PLAYER_DISCONNECT) {
+								// Parse player disconnect packet: [command(4)][playerId(4)]
+								if (bytesReceived >= 8) {
+									int disconnectedPlayerId = *((int*)(message + 4));
+									printf("Player %d disconnected\n", disconnectedPlayerId);
+									
+									// Remove the player from remotePlayers map
+									auto it = remotePlayers.find(disconnectedPlayerId);
+									if (it != remotePlayers.end()) {
+										printf("Removing remote player %d from display\n", disconnectedPlayerId);
+										remotePlayers.erase(it);
+									}
+								}
+							}
+							else if (command == NetworkCommands::MOVE)  // Use named constant
 							{
-								// Cycle through movement directions: 0=right, 1=down, 2=left, 3=up
+								// ...existing code...
 								switch (movementDirection % 4)
 								{
-									case 0: // Move right
-										creature.shiftPosX(32);
-										break;
-									case 1: // Move down
-										creature.shiftPosY(32);
-										break;
-									case 2: // Move left
-										creature.shiftPosX(-32);
-										break;
-									case 3: // Move up
-										creature.shiftPosY(-32);
-										break;
+									case 0: creature.shiftPosX(32); break;
+									case 1: creature.shiftPosY(32); break;
+									case 2: creature.shiftPosX(-32); break;
+									case 3: creature.shiftPosY(-32); break;
 								}
-								movementDirection++; // Cycle to next direction
+								movementDirection++;
 							}
 							else if (command == NetworkCommands::MONSTER_UPDATE)
 							{
-								// Parse monster positions
-								// Format: [command(4)][count(4)][x1(4)][y1(4)][x2(4)][y2(4)]...
+								// ...existing code...
 								if (bytesReceived >= sizeof(int) * 2)
 								{
 									int* data = (int*)message;
 									int count = data[1];
 									monsterCount = (count < MAX_MONSTERS) ? count : MAX_MONSTERS;
-									
-									printf("Received %d monster positions\n", monsterCount);
-									printf("Current monsterCount variable: %d\n", monsterCount);
-									
 									for (int i = 0; i < monsterCount; i++)
 									{
 										int x = data[2 + i * 2];
 										int y = data[2 + i * 2 + 1];
 										monsters[i].setPos(x, y);
-										printf("Monster %d set to (%d, %d), size: %dx%d\n", i, x, y, monsters[i].getWidth(), monsters[i].getHeight());
 									}
 								}
 							}
 							else if (command == NetworkCommands::CHAT_MESSAGE)
 							{
-								// Parse chat message
-								// Format: [command(4)][length(1)][message(length)]
+								// ...existing code...
 								if (bytesReceived >= 2)
 								{
 									unsigned char* udata = (unsigned char*)message;
@@ -555,7 +614,6 @@ int main(int argc, char* args[])
 									{
 										std::string chatMsg((char*)(udata + 2), msgLength);
 										std::cout << "Received chat from another player: " << chatMsg << std::endl;
-										// Display on player (in multiplayer, you'd show on the sender)
 										creature.setChatMessage(chatMsg);
 									}
 								}

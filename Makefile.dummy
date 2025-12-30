@@ -1,0 +1,14 @@
+# Makefile for dummy client
+# Simple build for testing multiplayer
+
+CXX = g++
+CXXFLAGS = -IC:\Users\nkans\include -LC:\Users\nkans\lib
+LIBS = -lSDL2main -lSDL2 -lSDL2_net
+
+dummy_client.exe: dummy_client.cpp
+	$(CXX) $(CXXFLAGS) -o dummy_client.exe dummy_client.cpp $(LIBS)
+
+clean:
+	del dummy_client.exe 2>NUL || true
+
+.PHONY: clean
