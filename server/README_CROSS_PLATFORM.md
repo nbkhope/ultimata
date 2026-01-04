@@ -7,13 +7,13 @@ The Ultimata Server now supports both Windows and Linux/macOS platforms using Bo
 ### Windows (Recommended)
 ```bash
 # 1. Install dependencies with vcpkg
-setup-vcpkg.bat
+install.bat
 
 # 2. Build the server
-cmake --build build --config Release
+build.bat
 
 # 3. Start the server
-start-server.bat
+start.bat
 ```
 
 ### Linux/macOS

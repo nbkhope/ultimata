@@ -4,8 +4,8 @@
 # 
 # NOTE: This Makefile is kept for backward compatibility
 # For modern development, use vcpkg and CMake:
-#   1. Run setup-vcpkg.bat to install dependencies and build
-#   2. Run start-server.bat to start the server
+#   1. Run install.bat and build.bat to install dependencies and build
+#   2. Run start.bat to start the server
 #
 FLAGS=-IC:\Users\nkans\include -LC:\Users\nkans\lib
 

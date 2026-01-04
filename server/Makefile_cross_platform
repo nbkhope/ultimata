@@ -4,8 +4,8 @@
 #      make clean     (to clean build files)
 #
 # NOTE: For modern development on Windows, use vcpkg and CMake:
-#   1. Run setup-vcpkg.bat to install dependencies and build
-#   2. Run start-server.bat to start the server
+#   1. Run install.bat and build.bat to install dependencies and build
+#   2. Run start.bat to start the server
 #
 # For Linux/macOS, you can use this Makefile or CMake
 
