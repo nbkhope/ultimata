@@ -953,12 +953,12 @@ void Graphics::setViewport()
 	SDL_RenderSetViewport(gRenderer, &rect);
 	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 
-	rect = (SDL_Rect) { SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
+	rect = { SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 
 	SDL_RenderSetViewport(gRenderer, &rect);
 	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 
-	rect = (SDL_Rect) { 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2 };
+	rect = { 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2 };
 
 	SDL_RenderSetViewport(gRenderer, &rect);
 	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);

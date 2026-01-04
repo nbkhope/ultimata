@@ -1,0 +1,29 @@
+# Build directories
+build/
+x64/
+
+# vcpkg installed packages (generated, not source controlled)
+vcpkg_installed/
+
+# Visual Studio files
+*.vcxproj
+*.vcxproj.filters
+*.sln
+*.dir/
+
+# Object files and executables
+*.exe
+*.obj
+*.o
+*.d
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# Log files
+*.log
+
+# DLL files (should be managed by vcpkg/build system)
+*.dll

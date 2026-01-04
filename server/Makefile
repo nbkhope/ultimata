@@ -1,6 +1,12 @@
 # SDL2_net is required for this server to compile
 # If you get "SDL2/SDL_net.h: No such file or directory", you need to install SDL2_net development headers
 # Download SDL2_net from: https://www.libsdl.org/projects/SDL_net/
+# 
+# NOTE: This Makefile is kept for backward compatibility
+# For modern development, use vcpkg and CMake:
+#   1. Run setup-vcpkg.bat to install dependencies and build
+#   2. Run start-server.bat to start the server
+#
 FLAGS=-IC:\Users\nkans\include -LC:\Users\nkans\lib
 
 OBJS=build/Main.o
