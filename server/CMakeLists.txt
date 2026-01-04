@@ -7,6 +7,7 @@ find_package(SDL2_net CONFIG REQUIRED)
 # Create executable
 add_executable(ultimata-server
     src/Main.cpp
+    src/SDLNetManager.cpp
 )
 
 # Link libraries
