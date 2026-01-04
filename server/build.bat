@@ -12,4 +12,3 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo Build complete! Server executable is in build/ultimata-server.exe
-pause
