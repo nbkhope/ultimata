@@ -13,7 +13,6 @@ if not exist "build\CMakeCache.txt" (
     cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=C:/Users/nkans/git/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake
     if %ERRORLEVEL% NEQ 0 (
         echo CMake configuration failed!
-        pause
         exit /b 1
     )
 )
@@ -25,6 +24,5 @@ if %ERRORLEVEL% EQU 0 (
     .\build\bin\Release\Ultimata.exe
 ) else (
     echo Build failed!
-    pause
     exit /b 1
 )

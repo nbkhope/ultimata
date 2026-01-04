@@ -13,7 +13,7 @@ install.bat
 build.bat
 
 # 3. Start the server
-start.bat
+startit.bat
 ```
 
 ### Linux/macOS
