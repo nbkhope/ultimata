@@ -7,7 +7,6 @@ cmake --build build --config Release
 
 if %ERRORLEVEL% NEQ 0 (
     echo Build failed!
-    pause
     exit /b 1
 )
 

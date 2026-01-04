@@ -4,7 +4,6 @@ g++ -IC:\Users\nkans\include -LC:\Users\nkans\lib -o dummy_client.exe dummy_clie
 
 if %errorlevel% neq 0 (
     echo Build failed!
-    pause
     exit /b 1
 )
 
