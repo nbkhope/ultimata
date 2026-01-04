@@ -1,5 +1,7 @@
 #include "AsioNetworkManager.h"
 #include <iostream>
+#include <format>
+#include <print>
 
 AsioNetworkManager::AsioNetworkManager() 
     : running(false), maxClients(16), connectionManager(std::make_unique<AsioConnectionManager>()) {
@@ -169,6 +171,7 @@ int AsioNetworkManager::receiveData(int clientId, void* buffer, size_t maxSize) 
     
     // Look for messages from the specified client
     for (const auto& msg : messages) {
+        std::println("<ReceivedMessage connectionId={}>", msg.connectionId);
         if (msg.connectionId == clientId) {
             size_t copySize = std::min(maxSize, msg.data.size());
             std::memcpy(buffer, msg.data.data(), copySize);

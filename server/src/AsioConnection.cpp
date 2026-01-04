@@ -61,6 +61,7 @@ void AsioConnection::handleRead(const boost::system::error_code& error, size_t b
         
         // Call data received callback
         if (onDataReceived && bytes_transferred > 0) {
+            std::cout << "Calling onDataReceived" << std::endl;
             onDataReceived(id, readBuffer.data(), bytes_transferred);
         }
         
