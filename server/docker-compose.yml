@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  ultimata-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ultimata-server
+    ports:
+      - "8099:8099"  # Game server port
+    environment:
+      - SERVER_PORT=8099
+      - MAX_PLAYERS=100
+      - LOG_LEVEL=INFO
+    # Restart policy
+    restart: unless-stopped
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    # Health check
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -an | grep -q :8099 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Volume for logs (optional)
+    volumes:
+      - ./logs:/app/logs:rw
+    # Network configuration
+    networks:
+      - ultimata-network
+
+  # Optional: Add a simple test client container
+  test-client:
+    image: ubuntu:22.04
+    container_name: ultimata-test-client
+    depends_on:
+      - ultimata-server
+    networks:
+      - ultimata-network
+    # Keep container running for manual testing
+    command: tail -f /dev/null
+    profiles:
+      - testing  # Only start with --profile testing
+
+# Optional monitoring with simple web dashboard
+  watchtower:
+    image: containrrr/watchtower
+    container_name: ultimata-watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ultimata-server --interval 30
+    profiles:
+      - monitoring
+    networks:
+      - ultimata-network
+
+networks:
+  ultimata-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  ultimata-logs:
+    driver: local

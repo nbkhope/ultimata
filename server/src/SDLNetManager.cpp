@@ -159,8 +159,12 @@ public:
         return conn->receive(buffer, maxSize);
     }
     
-    void broadcastData(const void* data, size_t size) override {
-        connectionManager->broadcastToAll(data, size);
+    bool broadcastData(const void* data, size_t size) override {
+        if (connectionManager) {
+            connectionManager->broadcastToAll(data, size);
+            return true;
+        }
+        return false;
     }
     
     void processEvents() override {
@@ -183,30 +187,16 @@ public:
         // Would need to create a new one for dynamic resizing
     }
     
-    std::string getLastError() const override {
+    int getMaxClients() const override {
+        return maxClients;
+    }
+    
+    std::string getLastError() override {
         return lastError;
     }
 };
 
 // Factory function for creating SDLNetManager
 extern "C" INetworkManager* createSDLNetworkManager() {
-    return new SDLNetManager();
-}
-    
-    std::string getLastError() override {
-        return lastError;
-    }
-    
-    void setMaxClients(int max) override {
-        maxClients = max;
-        clientSockets.resize(max, nullptr);
-    }
-    
-    int getMaxClients() const override {
-        return maxClients;
-    }
-};
-
-INetworkManager* createSDLNetManager() {
     return new SDLNetManager();
 }
