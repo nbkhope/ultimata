@@ -1,0 +1,9 @@
+{
+  "name": "ultimata-server",
+  "version": "1.0.0",
+  "description": "Ultimata Game Server",
+  "dependencies": [
+    "sdl2",
+    "sdl2-net"
+  ]
+}
