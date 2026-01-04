@@ -1,4 +1,5 @@
 #include "INetworkManager.h"
+#include "ConnectionManager.h"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_net.h"
 #include <iostream>
@@ -9,7 +10,7 @@ class SDLNetManager : public INetworkManager {
 private:
     TCPsocket serverSocket;
     SDLNet_SocketSet socketSet;
-    std::vector<TCPsocket> clientSockets;
+    std::unique_ptr<ConnectionManager> connectionManager;
     int maxClients;
     std::string lastError;
     
@@ -21,7 +22,7 @@ private:
     
 public:
     SDLNetManager() : serverSocket(nullptr), socketSet(nullptr), maxClients(16) {
-        clientSockets.resize(maxClients, nullptr);
+        connectionManager = std::make_unique<ConnectionManager>(maxClients);
     }
     
     ~SDLNetManager() {
@@ -43,16 +44,13 @@ public:
     }
     
     void shutdown() override {
+        if (connectionManager) {
+            connectionManager->closeAllConnections();
+        }
+        
         if (socketSet) {
             SDLNet_FreeSocketSet(socketSet);
             socketSet = nullptr;
-        }
-        
-        for (int i = 0; i < maxClients; ++i) {
-            if (clientSockets[i]) {
-                SDLNet_TCP_Close(clientSockets[i]);
-                clientSockets[i] = nullptr;
-            }
         }
         
         if (serverSocket) {
@@ -96,81 +94,78 @@ public:
     }
     
     int acceptConnection() override {
-        TCPsocket newSocket = SDLNet_TCP_Accept(serverSocket);
-        if (!newSocket) return -1;
-        
-        // Find empty slot
-        for (int i = 0; i < maxClients; ++i) {
-            if (!clientSockets[i]) {
-                clientSockets[i] = newSocket;
-                if (SDLNet_TCP_AddSocket(socketSet, newSocket) == -1) {
-                    SDLNet_TCP_Close(newSocket);
-                    clientSockets[i] = nullptr;
-                    setError("SDLNet_TCP_AddSocket");
-                    return -1;
-                }
-                return i;
-            }
+        if (!SDLNet_SocketReady(serverSocket)) {
+            return -1;  // No pending connections
         }
         
-        // No slots available
-        SDLNet_TCP_Close(newSocket);
-        lastError = "Server full - no available client slots";
-        return -1;
+        TCPsocket newSocket = SDLNet_TCP_Accept(serverSocket);
+        if (!newSocket) {
+            return -1;  // Accept failed
+        }
+        
+        int connectionId = connectionManager->addConnection(newSocket);
+        if (connectionId == -1) {
+            // Server full or error
+            SDLNet_TCP_Close(newSocket);
+            lastError = "Failed to add connection - server full";
+            return -1;
+        }
+        
+        // Add socket to socket set for monitoring
+        if (SDLNet_TCP_AddSocket(socketSet, newSocket) == -1) {
+            connectionManager->removeConnection(connectionId);
+            setError("SDLNet_TCP_AddSocket");
+            return -1;
+        }
+        
+        return connectionId;
     }
     
     void closeConnection(int clientId) override {
-        if (clientId < 0 || clientId >= maxClients || !clientSockets[clientId]) return;
+        Connection* conn = connectionManager->getConnection(clientId);
+        if (!conn) return;
         
-        SDLNet_TCP_DelSocket(socketSet, clientSockets[clientId]);
-        SDLNet_TCP_Close(clientSockets[clientId]);
-        clientSockets[clientId] = nullptr;
+        TCPsocket socket = conn->getSocket();
+        if (socket) {
+            SDLNet_TCP_DelSocket(socketSet, socket);
+        }
+        
+        connectionManager->removeConnection(clientId);
     }
     
     bool isConnectionActive(int clientId) override {
-        return (clientId >= 0 && clientId < maxClients && clientSockets[clientId] != nullptr);
+        Connection* conn = connectionManager->getConnection(clientId);
+        return conn && conn->isActive();
     }
     
     std::vector<int> getActiveConnections() override {
-        std::vector<int> active;
-        for (int i = 0; i < maxClients; ++i) {
-            if (clientSockets[i]) {
-                active.push_back(i);
-            }
-        }
-        return active;
+        return connectionManager->getActiveConnectionIds();
     }
     
     bool sendData(int clientId, const void* data, size_t size) override {
-        if (!isConnectionActive(clientId)) return false;
-        
-        int result = SDLNet_TCP_Send(clientSockets[clientId], data, static_cast<int>(size));
-        if (result < static_cast<int>(size)) {
-            setError("SDLNet_TCP_Send");
+        Connection* conn = connectionManager->getConnection(clientId);
+        if (!conn) {
+            lastError = "Invalid connection ID";
             return false;
         }
-        return true;
-    }
-    
-    bool broadcastData(const void* data, size_t size) override {
-        bool allSuccess = true;
-        for (int i = 0; i < maxClients; ++i) {
-            if (clientSockets[i]) {
-                if (!sendData(i, data, size)) {
-                    allSuccess = false;
-                }
-            }
-        }
-        return allSuccess;
+        
+        return conn->send(data, size);
     }
     
     int receiveData(int clientId, void* buffer, size_t maxSize) override {
-        if (!isConnectionActive(clientId)) return -1;
+        Connection* conn = connectionManager->getConnection(clientId);
+        if (!conn) return -1;
         
-        return SDLNet_TCP_Recv(clientSockets[clientId], buffer, static_cast<int>(maxSize));
+        return conn->receive(buffer, maxSize);
+    }
+    
+    void broadcastData(const void* data, size_t size) override {
+        connectionManager->broadcastToAll(data, size);
     }
     
     void processEvents() override {
+        connectionManager->update();
+        
         if (!socketSet) return;
         
         int numReady = SDLNet_CheckSockets(socketSet, 0);
@@ -181,6 +176,22 @@ public:
             acceptConnection();
         }
     }
+    
+    void setMaxClients(int max) override {
+        maxClients = max;
+        // Note: This doesn't resize existing connection manager
+        // Would need to create a new one for dynamic resizing
+    }
+    
+    std::string getLastError() const override {
+        return lastError;
+    }
+};
+
+// Factory function for creating SDLNetManager
+extern "C" INetworkManager* createSDLNetworkManager() {
+    return new SDLNetManager();
+}
     
     std::string getLastError() override {
         return lastError;

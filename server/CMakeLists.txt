@@ -8,6 +8,8 @@ find_package(SDL2_net CONFIG REQUIRED)
 add_executable(ultimata-server
     src/Main.cpp
     src/SDLNetManager.cpp
+    src/Connection.cpp
+    src/ConnectionManager.cpp
 )
 
 # Link libraries
