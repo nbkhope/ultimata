@@ -1,0 +1,66 @@
+# Ignore build artifacts and cache files
+build/
+*.exe
+*.o
+*.d
+*.obj
+*.lib
+*.dll
+*.so
+*.a
+
+# Ignore version control
+.git/
+.gitignore
+
+# Ignore IDE and editor files
+.vscode/
+.vs/
+*.vcxproj*
+*.sln
+*.user
+*.suo
+*.swp
+*.swo
+*~
+
+# Ignore Windows specific files
+*.bat
+*.cmd
+Thumbs.db
+desktop.ini
+
+# Ignore documentation and non-essential files
+docs/
+README*.md
+*.md
+LICENSE
+
+# Ignore test and example files
+tests/
+examples/
+dummy_clients/
+
+# Ignore logs and temporary files
+logs/
+tmp/
+temp/
+*.log
+*.tmp
+
+# Ignore vcpkg installed files (we'll build fresh in Docker)
+vcpkg_installed/
+
+# Keep vcpkg.json (needed for dependency installation)
+# vcpkg.json
+
+# Ignore other build systems
+Makefile_cross_platform
+*.make
+
+# Keep these essential files for Docker build:
+# - src/ (source code)
+# - CMakeLists.txt (build configuration)  
+# - Dockerfile* (Docker configurations)
+# - docker-compose*.yml (Docker compose files)
+# - start-server.sh (Linux startup script)
