@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <functional>
 
 // Abstract networking interface
 class INetworkManager {
@@ -24,6 +25,7 @@ public:
     virtual bool sendData(int clientId, const void* data, size_t size) = 0;
     virtual bool broadcastData(const void* data, size_t size) = 0;
     virtual int receiveData(int clientId, void* buffer, size_t maxSize) = 0;
+    virtual void processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback) = 0;
     
     // Polling/event handling
     virtual void processEvents() = 0; // Check for new connections, data, etc.

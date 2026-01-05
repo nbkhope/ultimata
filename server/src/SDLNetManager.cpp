@@ -159,6 +159,11 @@ public:
         return conn->receive(buffer, maxSize);
     }
     
+    void processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback) override {
+        // SDLNetManager uses the old polling approach - this is a stub for compatibility
+        // The actual message processing is done via receiveData in a loop
+    }
+    
     bool broadcastData(const void* data, size_t size) override {
         if (connectionManager) {
             connectionManager->broadcastToAll(data, size);

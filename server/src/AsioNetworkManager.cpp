@@ -190,6 +190,18 @@ bool AsioNetworkManager::broadcastData(const void* data, size_t size) {
     return false;
 }
 
+void AsioNetworkManager::processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback) {
+    if (!connectionManager || !callback) return;
+    
+    // Get all received messages in arrival order
+    auto messages = connectionManager->getReceivedMessages();
+    
+    // Process each message in the order it was received
+    for (const auto& msg : messages) {
+        callback(msg.connectionId, reinterpret_cast<const unsigned char*>(msg.data.data()), msg.data.size());
+    }
+}
+
 void AsioNetworkManager::processEvents() {
     if (connectionManager) {
         connectionManager->update();

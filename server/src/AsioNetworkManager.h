@@ -50,6 +50,9 @@ public:
     int receiveData(int clientId, void* buffer, size_t maxSize) override;
     bool broadcastData(const void* data, size_t size) override;
     
+    // Process all received messages in arrival order with a callback
+    void processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback);
+    
     void processEvents() override;
     void setMaxClients(int maxClients) override;
     int getMaxClients() const override;

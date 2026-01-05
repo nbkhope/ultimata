@@ -45,7 +45,7 @@ Monster monsters[MAX_MONSTERS_SERVER];
 // Forward declarations
 void runServerLoop();
 void processClientMessages();
-void handleClientMessage(int clientId, unsigned char* buffer, int size);
+void handleClientMessage(int clientId, const unsigned char* buffer, int size);
 void initializeMonsters();
 void registerSignalHandlers();
 void sigintHandler(int signum);
@@ -97,16 +97,16 @@ void initializeMonsters() {
 }
 
 void processClientMessages() {
-    auto activeClients = g_network->getActiveConnections();
+    // Process all received messages in arrival order (best practice for async servers)
+    g_network->processAllMessages([](int clientId, const unsigned char* data, size_t size) {
+        // Process the message using existing logic
+        handleClientMessage(clientId, data, size);
+    });
     
+    // Check for disconnected clients
+    auto activeClients = g_network->getActiveConnections();
     for (int clientId : activeClients) {
-        unsigned char buffer[MESSAGE_BUFFER_SIZE];
-        int bytesReceived = g_network->receiveData(clientId, buffer, sizeof(buffer));
-        
-        if (bytesReceived > 0) {
-            // Process the message using existing logic
-            handleClientMessage(clientId, buffer, bytesReceived);
-        } else if (bytesReceived < 0) {
+        if (!g_network->isConnectionActive(clientId)) {
             // Connection closed
             info("Client " + std::to_string(clientId) + " disconnected");
             
@@ -129,7 +129,7 @@ void processClientMessages() {
     }
 }
 
-void handleClientMessage(int clientId, unsigned char* buffer, int size) {
+void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
     // Placeholder for message processing logic
     // You can move your existing message handling logic here
     info("Received message from client " + std::to_string(clientId) + ", size: " + std::to_string(size));
