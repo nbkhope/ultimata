@@ -132,12 +132,6 @@ server/
 
 ## Configuration
 
-### Maximum Connections
-```cpp
-// Set in your server initialization
-networkManager->setMaxClients(1000);
-```
-
 ### Timeout Settings
 ```cpp
 // Configure in AsioConnectionManager constructor

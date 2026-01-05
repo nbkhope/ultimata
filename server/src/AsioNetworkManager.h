@@ -53,6 +53,5 @@ public:
     void processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback);
     
     void processEvents() override;
-    int getMaxClients() const override;
     std::string getLastError() override;
 };

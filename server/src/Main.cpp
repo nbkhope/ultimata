@@ -269,7 +269,6 @@ int SDL_main(int argc, char* argv[]) {
     info("Server started on port 8099.");
     
     initializeMonsters();
-    g_network->setMaxClients(MAX_SOCKETS);
     
     // Initialize player states
     for (int i = 0; i < MAX_SOCKETS; ++i) {
