@@ -22,7 +22,7 @@ endif()
 
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_net CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost CONFIG REQUIRED COMPONENTS system)
 
 # Create executable
 add_executable(ultimata-server
