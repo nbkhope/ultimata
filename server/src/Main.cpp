@@ -5,6 +5,7 @@
 #include <memory>
 #include "NetworkConfig.h"
 #include "INetworkManager.h"
+#include "MessageProtocol.h"
 #include "SDL2/SDL.h" // Still needed for SDL_Delay
 
 // Server-local networking constants
@@ -130,24 +131,62 @@ void processClientMessages() {
 }
 
 void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
-    // Placeholder for message processing logic
-    // You can move your existing message handling logic here
-    info("Received message from client " + std::to_string(clientId) + ", size: " + std::to_string(size));
-    
-    // Example: Handle movement command (you'll need to adapt your existing logic)
-    if (size >= 4) {
-        int cmd;
-        memcpy(&cmd, buffer, 4);
+    try {
+        // Use MessageReader to parse the message
+        MessageReader reader(reinterpret_cast<const char*>(buffer), size);
         
-        switch (cmd) {
-            case 1: // Example: MOVE command
-                if (size >= 12) {
-                    int x, y;
-                    memcpy(&x, buffer + 4, 4);
-                    memcpy(&y, buffer + 8, 4);
-                    playerStates[clientId].x = x;
-                    playerStates[clientId].y = y;
-                    info("Player " + std::to_string(clientId) + " moved to (" + std::to_string(x) + "," + std::to_string(y) + ")");
+        // Read message type
+        MessageType msgType = reader.readMessageType();
+        
+        switch (msgType) {
+            case MessageType::CHAT: {
+                // Read chat message
+                std::string chatMessage = reader.readString();
+                std::string playerName = playerStates[clientId].name;
+                
+                info("Chat from " + playerName + ": " + chatMessage);
+                
+                // Broadcast chat message to all clients
+                MessageBuilder builder;
+                builder.start(MessageType::CHAT);
+                builder.writeUint32(clientId); // sender ID
+                builder.writeString(playerName);
+                builder.writeString(chatMessage);
+                auto msgData = builder.build();
+                
+                g_network->broadcastData(msgData.data(), msgData.size());
+                break;
+            }
+            
+            case MessageType::PLAYER_MOVE: {
+                // Read movement data
+                int x = reader.readUint32();
+                int y = reader.readUint32();
+                
+                playerStates[clientId].x = x;
+                playerStates[clientId].y = y;
+                info("Player " + std::to_string(clientId) + " moved to (" + std::to_string(x) + "," + std::to_string(y) + ")");
+                
+                // Broadcast position to other clients
+                MessageBuilder builder;
+                builder.start(MessageType::PLAYER_MOVE);
+                builder.writeUint32(clientId);
+                builder.writeUint32(x);
+                builder.writeUint32(y);
+                auto msgData = builder.build();
+                
+                g_network->broadcastData(msgData.data(), msgData.size());
+                break;
+            }
+            
+            default:
+                info("Unknown message type from client " + std::to_string(clientId));
+                break;
+        }
+    } catch (const std::exception& e) {
+        error("Error parsing message from client " + std::to_string(clientId) + ": " + e.what());
+    }
+}
                 }
                 break;
             case 5: // CHAT_MESSAGE

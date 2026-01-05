@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <chrono>
+#include <print>
 
 // Cross-platform timing utility
 uint32_t getCurrentTimeMs() {
@@ -48,6 +49,7 @@ void AsioConnection::startRead() {
     socket.async_read_some(
         boost::asio::buffer(readBuffer),
         [this, self](const boost::system::error_code& error, size_t bytes_transferred) {
+            std::println("async_read_some callback");
             handleRead(error, bytes_transferred);
         }
     );
@@ -59,10 +61,9 @@ void AsioConnection::handleRead(const boost::system::error_code& error, size_t b
         packetsReceived++;
         updateActivity();
         
-        // Call data received callback
-        if (onDataReceived && bytes_transferred > 0) {
-            std::cout << "Calling onDataReceived" << std::endl;
-            onDataReceived(id, readBuffer.data(), bytes_transferred);
+        // Append new data to message buffer and parse complete messages
+        if (bytes_transferred > 0) {
+            parseMessages(bytes_transferred);
         }
         
         // Continue reading
@@ -132,4 +133,30 @@ void AsioConnection::close() {
         }
     }
     state = ConnectionState::Disconnected;
+}
+
+void AsioConnection::parseMessages(size_t newBytes) {
+    // Append new data to the message buffer
+    messageBuffer.insert(messageBuffer.end(), readBuffer.data(), readBuffer.data() + newBytes);
+    
+    // Parse complete messages (length-prefixed: [4 bytes length][data])
+    while (messageBuffer.size() >= 4) {
+        // Read message length (first 4 bytes)
+        uint32_t messageLength;
+        std::memcpy(&messageLength, messageBuffer.data(), 4);
+        
+        // Check if we have the complete message
+        if (messageBuffer.size() >= 4 + messageLength) {
+            // Extract the complete message (skip the 4-byte length prefix)
+            if (onDataReceived && messageLength > 0) {
+                onDataReceived(id, messageBuffer.data() + 4, messageLength);
+            }
+            
+            // Remove the processed message from the buffer
+            messageBuffer.erase(messageBuffer.begin(), messageBuffer.begin() + 4 + messageLength);
+        } else {
+            // Incomplete message, wait for more data
+            break;
+        }
+    }
 }

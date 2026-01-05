@@ -42,9 +42,15 @@ private:
     // Read buffer
     std::array<char, 1024> readBuffer;
     
+    // Message parsing buffer (accumulates partial messages)
+    std::vector<char> messageBuffer;
+    
     // Callbacks
     std::function<void(int, const char*, size_t)> onDataReceived;
     std::function<void(int)> onDisconnected;
+    
+    // Message parsing
+    void parseMessages(size_t newBytes);
 
 public:
     AsioConnection(boost::asio::io_context& ioContext);
