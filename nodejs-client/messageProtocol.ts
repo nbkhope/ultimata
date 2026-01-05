@@ -1,9 +1,9 @@
 // Message types (must match server MessageProtocol.h)
-export enum MessageType {
-    CHAT = 1,
-    PLAYER_MOVE = 2,
-    PLAYER_CONNECT = 3,
-    PLAYER_DISCONNECT = 4
+export const MessageType = {
+    CHAT: 1,
+    PLAYER_MOVE: 2,
+    PLAYER_CONNECT: 3,
+    PLAYER_DISCONNECT: 4
 }
 
 // Helper to create length-prefixed messages

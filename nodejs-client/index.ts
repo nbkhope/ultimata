@@ -1,6 +1,6 @@
 
-const net = require('net');
-import { MessageType, MessageBuilder, MessageParser } from './messageProtocol';
+import net from 'net';
+import { MessageType, MessageBuilder, MessageParser } from './messageProtocol.ts';
 
 const client = new net.Socket();
 const port = 8099;
@@ -29,10 +29,10 @@ function handleConnected() {
     console.log('Connected to server');
     
     // Send a chat message after 1 second
-    setTimeout(() => sendChatMessage('Hello from Node.js!'), 1000);
+    setInterval(() => sendChatMessage('Hello from Node.js!'), 2000);
     
     // Send a move command after 2 seconds
-    setTimeout(() => sendPlayerMove(150, 200), 2000);
+    setInterval(() => sendPlayerMove(150, 200), 5000);
 }
 
 function handleMessage(msgType: MessageType, reader: any) {
