@@ -11,7 +11,6 @@ private:
     TCPsocket serverSocket;
     SDLNet_SocketSet socketSet;
     std::unique_ptr<ConnectionManager> connectionManager;
-    int maxClients;
     std::string lastError;
     
     void setError(const std::string& function) {
@@ -21,8 +20,8 @@ private:
     }
     
 public:
-    SDLNetManager() : serverSocket(nullptr), socketSet(nullptr), maxClients(16) {
-        connectionManager = std::make_unique<ConnectionManager>(maxClients);
+    SDLNetManager() : serverSocket(nullptr), socketSet(nullptr) {
+        connectionManager = std::make_unique<ConnectionManager>();
     }
     
     ~SDLNetManager() {
@@ -75,7 +74,7 @@ public:
             return false;
         }
         
-        socketSet = SDLNet_AllocSocketSet(maxClients + 1);
+        socketSet = SDLNet_AllocSocketSet(connectionManager->getMaxConnections() + 1);
         if (!socketSet) {
             setError("SDLNet_AllocSocketSet");
             return false;
@@ -184,16 +183,6 @@ public:
         if (SDLNet_SocketReady(serverSocket)) {
             acceptConnection();
         }
-    }
-    
-    void setMaxClients(int max) override {
-        maxClients = max;
-        // Note: This doesn't resize existing connection manager
-        // Would need to create a new one for dynamic resizing
-    }
-    
-    int getMaxClients() const override {
-        return maxClients;
     }
     
     std::string getLastError() override {

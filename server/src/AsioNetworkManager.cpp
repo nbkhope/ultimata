@@ -4,7 +4,7 @@
 #include <print>
 
 AsioNetworkManager::AsioNetworkManager() 
-    : running(false), maxClients(16), connectionManager(std::make_unique<AsioConnectionManager>()) {
+    : running(false), connectionManager(std::make_unique<AsioConnectionManager>()) {
 }
 
 AsioNetworkManager::~AsioNetworkManager() {
@@ -206,17 +206,6 @@ void AsioNetworkManager::processEvents() {
     if (connectionManager) {
         connectionManager->update();
     }
-}
-
-void AsioNetworkManager::setMaxClients(int maxClients) {
-    this->maxClients = maxClients;
-    // Note: This would require recreating the connection manager
-    // For now, just log the request
-    std::cout << "setMaxClients called with " << maxClients << " (not implemented for ASIO)" << std::endl;
-}
-
-int AsioNetworkManager::getMaxClients() const {
-    return maxClients;
 }
 
 std::string AsioNetworkManager::getLastError() {

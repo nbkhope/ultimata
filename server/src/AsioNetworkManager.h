@@ -23,7 +23,6 @@ private:
     std::thread networkThread;
     std::atomic<bool> running;
     std::string lastError;
-    int maxClients;
     
     void runNetworkThread();
     void startAccept();
@@ -54,7 +53,6 @@ public:
     void processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback);
     
     void processEvents() override;
-    void setMaxClients(int maxClients) override;
     int getMaxClients() const override;
     std::string getLastError() override;
 };

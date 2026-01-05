@@ -30,10 +30,6 @@ public:
     // Polling/event handling
     virtual void processEvents() = 0; // Check for new connections, data, etc.
     virtual std::string getLastError() = 0;
-    
-    // Configuration
-    virtual void setMaxClients(int maxClients) = 0;
-    virtual int getMaxClients() const = 0;
 };
 
 // Factory function type
