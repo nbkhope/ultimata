@@ -3,6 +3,16 @@
 #include <cstring>
 #include <vector>
 #include <string>
+#include <stdexcept>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <arpa/inet.h>
+#endif
+
+// Maximum allowed message size (1MB)
+const uint32_t MAX_MESSAGE_SIZE = 1024 * 1024;
 
 // Message types
 enum class MessageType : uint32_t {
@@ -29,12 +39,16 @@ public:
     
     // Write different data types
     void writeUint32(uint32_t value) {
+        uint32_t netValue = htonl(value);
         size_t pos = buffer.size();
         buffer.resize(pos + 4);
-        std::memcpy(buffer.data() + pos, &value, 4);
+        std::memcpy(buffer.data() + pos, &netValue, 4);
     }
     
     void writeString(const std::string& str) {
+        if (str.size() > MAX_MESSAGE_SIZE) {
+            throw std::runtime_error("String too large");
+        }
         // Write string length first
         writeUint32(static_cast<uint32_t>(str.size()));
         // Write string data
@@ -50,8 +64,12 @@ public:
     std::vector<char> build() {
         // Calculate message length (everything after the 4-byte length prefix)
         uint32_t messageLength = static_cast<uint32_t>(buffer.size() - 4);
-        // Write length at the beginning
-        std::memcpy(buffer.data(), &messageLength, 4);
+        if (messageLength > MAX_MESSAGE_SIZE) {
+            throw std::runtime_error("Message too large");
+        }
+        // Write length at the beginning in network byte order
+        uint32_t netLength = htonl(messageLength);
+        std::memcpy(buffer.data(), &netLength, 4);
         return buffer;
     }
     
@@ -73,14 +91,15 @@ public:
     // Read different data types
     uint32_t readUint32() {
         if (pos + 4 > size) throw std::runtime_error("Buffer overflow");
-        uint32_t value;
-        std::memcpy(&value, data + pos, 4);
+        uint32_t netValue;
+        std::memcpy(&netValue, data + pos, 4);
         pos += 4;
-        return value;
+        return ntohl(netValue);
     }
     
     std::string readString() {
         uint32_t length = readUint32();
+        if (length > MAX_MESSAGE_SIZE) throw std::runtime_error("String too large");
         if (pos + length > size) throw std::runtime_error("Buffer overflow");
         std::string str(data + pos, length);
         pos += length;

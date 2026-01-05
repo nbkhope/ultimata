@@ -187,18 +187,6 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
         error("Error parsing message from client " + std::to_string(clientId) + ": " + e.what());
     }
 }
-                }
-                break;
-            case 5: // CHAT_MESSAGE
-                // Handle chat message
-                info("Chat message from client " + std::to_string(clientId));
-                break;
-            default:
-                info("Unknown command: " + std::to_string(cmd));
-                break;
-        }
-    }
-}
 
 void runServerLoop() {
     info("Starting main server loop.");

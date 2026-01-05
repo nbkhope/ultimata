@@ -2,6 +2,15 @@
 #include <iostream>
 #include <sstream>
 #include <chrono>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <arpa/inet.h>
+#endif
+
+// Maximum allowed message size (1MB)
+const uint32_t MAX_MESSAGE_SIZE = 1024 * 1024;
 #include <print>
 
 // Cross-platform timing utility
@@ -141,9 +150,22 @@ void AsioConnection::parseMessages(size_t newBytes) {
     
     // Parse complete messages (length-prefixed: [4 bytes length][data])
     while (messageBuffer.size() >= 4) {
-        // Read message length (first 4 bytes)
-        uint32_t messageLength;
-        std::memcpy(&messageLength, messageBuffer.data(), 4);
+        // Read message length (first 4 bytes) in network byte order
+        uint32_t netLength;
+        std::memcpy(&netLength, messageBuffer.data(), 4);
+        uint32_t messageLength = ntohl(netLength);
+        
+        // Validate message size to prevent DoS attacks
+        if (messageLength > MAX_MESSAGE_SIZE) {
+            std::cout << "Connection [" << id << "] sent oversized message (" << messageLength 
+                      << " bytes), closing connection" << std::endl;
+            setState(ConnectionState::Disconnecting);
+            if (onDisconnected) {
+                onDisconnected(id);
+            }
+            messageBuffer.clear();
+            return;
+        }
         
         // Check if we have the complete message
         if (messageBuffer.size() >= 4 + messageLength) {
