@@ -31,7 +31,6 @@ endif
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/ultimata-server
 SOURCES = src/Main.cpp \
-          src/SDLNetManager.cpp \
           src/Connection.cpp \
           src/ConnectionManager.cpp \
           src/AsioConnection.cpp \
