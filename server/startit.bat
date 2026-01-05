@@ -7,5 +7,5 @@ if exist build\ultimata-server.exe (
     build\Release\ultimata-server.exe
 ) else (
     echo Server executable not found! Run build.bat first.
-    pause
+    exit /b 1
 )

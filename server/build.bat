@@ -1,12 +1,16 @@
 @echo off
+
 echo Configuring CMake...
 cmake --preset=default -B build
+if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: CMake configuration failed
+    exit /b 1
+)
 
 echo Building server...
 cmake --build build --config Release
-
 if %ERRORLEVEL% NEQ 0 (
-    echo Build failed!
+    echo ERROR: Build failed
     exit /b 1
 )
 
