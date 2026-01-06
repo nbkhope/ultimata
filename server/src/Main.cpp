@@ -3,10 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
-#include "NetworkConfig.h"
 #include "INetworkManager.h"
 #include "MessageProtocol.h"
 #include "SDL2/SDL.h" // Still needed for SDL_Delay
+#include "AsioNetworkManager.h"
 
 // Server-local networking constants
 const int SERVER_MAX_PACKET = 0xFF; // 255-byte packet size for server buffers
@@ -248,7 +248,7 @@ void registerSignalHandlers() {
 
 int SDL_main(int argc, char* argv[]) {
     // Create network manager
-    g_network = NetworkConfig::createNetworkManager();
+    g_network = std::unique_ptr<INetworkManager>(new AsioNetworkManager());
     
     registerSignalHandlers();
     

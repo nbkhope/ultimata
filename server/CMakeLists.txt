@@ -32,7 +32,6 @@ add_executable(ultimata-server
     src/AsioConnection.cpp
     src/AsioConnectionManager.cpp
     src/AsioNetworkManager.cpp
-    src/NetworkConfig.cpp
 )
 
 # Link libraries

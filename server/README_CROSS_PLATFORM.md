@@ -52,15 +52,6 @@ make
 
 ### Networking Backend
 - **Primary**: Boost ASIO (high-performance, async I/O)
-- **Fallback**: SDL_net (blocking I/O, for compatibility)
-
-The server automatically uses ASIO by default, configured in `NetworkConfig.h`:
-
-```cpp
-static NetworkBackend getBackend() {
-    return NetworkBackend::BOOST_ASIO;  // Default to ASIO
-}
-```
 
 ### Cross-Platform Features
 
@@ -110,7 +101,6 @@ server/
 │   ├── AsioConnection.h/cpp      # Individual ASIO connections
 │   ├── AsioConnectionManager.h/cpp # Connection pool management
 │   ├── AsioNetworkManager.h/cpp   # Main ASIO network interface
-│   ├── NetworkConfig.h/cpp        # Backend selection
 │   ├── INetworkManager.h          # Abstract network interface
 │   └── Main.cpp                   # Server entry point
 ├── CMakeLists.txt                 # Cross-platform CMake build

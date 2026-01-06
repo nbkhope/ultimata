@@ -35,8 +35,7 @@ SOURCES = src/Main.cpp \
           src/ConnectionManager.cpp \
           src/AsioConnection.cpp \
           src/AsioConnectionManager.cpp \
-          src/AsioNetworkManager.cpp \
-          src/NetworkConfig.cpp
+          src/AsioNetworkManager.cpp
 
 OBJECTS = $(SOURCES:src/%.cpp=$(BUILD_DIR)/%.o)
 
