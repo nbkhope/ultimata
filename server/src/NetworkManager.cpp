@@ -4,7 +4,7 @@
 #include <print>
 
 NetworkManager::NetworkManager() 
-    : running(false), connectionManager(std::make_unique<ConnectionManager>()) {
+    : running(false), connectionManager(std::make_unique<ConnectionManager>(16, 60000)) {
 }
 
 NetworkManager::~NetworkManager() {
