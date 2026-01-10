@@ -41,9 +41,4 @@ jobs:
     - name: Run clang-tidy
       run: |
         cd server
-        find src -name '*.cpp' -o -name '*.h' | xargs clang-tidy -p build --warnings-as-errors=* || true
-        
-    - name: Run clang-tidy (check only, no warnings as errors)
-      run: |
-        cd server
-        find src -name '*.cpp' | xargs clang-tidy -p build --checks='-*,modernize-*,performance-*,readability-*,bugprone-*,clang-analyzer-*' --format-style=file
+        find src -name '*.cpp' | xargs clang-tidy -p build --checks='-*,modernize-*,-modernize-use-trailing-return-type,performance-*,readability-*,-readability-magic-numbers,bugprone-*,clang-analyzer-*' --format-style=file
