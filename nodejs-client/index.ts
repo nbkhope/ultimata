@@ -5,6 +5,7 @@ import { MessageType, MessageBuilder, MessageParser } from './messageProtocol.ts
 const client = new net.Socket();
 const port = 8099;
 const parser = new MessageParser();
+let connected = false;
 
 function sendChatMessage(message: string) {
     const builder = new MessageBuilder();
@@ -25,14 +26,18 @@ function sendPlayerMove(x: number, y: number) {
     console.log(`Sent move command to (${x}, ${y})`);
 }
 
+let chatMessageInterval;
+let playerMoveInterval;
+
 function handleConnected() {
+    connected = true;
     console.log('Connected to server');
     
     // Send a chat message after 1 second
-    setInterval(() => sendChatMessage('Hello from Node.js!'), 2000);
+    chatMessageInterval = setInterval(() => sendChatMessage('Hello from Node.js!'), 2000);
     
     // Send a move command after 2 seconds
-    setInterval(() => sendPlayerMove(150, 200), 5000);
+    playerMoveInterval = setInterval(() => sendPlayerMove(150, 200), 5000);
 }
 
 function handleMessage(msgType: MessageType, reader: any) {
@@ -64,9 +69,10 @@ client.on('data', (data: Buffer) => {
 });
 
 client.on('close', () => {
+    connected = false;
+    clearInterval(chatMessageInterval);
+    clearInterval(playerMoveInterval);
+
     console.log('Connection closed');
 });
 
-client.on('error', (err) => {
-    console.error('Connection error:', err);
-});
