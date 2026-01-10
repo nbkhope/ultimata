@@ -23,10 +23,10 @@ struct Position {
 };
 
 struct PlayerState {
-    bool active;
     int id;
     int x, y;
     int direction;
+    bool active;
     char name[33]; // MAX_PLAYER_NAME+1
 };
 
