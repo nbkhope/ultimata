@@ -3,9 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <thread>
+#include <chrono>
 
 #include "MessageProtocol.h"
-#include "SDL2/SDL.h" // Still needed for SDL_Delay
 #include "NetworkManager.h"
 
 // Server-local networking constants
@@ -228,7 +229,7 @@ void runServerLoop() {
         broadcastPlayerStates();
         
         // Small delay to prevent busy-waiting
-        SDL_Delay(16); // ~60 FPS
+        std::this_thread::sleep_for(std::chrono::milliseconds(16)); // ~60 FPS
     }
     
     info("Server loop ended.");
@@ -246,7 +247,7 @@ void registerSignalHandlers() {
     info("Signal handlers registered.");
 }
 
-int SDL_main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     // Create network manager
     g_network = std::make_unique<NetworkManager>();
     
