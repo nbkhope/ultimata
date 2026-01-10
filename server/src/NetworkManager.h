@@ -26,7 +26,7 @@ private:
     
     void runNetworkThread();
     void startAccept();
-    void handleAccept(std::shared_ptr<Connection> newConnection, 
+    void handleAccept(const std::shared_ptr<Connection>& newConnection, 
                       const boost::system::error_code& error);
 
 public:
@@ -44,7 +44,7 @@ public:
     bool sendData(int clientId, const void* data, size_t size);
     int receiveData(int clientId, void* buffer, size_t maxSize);
     bool broadcastData(const void* data, size_t size);
-    void processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback);
+    void processAllMessages(const std::function<void(int clientId, const unsigned char* data, size_t size)>& callback);
     void processEvents();
     std::string getLastError();
 };
