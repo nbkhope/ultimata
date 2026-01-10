@@ -89,6 +89,8 @@ void initializeMonsters() {
     monsters[3].active = false;
 
     spdlog::info("Monsters initialized.");
+}
+
 void processClientMessages() {
     // Process all received messages in arrival order (best practice for async servers)
     g_network->processAllMessages([](int clientId, const unsigned char* data, size_t size) {
