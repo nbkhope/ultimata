@@ -11,7 +11,6 @@
 
 // Maximum allowed message size (1MB)
 const uint32_t MAX_MESSAGE_SIZE = 1024 * 1024;
-#include <print>
 
 // Cross-platform timing utility
 uint32_t getCurrentTimeMs() {
@@ -20,21 +19,22 @@ uint32_t getCurrentTimeMs() {
     return static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());
 }
 
-AsioConnection::AsioConnection(boost::asio::io_context& ioContext) 
+
+Connection::Connection(boost::asio::io_context& ioContext) 
     : id(-1), socket(ioContext), state(ConnectionState::Connecting),
       connectTime(getCurrentTimeMs()), lastActivity(getCurrentTimeMs()),
       bytesReceived(0), bytesSent(0), packetsReceived(0), packetsSent(0) {
 }
 
-AsioConnection::~AsioConnection() {
+Connection::~Connection() {
     close();
 }
 
-uint32_t AsioConnection::getConnectionTime() const {
+uint32_t Connection::getConnectionTime() const {
     return getCurrentTimeMs() - connectTime;
 }
 
-void AsioConnection::start(int connectionId) {
+void Connection::start(int connectionId) {
     id = connectionId;
     
     // Get remote IP address
@@ -51,7 +51,7 @@ void AsioConnection::start(int connectionId) {
     startRead();
 }
 
-void AsioConnection::startRead() {
+void Connection::startRead() {
     if (!isConnected()) return;
     
     auto self = shared_from_this();
@@ -64,7 +64,7 @@ void AsioConnection::startRead() {
     );
 }
 
-void AsioConnection::handleRead(const boost::system::error_code& error, size_t bytes_transferred) {
+void Connection::handleRead(const boost::system::error_code& error, size_t bytes_transferred) {
     if (!error) {
         bytesReceived += bytes_transferred;
         packetsReceived++;
@@ -88,7 +88,7 @@ void AsioConnection::handleRead(const boost::system::error_code& error, size_t b
     }
 }
 
-void AsioConnection::sendAsync(const void* data, size_t size) {
+void Connection::sendAsync(const void* data, size_t size) {
     if (!isConnected()) {
         std::cout << "Attempted to send to disconnected connection [" << id << "]" << std::endl;
         return;
@@ -97,7 +97,6 @@ void AsioConnection::sendAsync(const void* data, size_t size) {
     // Create a copy of the data for async operation
     auto buffer = std::make_shared<std::string>(static_cast<const char*>(data), size);
     auto self = shared_from_this();
-    
     boost::asio::async_write(
         socket,
         boost::asio::buffer(*buffer),
@@ -107,7 +106,7 @@ void AsioConnection::sendAsync(const void* data, size_t size) {
     );
 }
 
-void AsioConnection::handleWrite(const boost::system::error_code& error, size_t bytes_transferred) {
+void Connection::handleWrite(const boost::system::error_code& error, size_t bytes_transferred) {
     if (!error) {
         bytesSent += bytes_transferred;
         packetsSent++;
@@ -122,15 +121,15 @@ void AsioConnection::handleWrite(const boost::system::error_code& error, size_t 
     }
 }
 
-void AsioConnection::updateActivity() {
+void Connection::updateActivity() {
     lastActivity = getCurrentTimeMs();
 }
 
-bool AsioConnection::isTimedOut(uint32_t timeoutMs) const {
+bool Connection::isTimedOut(uint32_t timeoutMs) const {
     return (getCurrentTimeMs() - lastActivity) > timeoutMs;
 }
 
-void AsioConnection::close() {
+void Connection::close() {
     if (socket.is_open()) {
         std::cout << "Closing connection [" << id << "] from " << ipAddress 
                   << " (active for " << getConnectionTime() << "ms)" << std::endl;
@@ -144,7 +143,7 @@ void AsioConnection::close() {
     state = ConnectionState::Disconnected;
 }
 
-void AsioConnection::parseMessages(size_t newBytes) {
+void Connection::parseMessages(size_t newBytes) {
     // Append new data to the message buffer
     messageBuffer.insert(messageBuffer.end(), readBuffer.data(), readBuffer.data() + newBytes);
     

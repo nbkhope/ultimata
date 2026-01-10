@@ -24,7 +24,7 @@ enum class ConnectionState {
     Disconnected
 };
 
-class AsioConnection : public std::enable_shared_from_this<AsioConnection> {
+class Connection : public std::enable_shared_from_this<Connection> {
 private:
     int id;
     tcp::socket socket;
@@ -53,8 +53,8 @@ private:
     void parseMessages(size_t newBytes);
 
 public:
-    AsioConnection(boost::asio::io_context& ioContext);
-    ~AsioConnection();
+    Connection(boost::asio::io_context& ioContext);
+    ~Connection();
     
     // Basic getters
     int getId() const { return id; }
