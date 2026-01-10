@@ -14,8 +14,8 @@ const int SERVER_MAX_PACKET = 0xFF; // 255-byte packet size for server buffers
 const int MAX_SOCKETS = 0x10;        // 16 maximum connections
 
 // Message buffer constants
-const int MESSAGE_BUFFER_SIZE = SERVER_MAX_PACKET;       
-const int MESSAGE_RECV_SIZE = MESSAGE_BUFFER_SIZE - 1;   
+const int MESSAGE_BUFFER_SIZE = SERVER_MAX_PACKET;
+const int MESSAGE_RECV_SIZE = MESSAGE_BUFFER_SIZE - 1;
 
 struct Position {
     int x;
@@ -87,14 +87,14 @@ void initializeMonsters() {
     monsters[0].active = true;
     monsters[0].position.x = 200;
     monsters[0].position.y = 150;
-    
+
     monsters[1].active = true;
     monsters[1].position.x = 400;
     monsters[1].position.y = 300;
-    
+
     monsters[2].active = false;
     monsters[3].active = false;
-    
+
     info("Monsters initialized.");
 }
 
@@ -104,14 +104,14 @@ void processClientMessages() {
         // Process the message using existing logic
         handleClientMessage(clientId, data, size);
     });
-    
+
     // Check for disconnected clients
     auto activeClients = g_network->getActiveConnections();
     for (int clientId : activeClients) {
         if (!g_network->isConnectionActive(clientId)) {
             // Connection closed
             info("Client " + std::to_string(clientId) + " disconnected");
-            
+
             // Broadcast disconnection to other clients
             if (playerStates[clientId].active) {
                 unsigned char packet[8];
@@ -120,12 +120,12 @@ void processClientMessages() {
                 memcpy(packet + 4, &clientId, 4);
                 g_network->broadcastData(packet, 8);
             }
-            
+
             // Clear player state
             memset(&playerStates[clientId], 0x00, sizeof(PlayerState));
             playerStates[clientId].active = false;
             playersOnline--;
-            
+
             g_network->closeConnection(clientId);
         }
     }
@@ -135,18 +135,18 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
     try {
         // Use MessageReader to parse the message
         MessageReader reader(reinterpret_cast<const char*>(buffer), size);
-        
+
         // Read message type
         MessageType msgType = reader.readMessageType();
-        
+
         switch (msgType) {
             case MessageType::CHAT: {
                 // Read chat message
                 std::string chatMessage = reader.readString();
                 std::string playerName = playerStates[clientId].name;
-                
+
                 info("Chat from " + playerName + ": " + chatMessage);
-                
+
                 // Broadcast chat message to all clients
                 MessageBuilder builder;
                 builder.start(MessageType::CHAT);
@@ -154,20 +154,20 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
                 builder.writeString(playerName);
                 builder.writeString(chatMessage);
                 auto msgData = builder.build();
-                
+
                 g_network->broadcastData(msgData.data(), msgData.size());
                 break;
             }
-            
+
             case MessageType::PLAYER_MOVE: {
                 // Read movement data
                 int x = reader.readUint32();
                 int y = reader.readUint32();
-                
+
                 playerStates[clientId].x = x;
                 playerStates[clientId].y = y;
                 info("Player " + std::to_string(clientId) + " moved to (" + std::to_string(x) + "," + std::to_string(y) + ")");
-                
+
                 // Broadcast position to other clients
                 MessageBuilder builder;
                 builder.start(MessageType::PLAYER_MOVE);
@@ -175,11 +175,11 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
                 builder.writeUint32(x);
                 builder.writeUint32(y);
                 auto msgData = builder.build();
-                
+
                 g_network->broadcastData(msgData.data(), msgData.size());
                 break;
             }
-            
+
             default:
                 info("Unknown message type from client " + std::to_string(clientId));
                 break;
@@ -191,11 +191,11 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
 
 void runServerLoop() {
     info("Starting main server loop.");
-    
+
     while (!shutdownRequested) {
         // Process network events (new connections, disconnections)
         g_network->processEvents();
-        
+
         // Handle new connections
         int newClientId = g_network->acceptConnection();
         if (newClientId >= 0) {
@@ -207,7 +207,7 @@ void runServerLoop() {
             playerStates[newClientId].direction = 0;
             snprintf(playerStates[newClientId].name, 32, "Player%d", newClientId);
             playersOnline++;
-            
+
             // Send monsters to new client
             for (int i = 0; i < MAX_MONSTERS_SERVER; ++i) {
                 if (monsters[i].active) {
@@ -221,17 +221,17 @@ void runServerLoop() {
                 }
             }
         }
-        
+
         // Process messages from all clients
         processClientMessages();
-        
+
         // Broadcast player states
         broadcastPlayerStates();
-        
+
         // Small delay to prevent busy-waiting
         std::this_thread::sleep_for(std::chrono::milliseconds(16)); // ~60 FPS
     }
-    
+
     info("Server loop ended.");
 }
 
@@ -250,35 +250,35 @@ void registerSignalHandlers() {
 int main(int argc, char* argv[]) {
     // Create network manager
     g_network = std::make_unique<NetworkManager>();
-    
+
     registerSignalHandlers();
-    
+
     // Initialize network
     if (!g_network->initialize()) {
         error("Failed to initialize network: " + g_network->getLastError());
         return 1;
     }
-    
+
     info("Network initialized successfully.");
-    
+
     // Start server
     if (!g_network->startServer(8099)) {
         error("Failed to start server: " + g_network->getLastError());
         return 2;
     }
-    
+
     info("Server started on port 8099.");
-    
+
     initializeMonsters();
-    
+
     // Initialize player states
     for (int i = 0; i < MAX_SOCKETS; ++i) {
         playerStates[i].active = false;
     }
-    
+
     // Main server loop
     runServerLoop();
-    
+
     // Cleanup
     g_network.reset();
     return 0;

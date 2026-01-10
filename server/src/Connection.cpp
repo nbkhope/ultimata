@@ -20,7 +20,7 @@ uint32_t getCurrentTimeMs() {
 }
 
 
-Connection::Connection(boost::asio::io_context& ioContext) 
+Connection::Connection(boost::asio::io_context& ioContext)
     : id(-1), socket(ioContext), state(ConnectionState::Connecting),
       connectTime(getCurrentTimeMs()), lastActivity(getCurrentTimeMs()),
       bytesReceived(0), bytesSent(0), packetsReceived(0), packetsSent(0) {
@@ -36,7 +36,7 @@ uint32_t Connection::getConnectionTime() const {
 
 void Connection::start(int connectionId) {
     id = connectionId;
-    
+
     // Get remote IP address
     try {
         auto endpoint = socket.remote_endpoint();
@@ -46,7 +46,7 @@ void Connection::start(int connectionId) {
         ipAddress = "unknown";
         std::cout << "Could not get IP for connection [" << id << "]: " << e.what() << '\n';
     }
-    
+
     setState(ConnectionState::Connected);
     startRead();
 }
@@ -55,7 +55,7 @@ void Connection::startRead() {
     if (!isConnected()) {
         return;
     }
-    
+
     auto self = shared_from_this();
     socket.async_read_some(
         boost::asio::buffer(readBuffer),
@@ -71,18 +71,18 @@ void Connection::handleRead(const boost::system::error_code& error, size_t bytes
         bytesReceived += bytes_transferred;
         packetsReceived++;
         updateActivity();
-        
+
         // Append new data to message buffer and parse complete messages
         if (bytes_transferred > 0) {
             parseMessages(bytes_transferred);
         }
-        
+
         // Continue reading
         startRead();
     } else {
         std::cout << "Read error on connection [" << id << "]: " << error.message() << '\n';
         setState(ConnectionState::Disconnecting);
-        
+
         // Notify about disconnection
         if (onDisconnected) {
             onDisconnected(id);
@@ -95,7 +95,7 @@ void Connection::sendAsync(const void* data, size_t size) {
         std::cout << "Attempted to send to disconnected connection [" << id << "]" << '\n';
         return;
     }
-    
+
     // Create a copy of the data for async operation
     auto buffer = std::make_shared<std::string>(static_cast<const char*>(data), size);
     auto self = shared_from_this();
@@ -116,7 +116,7 @@ void Connection::handleWrite(const boost::system::error_code& error, size_t byte
     } else {
         std::cout << "Write error on connection [" << id << "]: " << error.message() << '\n';
         setState(ConnectionState::Disconnecting);
-        
+
         if (onDisconnected) {
             onDisconnected(id);
         }
@@ -133,9 +133,9 @@ bool Connection::isTimedOut(uint32_t timeoutMs) const {
 
 void Connection::close() {
     if (socket.is_open()) {
-        std::cout << "Closing connection [" << id << "] from " << ipAddress 
+        std::cout << "Closing connection [" << id << "] from " << ipAddress
                   << " (active for " << getConnectionTime() << "ms)" << '\n';
-        
+
         boost::system::error_code ec;
         socket.close(ec);
         if (ec) {
@@ -148,17 +148,17 @@ void Connection::close() {
 void Connection::parseMessages(size_t newBytes) {
     // Append new data to the message buffer
     messageBuffer.insert(messageBuffer.end(), readBuffer.data(), readBuffer.data() + newBytes);
-    
+
     // Parse complete messages (length-prefixed: [4 bytes length][data])
     while (messageBuffer.size() >= 4) {
         // Read message length (first 4 bytes) in network byte order
         uint32_t netLength;
         std::memcpy(&netLength, messageBuffer.data(), 4);
         uint32_t messageLength = ntohl(netLength);
-        
+
         // Validate message size to prevent DoS attacks
         if (messageLength > MAX_MESSAGE_SIZE) {
-            std::cout << "Connection [" << id << "] sent oversized message (" << messageLength 
+            std::cout << "Connection [" << id << "] sent oversized message (" << messageLength
                       << " bytes), closing connection" << '\n';
             setState(ConnectionState::Disconnecting);
             if (onDisconnected) {
@@ -167,14 +167,14 @@ void Connection::parseMessages(size_t newBytes) {
             messageBuffer.clear();
             return;
         }
-        
+
         // Check if we have the complete message
         if (messageBuffer.size() >= 4 + messageLength) {
             // Extract the complete message (skip the 4-byte length prefix)
             if (onDataReceived && messageLength > 0) {
                 onDataReceived(id, messageBuffer.data() + 4, messageLength);
             }
-            
+
             // Remove the processed message from the buffer
             messageBuffer.erase(messageBuffer.begin(), messageBuffer.begin() + 4 + messageLength);
         } else {

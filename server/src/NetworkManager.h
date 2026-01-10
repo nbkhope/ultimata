@@ -23,10 +23,10 @@ private:
     std::thread networkThread;
     std::atomic<bool> running;
     std::string lastError;
-    
+
     void runNetworkThread();
     void startAccept();
-    void handleAccept(const std::shared_ptr<Connection>& newConnection, 
+    void handleAccept(const std::shared_ptr<Connection>& newConnection,
                       const boost::system::error_code& error);
 
 public:

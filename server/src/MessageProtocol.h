@@ -27,7 +27,7 @@ enum class MessageType : uint32_t {
 class MessageBuilder {
 public:
     MessageBuilder() {}
-    
+
     // Start a new message with a specific type
     void start(MessageType type) {
         buffer.clear();
@@ -36,7 +36,7 @@ public:
         // Add message type
         writeUint32(static_cast<uint32_t>(type));
     }
-    
+
     // Write different data types
     void writeUint32(uint32_t value) {
         uint32_t netValue = htonl(value);
@@ -44,7 +44,7 @@ public:
         buffer.resize(pos + 4);
         std::memcpy(buffer.data() + pos, &netValue, 4);
     }
-    
+
     void writeString(const std::string& str) {
         if (str.size() > MAX_MESSAGE_SIZE) {
             throw std::runtime_error("String too large");
@@ -54,12 +54,12 @@ public:
         // Write string data
         buffer.insert(buffer.end(), str.begin(), str.end());
     }
-    
+
     void writeBytes(const void* data, size_t size) {
         const char* bytes = static_cast<const char*>(data);
         buffer.insert(buffer.end(), bytes, bytes + size);
     }
-    
+
     // Finalize the message by writing the length prefix
     std::vector<char> build() {
         // Calculate message length (everything after the 4-byte length prefix)
@@ -72,7 +72,7 @@ public:
         std::memcpy(buffer.data(), &netLength, 4);
         return buffer;
     }
-    
+
 private:
     std::vector<char> buffer;
 };
@@ -81,13 +81,13 @@ private:
 class MessageReader {
 public:
     MessageReader(const char* data, size_t size) : data(data), size(size), pos(0) {}
-    
+
     // Read message type
     MessageType readMessageType() {
         uint32_t type = readUint32();
         return static_cast<MessageType>(type);
     }
-    
+
     // Read different data types
     uint32_t readUint32() {
         if (pos + 4 > size) throw std::runtime_error("Buffer overflow");
@@ -96,7 +96,7 @@ public:
         pos += 4;
         return ntohl(netValue);
     }
-    
+
     std::string readString() {
         uint32_t length = readUint32();
         if (length > MAX_MESSAGE_SIZE) throw std::runtime_error("String too large");
@@ -105,17 +105,17 @@ public:
         pos += length;
         return str;
     }
-    
+
     void readBytes(void* buffer, size_t count) {
         if (pos + count > size) throw std::runtime_error("Buffer overflow");
         std::memcpy(buffer, data + pos, count);
         pos += count;
     }
-    
+
     bool hasMoreData() const {
         return pos < size;
     }
-    
+
 private:
     const char* data;
     size_t size;

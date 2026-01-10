@@ -3,7 +3,7 @@
 #include <format>
 #include <print>
 
-NetworkManager::NetworkManager() 
+NetworkManager::NetworkManager()
     : running(false), connectionManager(std::make_unique<ConnectionManager>(16, 60000)) {
 }
 
@@ -25,11 +25,11 @@ void NetworkManager::shutdown() {
     if (running) {
         stopServer();
     }
-    
+
     if (connectionManager) {
         connectionManager->closeAllConnections();
     }
-    
+
     std::cout << "Network Manager shutdown complete.\n";
 }
 
@@ -37,16 +37,16 @@ bool NetworkManager::startServer(uint16_t port) {
     try {
         acceptor = std::make_unique<tcp::acceptor>(ioContext, tcp::endpoint(tcp::v4(), port));
         running = true;
-        
+
         // Start accepting connections
         startAccept();
-        
+
         // Start the network thread
         networkThread = std::thread([this] { runNetworkThread(); });
-        
+
         std::cout << "Server started on port " << port << '\n';
         return true;
-        
+
     } catch (std::exception& e) {
         lastError = std::string("Start server failed: ") + e.what();
         return false;
@@ -57,9 +57,9 @@ void NetworkManager::stopServer() {
     if (!running) {
         return;
     }
-    
+
     running = false;
-    
+
     // Stop accepting new connections
     if (acceptor) {
         boost::system::error_code errorCode;
@@ -68,27 +68,27 @@ void NetworkManager::stopServer() {
         (void)errorCode;
         acceptor.reset();
     }
-    
+
     // Stop the io_context
     ioContext.stop();
-    
+
     // Wait for network thread to finish
     if (networkThread.joinable()) {
         networkThread.join();
     }
-    
+
     std::cout << "Server stopped.\n";
 }
 
 void NetworkManager::runNetworkThread() {
     std::cout << "Network thread started.\n";
-    
+
     try {
         ioContext.run();
     } catch (std::exception& e) {
         std::cout << "Network thread exception: " << e.what() << '\n';
     }
-    
+
     std::cout << "Network thread ended.\n";
 }
 
@@ -96,9 +96,9 @@ void NetworkManager::startAccept() {
     if (!running || !acceptor) {
         return;
     }
-    
+
     auto newConnection = std::make_shared<Connection>(ioContext);
-    
+
     acceptor->async_accept(
         newConnection->getSocket(),
         [this, newConnection](const boost::system::error_code& error) {
@@ -107,7 +107,7 @@ void NetworkManager::startAccept() {
     );
 }
 
-void NetworkManager::handleAccept(const std::shared_ptr<Connection>& newConnection, 
+void NetworkManager::handleAccept(const std::shared_ptr<Connection>& newConnection,
                                   const boost::system::error_code& error) {
     if (!error && running) {
         // Add connection to manager
@@ -116,10 +116,10 @@ void NetworkManager::handleAccept(const std::shared_ptr<Connection>& newConnecti
             newConnection->start(connectionId);
             newConnection->setState(ConnectionState::Active);
         }
-        
+
         // Continue accepting new connections
         startAccept();
-        
+
     } else if (error && running) {
         std::cout << "Accept error: " << error.message() << '\n';
         // Continue accepting despite errors
@@ -144,7 +144,7 @@ bool NetworkManager::isConnectionActive(int clientId) {
     if (!connectionManager) {
         return false;
     }
-    
+
     auto connection = connectionManager->getConnection(clientId);
     return connection && connection->isActive();
 }
@@ -153,7 +153,7 @@ std::vector<int> NetworkManager::getActiveConnections() {
     if (!connectionManager) {
         return {};
     }
-    
+
     return connectionManager->getActiveConnectionIds();
 }
 
@@ -161,13 +161,13 @@ bool NetworkManager::sendData(int clientId, const void* data, size_t size) {
     if (!connectionManager) {
         return false;
     }
-    
+
     auto connection = connectionManager->getConnection(clientId);
     if (!connection || !connection->isActive()) {
         lastError = "Connection not active";
         return false;
     }
-    
+
     connection->sendAsync(data, size);
     return true; // Async send always "succeeds" immediately
 }
@@ -175,14 +175,14 @@ bool NetworkManager::sendData(int clientId, const void* data, size_t size) {
 int NetworkManager::receiveData(int clientId, void* buffer, size_t maxSize) {
     // With ASIO async model, data is received through callbacks
     // This method is kept for compatibility but should use the message queue
-    
+
     if (!connectionManager) {
         return -1;
     }
-    
+
     // Get received messages from the connection manager
     auto messages = connectionManager->getReceivedMessages();
-    
+
     // Look for messages from the specified client
     for (const auto& msg : messages) {
         std::println("<ReceivedMessage connectionId={}>", msg.connectionId);
@@ -192,7 +192,7 @@ int NetworkManager::receiveData(int clientId, void* buffer, size_t maxSize) {
             return static_cast<int>(copySize);
         }
     }
-    
+
     return 0; // No data available
 }
 
@@ -208,10 +208,10 @@ void NetworkManager::processAllMessages(const std::function<void(int clientId, c
     if (!connectionManager || !callback) {
         return;
     }
-    
+
     // Get all received messages in arrival order
     auto messages = connectionManager->getReceivedMessages();
-    
+
     // Process each message in the order it was received
     for (const auto& msg : messages) {
         callback(msg.connectionId, reinterpret_cast<const unsigned char*>(msg.data.data()), msg.data.size());
