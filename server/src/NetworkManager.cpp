@@ -13,7 +13,7 @@ NetworkManager::~NetworkManager() {
 
 bool NetworkManager::initialize() {
     try {
-        std::cout << "ASIO Network Manager initialized successfully." << std::endl;
+        std::cout << "Network Manager initialized successfully." << std::endl;
         return true;
     } catch (std::exception& e) {
         lastError = std::string("Initialize failed: ") + e.what();
@@ -30,7 +30,7 @@ void NetworkManager::shutdown() {
         connectionManager->closeAllConnections();
     }
     
-    std::cout << "ASIO Network Manager shutdown complete." << std::endl;
+    std::cout << "Network Manager shutdown complete." << std::endl;
 }
 
 bool NetworkManager::startServer(uint16_t port) {
@@ -44,7 +44,7 @@ bool NetworkManager::startServer(uint16_t port) {
         // Start the network thread
         networkThread = std::thread([this] { runNetworkThread(); });
         
-        std::cout << "ASIO Server started on port " << port << std::endl;
+        std::cout << "Server started on port " << port << std::endl;
         return true;
         
     } catch (std::exception& e) {
@@ -73,7 +73,7 @@ void NetworkManager::stopServer() {
         networkThread.join();
     }
     
-    std::cout << "ASIO Server stopped." << std::endl;
+    std::cout << "Server stopped." << std::endl;
 }
 
 void NetworkManager::runNetworkThread() {
