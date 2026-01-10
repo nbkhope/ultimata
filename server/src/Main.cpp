@@ -6,6 +6,8 @@
 #include <thread>
 #include <chrono>
 
+#include <spdlog/spdlog.h>
+
 #include "MessageProtocol.h"
 #include "NetworkManager.h"
 
@@ -52,15 +54,6 @@ void initializeMonsters();
 void registerSignalHandlers();
 void sigintHandler(int signum);
 
-// Logging functions
-void error(std::string message) {
-    std::cerr << message << '\n';
-}
-
-void info(std::string message) {
-    std::cout << message << '\n';
-}
-
 // Helper: broadcast all player states to all clients
 void broadcastPlayerStates() {
     for (int j = 0; j < MAX_SOCKETS; ++j) {
@@ -95,9 +88,7 @@ void initializeMonsters() {
     monsters[2].active = false;
     monsters[3].active = false;
 
-    info("Monsters initialized.");
-}
-
+    spdlog::info("Monsters initialized.");
 void processClientMessages() {
     // Process all received messages in arrival order (best practice for async servers)
     g_network->processAllMessages([](int clientId, const unsigned char* data, size_t size) {
@@ -110,7 +101,7 @@ void processClientMessages() {
     for (int clientId : activeClients) {
         if (!g_network->isConnectionActive(clientId)) {
             // Connection closed
-            info("Client " + std::to_string(clientId) + " disconnected");
+            spdlog::info("Client " + std::to_string(clientId) + " disconnected");
 
             // Broadcast disconnection to other clients
             if (playerStates[clientId].active) {
@@ -145,7 +136,7 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
                 std::string chatMessage = reader.readString();
                 std::string playerName = playerStates[clientId].name;
 
-                info("Chat from " + playerName + ": " + chatMessage);
+                spdlog::info("Chat from " + playerName + ": " + chatMessage);
 
                 // Broadcast chat message to all clients
                 MessageBuilder builder;
@@ -166,7 +157,7 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
 
                 playerStates[clientId].x = x;
                 playerStates[clientId].y = y;
-                info("Player " + std::to_string(clientId) + " moved to (" + std::to_string(x) + "," + std::to_string(y) + ")");
+                spdlog::info("Player " + std::to_string(clientId) + " moved to (" + std::to_string(x) + "," + std::to_string(y) + ")");
 
                 // Broadcast position to other clients
                 MessageBuilder builder;
@@ -181,16 +172,16 @@ void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
             }
 
             default:
-                info("Unknown message type from client " + std::to_string(clientId));
+                spdlog::info("Unknown message type from client " + std::to_string(clientId));
                 break;
         }
     } catch (const std::exception& e) {
-        error("Error parsing message from client " + std::to_string(clientId) + ": " + e.what());
+        spdlog::error("Error parsing message from client " + std::to_string(clientId) + ": " + e.what());
     }
 }
 
 void runServerLoop() {
-    info("Starting main server loop.");
+    spdlog::info("Starting main server loop.");
 
     while (!shutdownRequested) {
         // Process network events (new connections, disconnections)
@@ -199,7 +190,7 @@ void runServerLoop() {
         // Handle new connections
         int newClientId = g_network->acceptConnection();
         if (newClientId >= 0) {
-            info("New client connected: " + std::to_string(newClientId));
+            spdlog::info("New client connected: " + std::to_string(newClientId));
             playerStates[newClientId].active = true;
             playerStates[newClientId].id = newClientId;
             playerStates[newClientId].x = 100;
@@ -232,19 +223,19 @@ void runServerLoop() {
         std::this_thread::sleep_for(std::chrono::milliseconds(16)); // ~60 FPS
     }
 
-    info("Server loop ended.");
+    spdlog::info("Server loop ended.");
 }
 
 void sigintHandler(int signum) {
     std::stringstream ss;
     ss << "Interrupt signal (" << signum << ") received. Shutdown requested." << '\n';
-    info(ss.str());
+    spdlog::info(ss.str());
     shutdownRequested = true;
 }
 
 void registerSignalHandlers() {
     signal(SIGINT, sigintHandler);
-    info("Signal handlers registered.");
+    spdlog::info("Signal handlers registered.");
 }
 
 int main(int argc, char* argv[]) {
@@ -255,19 +246,19 @@ int main(int argc, char* argv[]) {
 
     // Initialize network
     if (!g_network->initialize()) {
-        error("Failed to initialize network: " + g_network->getLastError());
+        spdlog::error("Failed to initialize network: " + g_network->getLastError());
         return 1;
     }
 
-    info("Network initialized successfully.");
+    spdlog::info("Network initialized successfully.");
 
     // Start server
     if (!g_network->startServer(8099)) {
-        error("Failed to start server: " + g_network->getLastError());
+        spdlog::error("Failed to start server: " + g_network->getLastError());
         return 2;
     }
 
-    info("Server started on port 8099.");
+    spdlog::info("Server started on port 8099.");
 
     initializeMonsters();
 
