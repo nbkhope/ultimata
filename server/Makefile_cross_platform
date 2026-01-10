@@ -71,11 +71,11 @@ clean:
 # Install dependencies (Ubuntu/Debian)
 install-deps-ubuntu:
 	sudo apt-get update
-	sudo apt-get install -y build-essential cmake libboost-all-dev libsdl2-dev libsdl2-net-dev
+	sudo apt-get install -y build-essential cmake libboost-all-dev
 
 # Install dependencies (macOS with Homebrew)
 install-deps-macos:
-	brew install boost sdl2 sdl2_net cmake
+	brew install boost cmake
 
 # Show help
 help:
