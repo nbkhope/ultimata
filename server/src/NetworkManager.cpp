@@ -3,15 +3,15 @@
 #include <format>
 #include <print>
 
-AsioNetworkManager::AsioNetworkManager() 
+NetworkManager::NetworkManager() 
     : running(false), connectionManager(std::make_unique<ConnectionManager>()) {
 }
 
-AsioNetworkManager::~AsioNetworkManager() {
+NetworkManager::~NetworkManager() {
     shutdown();
 }
 
-bool AsioNetworkManager::initialize() {
+bool NetworkManager::initialize() {
     try {
         std::cout << "ASIO Network Manager initialized successfully." << std::endl;
         return true;
@@ -21,7 +21,7 @@ bool AsioNetworkManager::initialize() {
     }
 }
 
-void AsioNetworkManager::shutdown() {
+void NetworkManager::shutdown() {
     if (running) {
         stopServer();
     }
@@ -33,7 +33,7 @@ void AsioNetworkManager::shutdown() {
     std::cout << "ASIO Network Manager shutdown complete." << std::endl;
 }
 
-bool AsioNetworkManager::startServer(uint16_t port) {
+bool NetworkManager::startServer(uint16_t port) {
     try {
         acceptor = std::make_unique<tcp::acceptor>(ioContext, tcp::endpoint(tcp::v4(), port));
         running = true;
@@ -53,7 +53,7 @@ bool AsioNetworkManager::startServer(uint16_t port) {
     }
 }
 
-void AsioNetworkManager::stopServer() {
+void NetworkManager::stopServer() {
     if (!running) return;
     
     running = false;
@@ -76,7 +76,7 @@ void AsioNetworkManager::stopServer() {
     std::cout << "ASIO Server stopped." << std::endl;
 }
 
-void AsioNetworkManager::runNetworkThread() {
+void NetworkManager::runNetworkThread() {
     std::cout << "Network thread started." << std::endl;
     
     try {
@@ -88,7 +88,7 @@ void AsioNetworkManager::runNetworkThread() {
     std::cout << "Network thread ended." << std::endl;
 }
 
-void AsioNetworkManager::startAccept() {
+void NetworkManager::startAccept() {
     if (!running || !acceptor) return;
     
     auto newConnection = std::make_shared<Connection>(ioContext);
@@ -101,8 +101,8 @@ void AsioNetworkManager::startAccept() {
     );
 }
 
-void AsioNetworkManager::handleAccept(std::shared_ptr<Connection> newConnection, 
-                                      const boost::system::error_code& error) {
+void NetworkManager::handleAccept(std::shared_ptr<Connection> newConnection, 
+                                  const boost::system::error_code& error) {
     if (!error && running) {
         // Add connection to manager
         int connectionId = connectionManager->addConnection(newConnection);
@@ -121,33 +121,33 @@ void AsioNetworkManager::handleAccept(std::shared_ptr<Connection> newConnection,
     }
 }
 
-int AsioNetworkManager::acceptConnection() {
+int NetworkManager::acceptConnection() {
     // With ASIO, connections are accepted automatically in the background
     // This method is kept for interface compatibility but doesn't do the actual accepting
     // Return -1 to indicate no new connection is immediately available
     return -1;
 }
 
-void AsioNetworkManager::closeConnection(int clientId) {
+void NetworkManager::closeConnection(int clientId) {
     if (connectionManager) {
         connectionManager->removeConnection(clientId);
     }
 }
 
-bool AsioNetworkManager::isConnectionActive(int clientId) {
+bool NetworkManager::isConnectionActive(int clientId) {
     if (!connectionManager) return false;
     
     auto connection = connectionManager->getConnection(clientId);
     return connection && connection->isActive();
 }
 
-std::vector<int> AsioNetworkManager::getActiveConnections() {
+std::vector<int> NetworkManager::getActiveConnections() {
     if (!connectionManager) return {};
     
     return connectionManager->getActiveConnectionIds();
 }
 
-bool AsioNetworkManager::sendData(int clientId, const void* data, size_t size) {
+bool NetworkManager::sendData(int clientId, const void* data, size_t size) {
     if (!connectionManager) return false;
     
     auto connection = connectionManager->getConnection(clientId);
@@ -160,7 +160,7 @@ bool AsioNetworkManager::sendData(int clientId, const void* data, size_t size) {
     return true; // Async send always "succeeds" immediately
 }
 
-int AsioNetworkManager::receiveData(int clientId, void* buffer, size_t maxSize) {
+int NetworkManager::receiveData(int clientId, void* buffer, size_t maxSize) {
     // With ASIO async model, data is received through callbacks
     // This method is kept for compatibility but should use the message queue
     
@@ -182,7 +182,7 @@ int AsioNetworkManager::receiveData(int clientId, void* buffer, size_t maxSize) 
     return 0; // No data available
 }
 
-bool AsioNetworkManager::broadcastData(const void* data, size_t size) {
+bool NetworkManager::broadcastData(const void* data, size_t size) {
     if (connectionManager) {
         connectionManager->broadcastToAll(data, size);
         return true;
@@ -190,7 +190,7 @@ bool AsioNetworkManager::broadcastData(const void* data, size_t size) {
     return false;
 }
 
-void AsioNetworkManager::processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback) {
+void NetworkManager::processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback) {
     if (!connectionManager || !callback) return;
     
     // Get all received messages in arrival order
@@ -202,12 +202,12 @@ void AsioNetworkManager::processAllMessages(std::function<void(int clientId, con
     }
 }
 
-void AsioNetworkManager::processEvents() {
+void NetworkManager::processEvents() {
     if (connectionManager) {
         connectionManager->update();
     }
 }
 
-std::string AsioNetworkManager::getLastError() {
+std::string NetworkManager::getLastError() {
     return lastError;
 }

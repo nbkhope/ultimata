@@ -7,7 +7,7 @@
 #endif
 #endif
 
-#include "INetworkManager.h"
+
 #include "ConnectionManager.h"
 #include <boost/asio.hpp>
 #include <thread>
@@ -15,7 +15,7 @@
 
 using boost::asio::ip::tcp;
 
-class AsioNetworkManager : public INetworkManager {
+class NetworkManager {
 private:
     boost::asio::io_context ioContext;
     std::unique_ptr<tcp::acceptor> acceptor;
@@ -30,28 +30,21 @@ private:
                       const boost::system::error_code& error);
 
 public:
-    AsioNetworkManager();
-    ~AsioNetworkManager();
-    
-    // INetworkManager interface
-    bool initialize() override;
-    void shutdown() override;
-    
-    bool startServer(uint16_t port) override;
-    void stopServer() override;
-    
-    int acceptConnection() override;
-    void closeConnection(int clientId) override;
-    bool isConnectionActive(int clientId) override;
-    std::vector<int> getActiveConnections() override;
-    
-    bool sendData(int clientId, const void* data, size_t size) override;
-    int receiveData(int clientId, void* buffer, size_t maxSize) override;
-    bool broadcastData(const void* data, size_t size) override;
-    
-    // Process all received messages in arrival order with a callback
+    NetworkManager();
+    ~NetworkManager();
+
+    bool initialize();
+    void shutdown();
+    bool startServer(uint16_t port);
+    void stopServer();
+    int acceptConnection();
+    void closeConnection(int clientId);
+    bool isConnectionActive(int clientId);
+    std::vector<int> getActiveConnections();
+    bool sendData(int clientId, const void* data, size_t size);
+    int receiveData(int clientId, void* buffer, size_t maxSize);
+    bool broadcastData(const void* data, size_t size);
     void processAllMessages(std::function<void(int clientId, const unsigned char* data, size_t size)> callback);
-    
-    void processEvents() override;
-    std::string getLastError() override;
+    void processEvents();
+    std::string getLastError();
 };
