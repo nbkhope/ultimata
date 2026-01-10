@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <mutex>
 
-AsioConnectionManager::AsioConnectionManager(int maxConnections, uint32_t timeoutMs)
+ConnectionManager::ConnectionManager(int maxConnections, uint32_t timeoutMs)
     : nextId(0), maxConnections(maxConnections), connectionTimeout(timeoutMs),
       totalConnections(0), activeConnections(0) {
     
@@ -13,15 +13,15 @@ AsioConnectionManager::AsioConnectionManager(int maxConnections, uint32_t timeou
         freeIds.push_back(i);
     }
     
-    std::cout << "AsioConnectionManager initialized (max: " << maxConnections 
+    std::cout << "ConnectionManager initialized (max: " << maxConnections 
               << ", timeout: " << timeoutMs << "ms)" << std::endl;
 }
 
-AsioConnectionManager::~AsioConnectionManager() {
+ConnectionManager::~ConnectionManager() {
     closeAllConnections();
 }
 
-int AsioConnectionManager::addConnection(std::shared_ptr<AsioConnection> connection) {
+int ConnectionManager::addConnection(std::shared_ptr<Connection> connection) {
     if (isFull()) {
         std::cout << "Cannot accept connection - server full (" << maxConnections << ")" << std::endl;
         return -1;
@@ -57,7 +57,7 @@ int AsioConnectionManager::addConnection(std::shared_ptr<AsioConnection> connect
     return connectionId;
 }
 
-void AsioConnectionManager::removeConnection(int connectionId) {
+void ConnectionManager::removeConnection(int connectionId) {
     auto it = connections.find(connectionId);
     if (it == connections.end()) {
         return;
@@ -74,12 +74,12 @@ void AsioConnectionManager::removeConnection(int connectionId) {
     activeConnections--;
 }
 
-std::shared_ptr<AsioConnection> AsioConnectionManager::getConnection(int connectionId) {
+std::shared_ptr<Connection> ConnectionManager::getConnection(int connectionId) {
     auto it = connections.find(connectionId);
     return (it != connections.end()) ? it->second : nullptr;
 }
 
-std::vector<int> AsioConnectionManager::getActiveConnectionIds() const {
+std::vector<int> ConnectionManager::getActiveConnectionIds() const {
     std::vector<int> activeIds;
     activeIds.reserve(connections.size());
     
@@ -92,8 +92,8 @@ std::vector<int> AsioConnectionManager::getActiveConnectionIds() const {
     return activeIds;
 }
 
-std::vector<std::shared_ptr<AsioConnection>> AsioConnectionManager::getActiveConnections() const {
-    std::vector<std::shared_ptr<AsioConnection>> activeConns;
+std::vector<std::shared_ptr<Connection>> ConnectionManager::getActiveConnections() const {
+    std::vector<std::shared_ptr<Connection>> activeConns;
     activeConns.reserve(connections.size());
     
     for (const auto& pair : connections) {
@@ -105,7 +105,7 @@ std::vector<std::shared_ptr<AsioConnection>> AsioConnectionManager::getActiveCon
     return activeConns;
 }
 
-void AsioConnectionManager::closeAllConnections() {
+void ConnectionManager::closeAllConnections() {
     std::cout << "Closing all connections (" << connections.size() << ")" << std::endl;
     
     for (auto& pair : connections) {
@@ -123,7 +123,7 @@ void AsioConnectionManager::closeAllConnections() {
     activeConnections = 0;
 }
 
-void AsioConnectionManager::processTimeouts() {
+void ConnectionManager::processTimeouts() {
     std::vector<int> timedOut;
     
     for (const auto& pair : connections) {
@@ -138,7 +138,7 @@ void AsioConnectionManager::processTimeouts() {
     }
 }
 
-void AsioConnectionManager::processDisconnecting() {
+void ConnectionManager::processDisconnecting() {
     std::vector<int> toRemove;
     
     for (const auto& pair : connections) {
@@ -152,12 +152,12 @@ void AsioConnectionManager::processDisconnecting() {
     }
 }
 
-void AsioConnectionManager::update() {
+void ConnectionManager::update() {
     processTimeouts();
     processDisconnecting();
 }
 
-void AsioConnectionManager::broadcastToAll(const void* data, size_t size) {
+void ConnectionManager::broadcastToAll(const void* data, size_t size) {
     int sent = 0;
     for (const auto& pair : connections) {
         if (pair.second->isActive()) {
@@ -171,7 +171,7 @@ void AsioConnectionManager::broadcastToAll(const void* data, size_t size) {
     }
 }
 
-void AsioConnectionManager::broadcastToAllExcept(const void* data, size_t size, int excludeId) {
+void ConnectionManager::broadcastToAllExcept(const void* data, size_t size, int excludeId) {
     int sent = 0;
     for (const auto& pair : connections) {
         if (pair.first != excludeId && pair.second->isActive()) {
@@ -186,14 +186,14 @@ void AsioConnectionManager::broadcastToAllExcept(const void* data, size_t size, 
     }
 }
 
-std::vector<AsioConnectionManager::ReceivedMessage> AsioConnectionManager::getReceivedMessages() {
+std::vector<ConnectionManager::ReceivedMessage> ConnectionManager::getReceivedMessages() {
     std::lock_guard<std::mutex> lock(messageQueueMutex);
     std::vector<ReceivedMessage> messages;
     messages.swap(receivedMessages);
     return messages;
 }
 
-void AsioConnectionManager::onDataReceived(int connectionId, const char* data, size_t size) {
+void ConnectionManager::onDataReceived(int connectionId, const char* data, size_t size) {
     std::lock_guard<std::mutex> lock(messageQueueMutex);
     
     ReceivedMessage msg;
@@ -202,7 +202,7 @@ void AsioConnectionManager::onDataReceived(int connectionId, const char* data, s
     receivedMessages.push_back(std::move(msg));
 }
 
-void AsioConnectionManager::onConnectionDisconnected(int connectionId) {
+void ConnectionManager::onConnectionDisconnected(int connectionId) {
     // Schedule removal for next update cycle
     auto connection = getConnection(connectionId);
     if (connection) {

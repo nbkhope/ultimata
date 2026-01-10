@@ -6,9 +6,9 @@
 #include <mutex>
 #include <boost/asio.hpp>
 
-class AsioConnectionManager {
+class ConnectionManager {
 private:
-    std::unordered_map<int, std::shared_ptr<AsioConnection>> connections;
+    std::unordered_map<int, std::shared_ptr<Connection>> connections;
     std::vector<int> freeIds;
     int nextId;
     int maxConnections;
@@ -31,13 +31,13 @@ public:
     ~AsioConnectionManager();
     
     // Connection management
-    int addConnection(std::shared_ptr<AsioConnection> connection);
+    int addConnection(std::shared_ptr<Connection> connection);
     void removeConnection(int connectionId);
-    std::shared_ptr<AsioConnection> getConnection(int connectionId);
+    std::shared_ptr<Connection> getConnection(int connectionId);
     
     // Bulk operations
     std::vector<int> getActiveConnectionIds() const;
-    std::vector<std::shared_ptr<AsioConnection>> getActiveConnections() const;
+    std::vector<std::shared_ptr<Connection>> getActiveConnections() const;
     void closeAllConnections();
     
     // Maintenance
