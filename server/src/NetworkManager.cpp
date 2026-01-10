@@ -2,6 +2,7 @@
 #include <iostream>
 #include <format>
 #include <print>
+#include <spdlog/spdlog.h>
 
 NetworkManager::NetworkManager()
     : running(false), connectionManager(std::make_unique<ConnectionManager>(16, 60000)) {
@@ -16,11 +17,7 @@ void NetworkManager::shutdown() {
         stopServer();
     }
 
-    if (connectionManager) {
-        connectionManager->closeAllConnections();
-    }
-
-    std::cout << "Network Manager shutdown complete.\n";
+    spdlog::info("Network Manager shutdown complete.");
 }
 
 bool NetworkManager::startServer(uint16_t port) {
@@ -34,7 +31,7 @@ bool NetworkManager::startServer(uint16_t port) {
         // Start the network thread
         networkThread = std::thread([this] { runNetworkThread(); });
 
-        std::cout << "Server started on port " << port << '\n';
+        spdlog::info("Server started on port {}", port);
         return true;
 
     } catch (std::exception& e) {
@@ -67,19 +64,18 @@ void NetworkManager::stopServer() {
         networkThread.join();
     }
 
-    std::cout << "Server stopped.\n";
+    spdlog::info("Server stopped.");
 }
 
 void NetworkManager::runNetworkThread() {
-    std::cout << "Network thread started.\n";
-
+    spdlog::info("Network thread started.");
     try {
         ioContext.run();
     } catch (std::exception& e) {
-        std::cout << "Network thread exception: " << e.what() << '\n';
+        spdlog::error("Network thread exception: {}", e.what());
     }
 
-    std::cout << "Network thread ended.\n";
+    spdlog::info("Network thread ended.");
 }
 
 void NetworkManager::startAccept() {
@@ -111,7 +107,7 @@ void NetworkManager::handleAccept(const std::shared_ptr<Connection>& newConnecti
         startAccept();
 
     } else if (error && running) {
-        std::cout << "Accept error: " << error.message() << '\n';
+        spdlog::error("Accept error: {}", error.message());
         // Continue accepting despite errors
         startAccept();
     }

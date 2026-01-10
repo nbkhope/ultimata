@@ -10,6 +10,7 @@
 
 #include "MessageProtocol.h"
 #include "NetworkManager.h"
+#include "Orchestrator.h"
 
 // Server-local networking constants
 const int SERVER_MAX_PACKET = 0xFF; // 255-byte packet size for server buffers
@@ -34,7 +35,7 @@ struct PlayerState {
 
 // Global state
 PlayerState playerStates[MAX_SOCKETS];
-std::unique_ptr<NetworkManager> g_network;
+
 int playersOnline = 0;
 bool shutdownRequested = false;
 
@@ -51,29 +52,27 @@ void runServerLoop();
 void processClientMessages();
 void handleClientMessage(int clientId, const unsigned char* buffer, int size);
 void initializeMonsters();
-void registerSignalHandlers();
-void sigintHandler(int signum);
 
 // Helper: broadcast all player states to all clients
-void broadcastPlayerStates() {
-    for (int j = 0; j < MAX_SOCKETS; ++j) {
-        if (playerStates[j].active) {
-            unsigned char packet[64];
-            int offset = 0;
-            int cmd = 6; // PLAYER_STATE
-            memcpy(packet + offset, &cmd, 4); offset += 4;
-            memcpy(packet + offset, &playerStates[j].id, 4); offset += 4;
-            memcpy(packet + offset, &playerStates[j].x, 4); offset += 4;
-            memcpy(packet + offset, &playerStates[j].y, 4); offset += 4;
-            memcpy(packet + offset, &playerStates[j].direction, 4); offset += 4;
-            unsigned char nameLen = (unsigned char)strnlen(playerStates[j].name, 32);
-            packet[offset++] = nameLen;
-            memcpy(packet + offset, playerStates[j].name, nameLen);
-            int total = offset + nameLen;
-            g_network->broadcastData(packet, total);
-        }
-    }
-}
+// void broadcastPlayerStates() {
+//     for (int j = 0; j < MAX_SOCKETS; ++j) {
+//         if (playerStates[j].active) {
+//             unsigned char packet[64];
+//             int offset = 0;
+//             int cmd = 6; // PLAYER_STATE
+//             memcpy(packet + offset, &cmd, 4); offset += 4;
+//             memcpy(packet + offset, &playerStates[j].id, 4); offset += 4;
+//             memcpy(packet + offset, &playerStates[j].x, 4); offset += 4;
+//             memcpy(packet + offset, &playerStates[j].y, 4); offset += 4;
+//             memcpy(packet + offset, &playerStates[j].direction, 4); offset += 4;
+//             unsigned char nameLen = (unsigned char)strnlen(playerStates[j].name, 32);
+//             packet[offset++] = nameLen;
+//             memcpy(packet + offset, playerStates[j].name, nameLen);
+//             int total = offset + nameLen;
+//             g_network->broadcastData(packet, total);
+//         }
+//     }
+// }
 
 void initializeMonsters() {
     // Spawn 2 monsters at fixed positions
@@ -91,182 +90,174 @@ void initializeMonsters() {
     spdlog::info("Monsters initialized.");
 }
 
-void processClientMessages() {
-    // Process all received messages in arrival order (best practice for async servers)
-    g_network->processAllMessages([](int clientId, const unsigned char* data, size_t size) {
-        // Process the message using existing logic
-        handleClientMessage(clientId, data, size);
-    });
+// void processClientMessages() {
+//     // Process all received messages in arrival order (best practice for async servers)
+//     g_network->processAllMessages([](int clientId, const unsigned char* data, size_t size) {
+//         // Process the message using existing logic
+//         handleClientMessage(clientId, data, size);
+//     });
 
-    // Check for disconnected clients
-    auto activeClients = g_network->getActiveConnections();
-    for (int clientId : activeClients) {
-        if (!g_network->isConnectionActive(clientId)) {
-            // Connection closed
-            spdlog::info("Client " + std::to_string(clientId) + " disconnected");
+//     // Check for disconnected clients
+//     auto activeClients = g_network->getActiveConnections();
+//     for (int clientId : activeClients) {
+//         if (!g_network->isConnectionActive(clientId)) {
+//             // Connection closed
+//             spdlog::info("Client " + std::to_string(clientId) + " disconnected");
 
-            // Broadcast disconnection to other clients
-            if (playerStates[clientId].active) {
-                unsigned char packet[8];
-                int cmd = 7; // PLAYER_DISCONNECT
-                memcpy(packet, &cmd, 4);
-                memcpy(packet + 4, &clientId, 4);
-                g_network->broadcastData(packet, 8);
+//             // Broadcast disconnection to other clients
+//             if (playerStates[clientId].active) {
+//                 unsigned char packet[8];
+//                 int cmd = 7; // PLAYER_DISCONNECT
+//                 memcpy(packet, &cmd, 4);
+//                 memcpy(packet + 4, &clientId, 4);
+//                 g_network->broadcastData(packet, 8);
+//             }
+
+//             // Clear player state
+//             memset(&playerStates[clientId], 0x00, sizeof(PlayerState));
+//             playerStates[clientId].active = false;
+//             playersOnline--;
+
+//             g_network->closeConnection(clientId);
+//         }
+//     }
+// }
+
+// void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
+//     try {
+//         // Use MessageReader to parse the message
+//         MessageReader reader(reinterpret_cast<const char*>(buffer), size);
+
+//         // Read message type
+//         MessageType msgType = reader.readMessageType();
+
+//         switch (msgType) {
+//             case MessageType::CHAT: {
+//                 // Read chat message
+//                 std::string chatMessage = reader.readString();
+//                 std::string playerName = playerStates[clientId].name;
+
+//                 spdlog::info("Chat from " + playerName + ": " + chatMessage);
+
+//                 // Broadcast chat message to all clients
+//                 MessageBuilder builder;
+//                 builder.start(MessageType::CHAT);
+//                 builder.writeUint32(clientId); // sender ID
+//                 builder.writeString(playerName);
+//                 builder.writeString(chatMessage);
+//                 auto msgData = builder.build();
+
+//                 g_network->broadcastData(msgData.data(), msgData.size());
+//                 break;
+//             }
+
+//             case MessageType::PLAYER_MOVE: {
+//                 // Read movement data
+//                 int x = reader.readUint32();
+//                 int y = reader.readUint32();
+
+//                 playerStates[clientId].x = x;
+//                 playerStates[clientId].y = y;
+//                 spdlog::info("Player " + std::to_string(clientId) + " moved to (" + std::to_string(x) + "," + std::to_string(y) + ")");
+
+//                 // Broadcast position to other clients
+//                 MessageBuilder builder;
+//                 builder.start(MessageType::PLAYER_MOVE);
+//                 builder.writeUint32(clientId);
+//                 builder.writeUint32(x);
+//                 builder.writeUint32(y);
+//                 auto msgData = builder.build();
+
+//                 g_network->broadcastData(msgData.data(), msgData.size());
+//                 break;
+//             }
+
+//             default:
+//                 spdlog::info("Unknown message type from client " + std::to_string(clientId));
+//                 break;
+//         }
+//     } catch (const std::exception& e) {
+//         spdlog::error("Error parsing message from client " + std::to_string(clientId) + ": " + e.what());
+//     }
+// }
+
+// void runServerLoop() {
+//     spdlog::info("Starting main server loop.");
+
+//     while (!shutdownRequested) {
+//         // Process network events (new connections, disconnections)
+//         g_network->processEvents();
+
+//         // Handle new connections
+//         int newClientId = g_network->acceptConnection();
+//         if (newClientId >= 0) {
+//             spdlog::info("New client connected: " + std::to_string(newClientId));
+//             playerStates[newClientId].active = true;
+//             playerStates[newClientId].id = newClientId;
+//             playerStates[newClientId].x = 100;
+//             playerStates[newClientId].y = 100;
+//             playerStates[newClientId].direction = 0;
+//             snprintf(playerStates[newClientId].name, 32, "Player%d", newClientId);
+//             playersOnline++;
+
+//             // Send monsters to new client
+//             for (int i = 0; i < MAX_MONSTERS_SERVER; ++i) {
+//                 if (monsters[i].active) {
+//                     unsigned char packet[16];
+//                     int cmd = 8; // MONSTER_STATE
+//                     memcpy(packet, &cmd, 4);
+//                     memcpy(packet + 4, &i, 4);
+//                     memcpy(packet + 8, &monsters[i].position.x, 4);
+//                     memcpy(packet + 12, &monsters[i].position.y, 4);
+//                     g_network->sendData(newClientId, packet, 16);
+//                 }
+//             }
+//         }
+
+//         // Process messages from all clients
+//         processClientMessages();
+
+//         // Broadcast player states
+//         broadcastPlayerStates();
+
+//         // Small delay to prevent busy-waiting
+//         std::this_thread::sleep_for(std::chrono::milliseconds(16)); // ~60 FPS
+//     }
+
+//     spdlog::info("Server loop ended.");
+// }
+
+void processCommandLineArguments(int argc, char* argv[]) {
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "--log-level" && i + 1 < argc) {
+            std::string level = argv[i + 1];
+            if (level == "debug") {
+                spdlog::set_level(spdlog::level::debug);
+            } else if (level == "info") {
+                spdlog::set_level(spdlog::level::info);
+            } else if (level == "warn") {
+                spdlog::set_level(spdlog::level::warn);
+            } else if (level == "error") {
+                spdlog::set_level(spdlog::level::err);
             }
-
-            // Clear player state
-            memset(&playerStates[clientId], 0x00, sizeof(PlayerState));
-            playerStates[clientId].active = false;
-            playersOnline--;
-
-            g_network->closeConnection(clientId);
+            ++i; // Skip next argument since it's the log level value
         }
     }
-}
-
-void handleClientMessage(int clientId, const unsigned char* buffer, int size) {
-    try {
-        // Use MessageReader to parse the message
-        MessageReader reader(reinterpret_cast<const char*>(buffer), size);
-
-        // Read message type
-        MessageType msgType = reader.readMessageType();
-
-        switch (msgType) {
-            case MessageType::CHAT: {
-                // Read chat message
-                std::string chatMessage = reader.readString();
-                std::string playerName = playerStates[clientId].name;
-
-                spdlog::info("Chat from " + playerName + ": " + chatMessage);
-
-                // Broadcast chat message to all clients
-                MessageBuilder builder;
-                builder.start(MessageType::CHAT);
-                builder.writeUint32(clientId); // sender ID
-                builder.writeString(playerName);
-                builder.writeString(chatMessage);
-                auto msgData = builder.build();
-
-                g_network->broadcastData(msgData.data(), msgData.size());
-                break;
-            }
-
-            case MessageType::PLAYER_MOVE: {
-                // Read movement data
-                int x = reader.readUint32();
-                int y = reader.readUint32();
-
-                playerStates[clientId].x = x;
-                playerStates[clientId].y = y;
-                spdlog::info("Player " + std::to_string(clientId) + " moved to (" + std::to_string(x) + "," + std::to_string(y) + ")");
-
-                // Broadcast position to other clients
-                MessageBuilder builder;
-                builder.start(MessageType::PLAYER_MOVE);
-                builder.writeUint32(clientId);
-                builder.writeUint32(x);
-                builder.writeUint32(y);
-                auto msgData = builder.build();
-
-                g_network->broadcastData(msgData.data(), msgData.size());
-                break;
-            }
-
-            default:
-                spdlog::info("Unknown message type from client " + std::to_string(clientId));
-                break;
-        }
-    } catch (const std::exception& e) {
-        spdlog::error("Error parsing message from client " + std::to_string(clientId) + ": " + e.what());
-    }
-}
-
-void runServerLoop() {
-    spdlog::info("Starting main server loop.");
-
-    while (!shutdownRequested) {
-        // Process network events (new connections, disconnections)
-        g_network->processEvents();
-
-        // Handle new connections
-        int newClientId = g_network->acceptConnection();
-        if (newClientId >= 0) {
-            spdlog::info("New client connected: " + std::to_string(newClientId));
-            playerStates[newClientId].active = true;
-            playerStates[newClientId].id = newClientId;
-            playerStates[newClientId].x = 100;
-            playerStates[newClientId].y = 100;
-            playerStates[newClientId].direction = 0;
-            snprintf(playerStates[newClientId].name, 32, "Player%d", newClientId);
-            playersOnline++;
-
-            // Send monsters to new client
-            for (int i = 0; i < MAX_MONSTERS_SERVER; ++i) {
-                if (monsters[i].active) {
-                    unsigned char packet[16];
-                    int cmd = 8; // MONSTER_STATE
-                    memcpy(packet, &cmd, 4);
-                    memcpy(packet + 4, &i, 4);
-                    memcpy(packet + 8, &monsters[i].position.x, 4);
-                    memcpy(packet + 12, &monsters[i].position.y, 4);
-                    g_network->sendData(newClientId, packet, 16);
-                }
-            }
-        }
-
-        // Process messages from all clients
-        processClientMessages();
-
-        // Broadcast player states
-        broadcastPlayerStates();
-
-        // Small delay to prevent busy-waiting
-        std::this_thread::sleep_for(std::chrono::milliseconds(16)); // ~60 FPS
-    }
-
-    spdlog::info("Server loop ended.");
-}
-
-void sigintHandler(int signum) {
-    std::stringstream ss;
-    ss << "Interrupt signal (" << signum << ") received. Shutdown requested." << '\n';
-    spdlog::info(ss.str());
-    shutdownRequested = true;
-}
-
-void registerSignalHandlers() {
-    signal(SIGINT, sigintHandler);
-    spdlog::info("Signal handlers registered.");
 }
 
 int main(int argc, char* argv[]) {
-    // Create network manager
-    g_network = std::make_unique<NetworkManager>();
+    processCommandLineArguments(argc, argv);
 
-    registerSignalHandlers();
+    Orchestrator orchestrator;
 
-    spdlog::info("Network initialized successfully.");
-
-    // Start server
-    if (!g_network->startServer(8099)) {
-        spdlog::error("Failed to start server: " + g_network->getLastError());
-        return 2;
+    try {
+        orchestrator.run();
+    }
+    catch (const std::exception& e) {
+        spdlog::error("Fatal error: {}", e.what());
+        return 1;
     }
 
-    spdlog::info("Server started on port 8099.");
-
-    initializeMonsters();
-
-    // Initialize player states
-    for (int i = 0; i < MAX_SOCKETS; ++i) {
-        playerStates[i].active = false;
-    }
-
-    // Main server loop
-    runServerLoop();
-
-    // Cleanup
-    g_network.reset();
     return 0;
 }
