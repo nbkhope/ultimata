@@ -41,4 +41,4 @@ jobs:
     - name: Run clang-tidy
       run: |
         cd server
-        find src -name '*.cpp' | xargs clang-tidy -p build --checks='-*,modernize-*,-modernize-use-trailing-return-type,performance-*,readability-*,-readability-magic-numbers,bugprone-*,clang-analyzer-*' --format-style=file
+        find src -name '*.cpp' | xargs clang-tidy -p build --checks='-*,modernize-*,-modernize-use-trailing-return-type,performance-*,readability-*,-readability-magic-numbers,-readability-identifier-length,bugprone-*,clang-analyzer-*' --format-style=file
