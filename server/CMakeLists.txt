@@ -29,6 +29,8 @@ add_executable(ultimata-server
     src/Connection.cpp
     src/ConnectionManager.cpp
     src/NetworkManager.cpp
+    src/Orchestrator.cpp
+    src/GameState.cpp
 )
 
 # Link libraries

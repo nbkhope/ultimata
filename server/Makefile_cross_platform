@@ -1,6 +1,6 @@
 # Cross-platform Makefile for Ultimata Server
 # Use: make          (for release build)
-#      make debug     (for debug build)  
+#      make debug     (for debug build)
 #      make clean     (to clean build files)
 #
 # NOTE: For modern development on Windows, use vcpkg and CMake:
@@ -20,7 +20,7 @@ ifeq ($(UNAME_S),Linux)
     LIBS = -lboost_system -lSDL2 -lSDL2_net -lpthread
 endif
 ifeq ($(UNAME_S),Darwin)
-    PLATFORM = macos  
+    PLATFORM = macos
     LIBS = -lboost_system -lSDL2 -lSDL2_net -lpthread
     # macOS might need different library paths
     INCLUDES += -I/usr/local/include -I/opt/homebrew/include
@@ -34,6 +34,8 @@ SOURCES = src/Main.cpp \
           src/Connection.cpp \
           src/ConnectionManager.cpp \
           src/NetworkManager.cpp
+					src/Orchestrator.cpp
+					src/GameState.cpp
 
 OBJECTS = $(SOURCES:src/%.cpp=$(BUILD_DIR)/%.o)
 
@@ -44,7 +46,7 @@ all: release
 release: CXXFLAGS += -O3 -DNDEBUG
 release: $(TARGET)
 
-# Debug build  
+# Debug build
 debug: CXXFLAGS += -g -O0 -DDEBUG
 debug: $(TARGET)
 
