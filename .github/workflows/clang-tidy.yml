@@ -1,0 +1,49 @@
+name: C++ Clang-Tidy
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'server/**/*.cpp'
+      - 'server/**/*.h'
+      - '.github/workflows/clang-tidy.yml'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'server/**/*.cpp'
+      - 'server/**/*.h'
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-tidy cmake ninja-build
+        
+    - name: Install Boost
+      run: |
+        sudo apt-get install -y libboost-system-dev libboost-dev
+        
+    - name: Generate compile_commands.json
+      run: |
+        cd server
+        cmake -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        
+    - name: Run clang-tidy
+      run: |
+        cd server
+        find src -name '*.cpp' -o -name '*.h' | xargs clang-tidy -p build --warnings-as-errors=* || true
+        
+    - name: Run clang-tidy (check only, no warnings as errors)
+      run: |
+        cd server
+        find src -name '*.cpp' | xargs clang-tidy -p build --checks='-*,modernize-*,performance-*,readability-*,bugprone-*,clang-analyzer-*' --format-style=file
