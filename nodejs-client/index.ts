@@ -33,10 +33,10 @@ function handleConnected() {
     connected = true;
     console.log('Connected to server');
     
-    // Send a chat message after 1 second
+    // Send a chat message every 2 seconds
     chatMessageInterval = setInterval(() => sendChatMessage('Hello from Node.js!'), 2000);
     
-    // Send a move command after 2 seconds
+    // Send a move command every 5 seconds
     playerMoveInterval = setInterval(() => sendPlayerMove(150, 200), 5000);
 }
 
@@ -74,5 +74,14 @@ client.on('close', () => {
     clearInterval(playerMoveInterval);
 
     console.log('Connection closed');
+    process.exit(0);
 });
 
+client.on('error', (err) => {
+    connected = false;
+    clearInterval(chatMessageInterval);
+    clearInterval(playerMoveInterval);
+    
+    console.error('Connection error:', err);
+    process.exit(1);
+});
