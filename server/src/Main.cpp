@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
-#include "INetworkManager.h"
+
 #include "MessageProtocol.h"
 #include "SDL2/SDL.h" // Still needed for SDL_Delay
 #include "AsioNetworkManager.h"
@@ -31,7 +31,7 @@ struct PlayerState {
 
 // Global state
 PlayerState playerStates[MAX_SOCKETS];
-std::unique_ptr<INetworkManager> g_network;
+std::unique_ptr<NetworkManager> g_network;
 int playersOnline = 0;
 bool shutdownRequested = false;
 
@@ -248,7 +248,7 @@ void registerSignalHandlers() {
 
 int SDL_main(int argc, char* argv[]) {
     // Create network manager
-    g_network = std::unique_ptr<INetworkManager>(new AsioNetworkManager());
+    g_network = std::make_unique<NetworkManager>();
     
     registerSignalHandlers();
     
