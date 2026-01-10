@@ -1,7 +1,3 @@
-# SDL2_net is required for this server to compile
-# If you get "SDL2/SDL_net.h: No such file or directory", you need to install SDL2_net development headers
-# Download SDL2_net from: https://www.libsdl.org/projects/SDL_net/
-# 
 # NOTE: This Makefile is kept for backward compatibility
 # For modern development, use vcpkg and CMake:
 #   1. Run install.bat and build.bat to install dependencies and build
@@ -13,7 +9,7 @@ OBJS=build/Main.o
 DEPS=$(OBJS:.o=.d)
 
 Server: $(OBJS)
-	g++ $(FLAGS) -o build/server.exe $(OBJS) -lSDL2main -lSDL2 -lSDL2_net
+	g++ $(FLAGS) -o build/server.exe $(OBJS)
 
 run: Server
 	@echo Starting server...

@@ -20,8 +20,6 @@ elseif(APPLE)
     find_package(Threads REQUIRED)
 endif()
 
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2_net CONFIG REQUIRED)
 find_package(Boost CONFIG REQUIRED COMPONENTS system)
 
 # Create executable
@@ -40,17 +38,10 @@ target_link_libraries(ultimata-server
 
 # Platform-specific library linking
 if(WIN32)
-    target_link_libraries(ultimata-server
-        PRIVATE
-        $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-        $<IF:$<TARGET_EXISTS:SDL2_net::SDL2_net>,SDL2_net::SDL2_net,SDL2_net::SDL2_net-static>
-    )
+    # Windows doesn't need additional libraries for this server
 elseif(UNIX)
     target_link_libraries(ultimata-server
         PRIVATE
-        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-        $<IF:$<TARGET_EXISTS:SDL2_net::SDL2_net>,SDL2_net::SDL2_net,SDL2_net::SDL2_net-static>
         Threads::Threads
     )
 endif()
