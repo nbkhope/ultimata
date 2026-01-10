@@ -19,14 +19,14 @@ class AsioNetworkManager : public INetworkManager {
 private:
     boost::asio::io_context ioContext;
     std::unique_ptr<tcp::acceptor> acceptor;
-    std::unique_ptr<AsioConnectionManager> connectionManager;
+    std::unique_ptr<ConnectionManager> connectionManager;
     std::thread networkThread;
     std::atomic<bool> running;
     std::string lastError;
     
     void runNetworkThread();
     void startAccept();
-    void handleAccept(std::shared_ptr<AsioConnection> newConnection, 
+    void handleAccept(std::shared_ptr<Connection> newConnection, 
                       const boost::system::error_code& error);
 
 public:

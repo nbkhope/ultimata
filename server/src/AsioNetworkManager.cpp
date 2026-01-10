@@ -4,7 +4,7 @@
 #include <print>
 
 AsioNetworkManager::AsioNetworkManager() 
-    : running(false), connectionManager(std::make_unique<AsioConnectionManager>()) {
+    : running(false), connectionManager(std::make_unique<ConnectionManager>()) {
 }
 
 AsioNetworkManager::~AsioNetworkManager() {
@@ -91,7 +91,7 @@ void AsioNetworkManager::runNetworkThread() {
 void AsioNetworkManager::startAccept() {
     if (!running || !acceptor) return;
     
-    auto newConnection = std::make_shared<AsioConnection>(ioContext);
+    auto newConnection = std::make_shared<Connection>(ioContext);
     
     acceptor->async_accept(
         newConnection->getSocket(),
@@ -101,7 +101,7 @@ void AsioNetworkManager::startAccept() {
     );
 }
 
-void AsioNetworkManager::handleAccept(std::shared_ptr<AsioConnection> newConnection, 
+void AsioNetworkManager::handleAccept(std::shared_ptr<Connection> newConnection, 
                                       const boost::system::error_code& error) {
     if (!error && running) {
         // Add connection to manager
