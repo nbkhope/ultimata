@@ -244,12 +244,6 @@ int main(int argc, char* argv[]) {
 
     registerSignalHandlers();
 
-    // Initialize network
-    if (!g_network->initialize()) {
-        spdlog::error("Failed to initialize network: " + g_network->getLastError());
-        return 1;
-    }
-
     spdlog::info("Network initialized successfully.");
 
     // Start server
