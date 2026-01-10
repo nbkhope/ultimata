@@ -21,6 +21,7 @@ elseif(APPLE)
 endif()
 
 find_package(Boost CONFIG REQUIRED COMPONENTS system)
+find_package(spdlog CONFIG REQUIRED)
 
 # Create executable
 add_executable(ultimata-server
@@ -34,6 +35,7 @@ add_executable(ultimata-server
 target_link_libraries(ultimata-server
     PRIVATE
     Boost::system
+    spdlog::spdlog
 )
 
 # Platform-specific library linking
