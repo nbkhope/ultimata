@@ -11,16 +11,6 @@ NetworkManager::~NetworkManager() {
     shutdown();
 }
 
-bool NetworkManager::initialize() {
-    try {
-        std::cout << "Network Manager initialized successfully.\n";
-        return true;
-    } catch (std::exception& e) {
-        lastError = std::string("Initialize failed: ") + e.what();
-        return false;
-    }
-}
-
 void NetworkManager::shutdown() {
     if (running) {
         stopServer();

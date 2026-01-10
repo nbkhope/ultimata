@@ -33,7 +33,6 @@ public:
     NetworkManager();
     ~NetworkManager();
 
-    bool initialize();
     void shutdown();
     bool startServer(uint16_t port);
     void stopServer();
