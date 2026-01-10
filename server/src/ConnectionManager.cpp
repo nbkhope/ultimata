@@ -14,7 +14,7 @@ ConnectionManager::ConnectionManager(int maxConnections, uint32_t timeoutMs)
     }
     
     std::cout << "ConnectionManager initialized (max: " << maxConnections 
-              << ", timeout: " << timeoutMs << "ms)" << std::endl;
+              << ", timeout: " << timeoutMs << "ms)" << '\n';
 }
 
 ConnectionManager::~ConnectionManager() {
@@ -23,7 +23,7 @@ ConnectionManager::~ConnectionManager() {
 
 int ConnectionManager::addConnection(std::shared_ptr<Connection> connection) {
     if (isFull()) {
-        std::cout << "Cannot accept connection - server full (" << maxConnections << ")" << std::endl;
+        std::cout << "Cannot accept connection - server full (" << maxConnections << ")" << '\n';
         return -1;
     }
     
@@ -52,7 +52,7 @@ int ConnectionManager::addConnection(std::shared_ptr<Connection> connection) {
     activeConnections++;
     
     std::cout << "Added connection [" << connectionId << "] (total: " 
-              << connections.size() << "/" << maxConnections << ")" << std::endl;
+              << connections.size() << "/" << maxConnections << ")" << '\n';
     
     return connectionId;
 }
@@ -63,7 +63,7 @@ void ConnectionManager::removeConnection(int connectionId) {
         return;
     }
     
-    std::cout << "Removing connection [" << connectionId << "]" << std::endl;
+    std::cout << "Removing connection [" << connectionId << "]" << '\n';
     
     // Close and clean up the connection
     it->second->close();
@@ -106,7 +106,7 @@ std::vector<std::shared_ptr<Connection>> ConnectionManager::getActiveConnections
 }
 
 void ConnectionManager::closeAllConnections() {
-    std::cout << "Closing all connections (" << connections.size() << ")" << std::endl;
+    std::cout << "Closing all connections (" << connections.size() << ")" << '\n';
     
     for (auto& pair : connections) {
         pair.second->close();
@@ -133,7 +133,7 @@ void ConnectionManager::processTimeouts() {
     }
     
     for (int id : timedOut) {
-        std::cout << "Connection [" << id << "] timed out" << std::endl;
+        std::cout << "Connection [" << id << "] timed out" << '\n';
         removeConnection(id);
     }
 }
@@ -167,7 +167,7 @@ void ConnectionManager::broadcastToAll(const void* data, size_t size) {
     }
     
     if (sent > 0) {
-        std::cout << "Broadcasted " << size << " bytes to " << sent << " clients" << std::endl;
+        std::cout << "Broadcasted " << size << " bytes to " << sent << " clients" << '\n';
     }
 }
 
@@ -182,7 +182,7 @@ void ConnectionManager::broadcastToAllExcept(const void* data, size_t size, int 
     
     if (sent > 0) {
         std::cout << "Broadcasted " << size << " bytes to " << sent << " clients (excluding " 
-                  << excludeId << ")" << std::endl;
+                  << excludeId << ")" << '\n';
     }
 }
 

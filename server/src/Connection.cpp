@@ -41,10 +41,10 @@ void Connection::start(int connectionId) {
     try {
         auto endpoint = socket.remote_endpoint();
         ipAddress = endpoint.address().to_string();
-        std::cout << "New connection [" << id << "] from " << ipAddress << std::endl;
+        std::cout << "New connection [" << id << "] from " << ipAddress << '\n';
     } catch (std::exception& e) {
         ipAddress = "unknown";
-        std::cout << "Could not get IP for connection [" << id << "]: " << e.what() << std::endl;
+        std::cout << "Could not get IP for connection [" << id << "]: " << e.what() << '\n';
     }
     
     setState(ConnectionState::Connected);
@@ -58,7 +58,7 @@ void Connection::startRead() {
     socket.async_read_some(
         boost::asio::buffer(readBuffer),
         [this, self](const boost::system::error_code& error, size_t bytes_transferred) {
-            std::cout << "async_read_some callback" << std::endl;
+            std::cout << "async_read_some callback" << '\n';
             handleRead(error, bytes_transferred);
         }
     );
@@ -78,7 +78,7 @@ void Connection::handleRead(const boost::system::error_code& error, size_t bytes
         // Continue reading
         startRead();
     } else {
-        std::cout << "Read error on connection [" << id << "]: " << error.message() << std::endl;
+        std::cout << "Read error on connection [" << id << "]: " << error.message() << '\n';
         setState(ConnectionState::Disconnecting);
         
         // Notify about disconnection
@@ -90,7 +90,7 @@ void Connection::handleRead(const boost::system::error_code& error, size_t bytes
 
 void Connection::sendAsync(const void* data, size_t size) {
     if (!isConnected()) {
-        std::cout << "Attempted to send to disconnected connection [" << id << "]" << std::endl;
+        std::cout << "Attempted to send to disconnected connection [" << id << "]" << '\n';
         return;
     }
     
@@ -112,7 +112,7 @@ void Connection::handleWrite(const boost::system::error_code& error, size_t byte
         packetsSent++;
         updateActivity();
     } else {
-        std::cout << "Write error on connection [" << id << "]: " << error.message() << std::endl;
+        std::cout << "Write error on connection [" << id << "]: " << error.message() << '\n';
         setState(ConnectionState::Disconnecting);
         
         if (onDisconnected) {
@@ -132,12 +132,12 @@ bool Connection::isTimedOut(uint32_t timeoutMs) const {
 void Connection::close() {
     if (socket.is_open()) {
         std::cout << "Closing connection [" << id << "] from " << ipAddress 
-                  << " (active for " << getConnectionTime() << "ms)" << std::endl;
+                  << " (active for " << getConnectionTime() << "ms)" << '\n';
         
         boost::system::error_code ec;
         socket.close(ec);
         if (ec) {
-            std::cout << "Error closing socket: " << ec.message() << std::endl;
+            std::cout << "Error closing socket: " << ec.message() << '\n';
         }
     }
     state = ConnectionState::Disconnected;
@@ -157,7 +157,7 @@ void Connection::parseMessages(size_t newBytes) {
         // Validate message size to prevent DoS attacks
         if (messageLength > MAX_MESSAGE_SIZE) {
             std::cout << "Connection [" << id << "] sent oversized message (" << messageLength 
-                      << " bytes), closing connection" << std::endl;
+                      << " bytes), closing connection" << '\n';
             setState(ConnectionState::Disconnecting);
             if (onDisconnected) {
                 onDisconnected(id);

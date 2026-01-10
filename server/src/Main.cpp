@@ -54,11 +54,11 @@ void sigintHandler(int signum);
 
 // Logging functions
 void error(std::string message) {
-    std::cerr << message << std::endl;
+    std::cerr << message << '\n';
 }
 
 void info(std::string message) {
-    std::cout << message << std::endl;
+    std::cout << message << '\n';
 }
 
 // Helper: broadcast all player states to all clients
@@ -237,7 +237,7 @@ void runServerLoop() {
 
 void sigintHandler(int signum) {
     std::stringstream ss;
-    ss << "Interrupt signal (" << signum << ") received. Shutdown requested." << std::endl;
+    ss << "Interrupt signal (" << signum << ") received. Shutdown requested." << '\n';
     info(ss.str());
     shutdownRequested = true;
 }

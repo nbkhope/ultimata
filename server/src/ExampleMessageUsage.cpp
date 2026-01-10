@@ -19,7 +19,7 @@ void sendChatMessage(/* your socket/network object */, const std::string& messag
     // Send to server
     // yourSocket.send(msgData.data(), msgData.size());
     
-    std::cout << "Sent chat message: " << message << std::endl;
+    std::cout << "Sent chat message: " << message << '\n';
 }
 
 // Example function to send player movement
@@ -37,7 +37,7 @@ void sendPlayerMove(/* your socket/network object */, int x, int y) {
     auto msgData = builder.build();
     // yourSocket.send(msgData.data(), msgData.size());
     
-    std::cout << "Sent move to (" << x << ", " << y << ")" << std::endl;
+    std::cout << "Sent move to (" << x << ", " << y << ")" << '\n';
 }
 
 // Example: How to receive and parse messages from the server
@@ -53,7 +53,7 @@ void handleServerMessage(const char* data, size_t size) {
                 std::string playerName = reader.readString();
                 std::string message = reader.readString();
                 
-                std::cout << "[CHAT] " << playerName << ": " << message << std::endl;
+                std::cout << "[CHAT] " << playerName << ": " << message << '\n';
                 break;
             }
             
@@ -62,15 +62,15 @@ void handleServerMessage(const char* data, size_t size) {
                 uint32_t x = reader.readUint32();
                 uint32_t y = reader.readUint32();
                 
-                std::cout << "[MOVE] Player " << playerId << " moved to (" << x << ", " << y << ")" << std::endl;
+                std::cout << "[MOVE] Player " << playerId << " moved to (" << x << ", " << y << ")" << '\n';
                 break;
             }
             
             default:
-                std::cout << "Unknown message type" << std::endl;
+                std::cout << "Unknown message type" << '\n';
                 break;
         }
     } catch (const std::exception& e) {
-        std::cerr << "Error parsing message: " << e.what() << std::endl;
+        std::cerr << "Error parsing message: " << e.what() << '\n';
     }
 }
