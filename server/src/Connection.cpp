@@ -58,7 +58,7 @@ void Connection::startRead() {
     socket.async_read_some(
         boost::asio::buffer(readBuffer),
         [this, self](const boost::system::error_code& error, size_t bytes_transferred) {
-            std::println("async_read_some callback");
+            std::cout << "async_read_some callback" << std::endl;
             handleRead(error, bytes_transferred);
         }
     );
