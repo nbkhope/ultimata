@@ -6,7 +6,7 @@
 
 #include "MessageProtocol.h"
 #include "SDL2/SDL.h" // Still needed for SDL_Delay
-#include "AsioNetworkManager.h"
+#include "NetworkManager.h"
 
 // Server-local networking constants
 const int SERVER_MAX_PACKET = 0xFF; // 255-byte packet size for server buffers

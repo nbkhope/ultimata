@@ -27,8 +27,8 @@ private:
     std::mutex messageQueueMutex;
 
 public:
-    AsioConnectionManager(int maxConnections = 16, uint32_t timeoutMs = 30000);
-    ~AsioConnectionManager();
+    ConnectionManager(int maxConnections = 16, uint32_t timeoutMs = 30000);
+    ~ConnectionManager();
     
     // Connection management
     int addConnection(std::shared_ptr<Connection> connection);

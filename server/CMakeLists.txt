@@ -27,9 +27,9 @@ find_package(Boost CONFIG REQUIRED COMPONENTS system)
 # Create executable
 add_executable(ultimata-server
     src/Main.cpp
-    src/AsioConnection.cpp
-    src/AsioConnectionManager.cpp
-    src/AsioNetworkManager.cpp
+    src/Connection.cpp
+    src/ConnectionManager.cpp
+    src/NetworkManager.cpp
 )
 
 # Link libraries

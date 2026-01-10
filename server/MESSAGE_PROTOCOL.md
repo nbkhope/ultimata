@@ -21,7 +21,7 @@ All messages follow this structure:
 ### Server Side
 
 1. **Receiving Messages**:
-   - `AsioConnection` reads data into a buffer
+   - `Connection` reads data into a buffer
    - Data is accumulated in `messageBuffer`
    - `parseMessages()` extracts complete messages based on the length prefix
    - Complete messages are passed to the callback
@@ -122,7 +122,7 @@ std::string message = reader.readString();
 ## Implementation Files
 
 - `MessageProtocol.h`: Message types, MessageBuilder, MessageReader
-- `AsioConnection.h/cpp`: Message framing and parsing
+- `Connection.h/cpp`: Message framing and parsing
 - `Main.cpp`: Message handling logic
 - `ExampleMessageUsage.cpp`: Client-side examples
 

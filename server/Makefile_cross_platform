@@ -31,9 +31,9 @@ endif
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/ultimata-server
 SOURCES = src/Main.cpp \
-          src/AsioConnection.cpp \
-          src/AsioConnectionManager.cpp \
-          src/AsioNetworkManager.cpp
+          src/Connection.cpp \
+          src/ConnectionManager.cpp \
+          src/NetworkManager.cpp
 
 OBJECTS = $(SOURCES:src/%.cpp=$(BUILD_DIR)/%.o)
 

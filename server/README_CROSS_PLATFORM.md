@@ -98,10 +98,9 @@ The code uses conditional compilation for platform-specific features:
 ```
 server/
 ├── src/
-│   ├── AsioConnection.h/cpp      # Individual ASIO connections
-│   ├── AsioConnectionManager.h/cpp # Connection pool management
-│   ├── AsioNetworkManager.h/cpp   # Main ASIO network interface
-│   ├── INetworkManager.h          # Abstract network interface
+│   ├── Connection.h/cpp      # Individual ASIO connections
+│   ├── ConnectionManager.h/cpp # Connection pool management
+│   ├── NetworkManager.h/cpp   # Main ASIO network interface
 │   └── Main.cpp                   # Server entry point
 ├── CMakeLists.txt                 # Cross-platform CMake build
 ├── Makefile_cross_platform       # Alternative Linux/macOS build
@@ -112,7 +111,7 @@ server/
 
 ### Adding Features
 1. **New Packet Types**: Add to your protocol definition
-2. **Connection Events**: Use the callback system in `AsioConnection`
+2. **Connection Events**: Use the callback system in `Connection`
 3. **Custom Logic**: Implement in your game logic layer, not the network layer
 
 ### Debugging
@@ -124,8 +123,8 @@ server/
 
 ### Timeout Settings
 ```cpp
-// Configure in AsioConnectionManager constructor
-AsioConnectionManager(16, 30000);  // 16 max connections, 30s timeout
+// Configure in ConnectionManager constructor
+ConnectionManager(16, 30000);  // 16 max connections, 30s timeout
 ```
 
 ### Port Configuration
