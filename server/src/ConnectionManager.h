@@ -1,5 +1,5 @@
 #pragma once
-#include "AsioConnection.h"
+#include "Connection.h"
 #include <vector>
 #include <memory>
 #include <unordered_map>
