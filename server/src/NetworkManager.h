@@ -8,7 +8,7 @@
 #endif
 
 #include "INetworkManager.h"
-#include "AsioConnectionManager.h"
+#include "ConnectionManager.h"
 #include <boost/asio.hpp>
 #include <thread>
 #include <atomic>
