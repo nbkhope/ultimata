@@ -52,7 +52,9 @@ void Connection::start(int connectionId) {
 }
 
 void Connection::startRead() {
-    if (!isConnected()) return;
+    if (!isConnected()) {
+        return;
+    }
     
     auto self = shared_from_this();
     socket.async_read_some(
