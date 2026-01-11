@@ -22,6 +22,7 @@ endif()
 
 find_package(Boost CONFIG REQUIRED COMPONENTS system)
 find_package(spdlog CONFIG REQUIRED)
+find_package(concurrentqueue CONFIG REQUIRED)
 
 # Create executable
 add_executable(ultimata-server
@@ -30,7 +31,7 @@ add_executable(ultimata-server
     src/ConnectionManager.cpp
     src/NetworkManager.cpp
     src/Orchestrator.cpp
-    src/GameState.cpp
+    src/GameStateManager.cpp
 )
 
 # Link libraries
@@ -38,6 +39,7 @@ target_link_libraries(ultimata-server
     PRIVATE
     Boost::system
     spdlog::spdlog
+    concurrentqueue::concurrentqueue
 )
 
 # Platform-specific library linking

@@ -35,7 +35,7 @@ SOURCES = src/Main.cpp \
           src/ConnectionManager.cpp \
           src/NetworkManager.cpp
 					src/Orchestrator.cpp
-					src/GameState.cpp
+					src/GameStateManager.cpp
 
 OBJECTS = $(SOURCES:src/%.cpp=$(BUILD_DIR)/%.o)
 
