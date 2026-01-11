@@ -4,8 +4,14 @@
 #include <print>
 #include <spdlog/spdlog.h>
 
-NetworkManager::NetworkManager()
-    : running(false), connectionManager(std::make_unique<ConnectionManager>(16, 60000)) {
+NetworkManager::NetworkManager(
+    moodycamel::BlockingConcurrentQueue<NetworkTask>& inboundQueue,
+    moodycamel::BlockingConcurrentQueue<NetworkTask>& outboundQueue
+)
+    : running(false),
+      connectionManager(std::make_unique<ConnectionManager>(16, 60000)),
+      inboundQueue(inboundQueue),
+      outboundQueue(outboundQueue) {
 }
 
 NetworkManager::~NetworkManager() {
@@ -98,6 +104,8 @@ void NetworkManager::handleAccept(const std::shared_ptr<Connection>& newConnecti
             newConnection->start(connectionId);
             newConnection->setState(ConnectionState::Active);
         }
+
+        inboundQueue.enqueue(NetworkTask{connectionId, {}});
 
         // Continue accepting new connections
         startAccept();

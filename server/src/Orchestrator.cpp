@@ -28,7 +28,7 @@ void Orchestrator::run() {  // Renamed from start()
     spdlog::info("Orchestrator running...");
 
     // Create network manager
-    networkManager = std::make_unique<NetworkManager>();
+    networkManager = std::make_unique<NetworkManager>(inboundQueue, outboundQueue);
 
     spdlog::info("Network initialized successfully.");
 
@@ -45,7 +45,7 @@ void Orchestrator::run() {  // Renamed from start()
     spdlog::info("Network thread started");
 
     // Create and start game state in separate thread
-    gameStateManager = std::make_unique<GameStateManager>();
+    gameStateManager = std::make_unique<GameStateManager>(inboundQueue, outboundQueue);
     gameStateThread = std::thread([this] {
         gameStateManager->runGameLoop();
     });

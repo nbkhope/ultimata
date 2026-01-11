@@ -1,8 +1,13 @@
 #include "GameStateManager.h"
 #include <spdlog/spdlog.h>
 
-GameStateManager::GameStateManager()
-    : ioContext() {
+GameStateManager::GameStateManager(
+    moodycamel::BlockingConcurrentQueue<NetworkTask>& inboundQueue,
+    moodycamel::BlockingConcurrentQueue<NetworkTask>& outboundQueue
+)
+    : ioContext(),
+      inboundQueue(inboundQueue),
+      outboundQueue(outboundQueue) {
 }
 
 void GameStateManager::update() {

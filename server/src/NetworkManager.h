@@ -9,9 +9,11 @@
 
 
 #include "ConnectionManager.h"
+#include "NetworkTask.h"
 #include <boost/asio.hpp>
 #include <thread>
 #include <atomic>
+#include <concurrentqueue/moodycamel/blockingconcurrentqueue.h>
 
 using boost::asio::ip::tcp;
 
@@ -22,13 +24,18 @@ private:
     std::unique_ptr<ConnectionManager> connectionManager;
     std::atomic<bool> running;
     std::string lastError;
+    moodycamel::BlockingConcurrentQueue<NetworkTask>& inboundQueue;
+    moodycamel::BlockingConcurrentQueue<NetworkTask>& outboundQueue;
 
     void startAccept();
     void handleAccept(const std::shared_ptr<Connection>& newConnection,
                       const boost::system::error_code& error);
 
 public:
-    NetworkManager();
+    NetworkManager(
+        moodycamel::BlockingConcurrentQueue<NetworkTask>& inboundQueue,
+        moodycamel::BlockingConcurrentQueue<NetworkTask>& outboundQueue
+    );
     ~NetworkManager();
 
     void runNetworkLoop();
