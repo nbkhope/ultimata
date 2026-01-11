@@ -2,10 +2,11 @@
 
 #include "NetworkManager.h"
 #include "GameStateManager.h"
-#include "NetworkTask.h"
+#include "MessageTypes.h"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/signal_set.hpp>
 #include <thread>
+#include <memory>
 #include <concurrentqueue/moodycamel/blockingconcurrentqueue.h>
 
 class Orchestrator {
@@ -17,8 +18,8 @@ private:
     std::thread networkThread;
     std::thread gameStateThread;
     // bool shutdownRequested = false;
-    moodycamel::BlockingConcurrentQueue<NetworkTask> inboundQueue;
-    moodycamel::BlockingConcurrentQueue<NetworkTask> outboundQueue;
+    moodycamel::BlockingConcurrentQueue<std::shared_ptr<Message>> inboundQueue;
+    moodycamel::BlockingConcurrentQueue<std::shared_ptr<Message>> outboundQueue;
 
 public:
     void waitForShutdownSignal();

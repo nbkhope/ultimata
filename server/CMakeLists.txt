@@ -32,6 +32,7 @@ add_executable(ultimata-server
     src/NetworkManager.cpp
     src/Orchestrator.cpp
     src/GameStateManager.cpp
+    src/MessageSerializer.cpp
 )
 
 # Link libraries

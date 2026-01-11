@@ -8,7 +8,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include "MessageProtocol.h"
+// #include "MessageProtocol.h"  // Old protocol - replaced by MessageTypes.h
 #include "NetworkManager.h"
 #include "Orchestrator.h"
 

@@ -149,17 +149,51 @@ void Connection::parseMessages(size_t newBytes) {
     // Append new data to the message buffer
     messageBuffer.insert(messageBuffer.end(), readBuffer.data(), readBuffer.data() + newBytes);
 
-    // Parse complete messages (length-prefixed: [4 bytes length][data])
-    while (messageBuffer.size() >= 4) {
-        // Read message length (first 4 bytes) in network byte order
-        uint32_t netLength;
-        std::memcpy(&netLength, messageBuffer.data(), 4);
-        uint32_t messageLength = ntohl(netLength);
+    // Parse complete messages based on message type (new protocol - no length prefix)
+    while (messageBuffer.size() > 0) {
+        // Need at least 1 byte for message type
+        if (messageBuffer.size() < 1) {
+            break;
+        }
 
-        // Validate message size to prevent DoS attacks
-        if (messageLength > MAX_MESSAGE_SIZE) {
-            std::cout << "Connection [" << id << "] sent oversized message (" << messageLength
-                      << " bytes), closing connection" << '\n';
+        // Read message type
+        uint8_t msgType = messageBuffer[0];
+
+        // Determine expected message length based on type
+        size_t expectedLength = 1; // type byte
+
+        switch (msgType) {
+            case 1: // PlayerMove: playerId (4) + x (4) + y (4) + direction (1)
+                expectedLength += 4 + 4 + 4 + 1;
+                break;
+            case 2: { // ChatMessage: playerId (4) + string length (4) + string data
+                if (messageBuffer.size() < 9) return; // Need at least type + playerId + length
+                uint32_t strLen;
+                std::memcpy(&strLen, messageBuffer.data() + 5, 4);
+                // Convert from little-endian
+                #ifdef _WIN32
+                // Windows is little-endian, no conversion needed
+                #else
+                strLen = le32toh(strLen);
+                #endif
+                expectedLength += 4 + 4 + strLen;
+                break;
+            }
+            case 3: // PlayerAction: playerId (4) + actionType (1)
+                expectedLength += 4 + 1;
+                break;
+            default:
+                std::cout << "Connection [" << id << "] sent unknown message type: "
+                          << static_cast<int>(msgType) << ", skipping byte" << '\n';
+                // Skip this byte and try again
+                messageBuffer.erase(messageBuffer.begin());
+                continue;
+        }
+
+        // Validate message size
+        if (expectedLength > MAX_MESSAGE_SIZE) {
+            std::cout << "Connection [" << id << "] expected message size too large ("
+                      << expectedLength << " bytes), closing connection" << '\n';
             setState(ConnectionState::Disconnecting);
             if (onDisconnected) {
                 onDisconnected(id);
@@ -169,14 +203,14 @@ void Connection::parseMessages(size_t newBytes) {
         }
 
         // Check if we have the complete message
-        if (messageBuffer.size() >= 4 + messageLength) {
-            // Extract the complete message (skip the 4-byte length prefix)
-            if (onDataReceived && messageLength > 0) {
-                onDataReceived(id, messageBuffer.data() + 4, messageLength);
+        if (messageBuffer.size() >= expectedLength) {
+            // Notify about complete message
+            if (onDataReceived) {
+                onDataReceived(id, messageBuffer.data(), expectedLength);
             }
 
             // Remove the processed message from the buffer
-            messageBuffer.erase(messageBuffer.begin(), messageBuffer.begin() + 4 + messageLength);
+            messageBuffer.erase(messageBuffer.begin(), messageBuffer.begin() + expectedLength);
         } else {
             // Incomplete message, wait for more data
             break;

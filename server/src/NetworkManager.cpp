@@ -1,12 +1,14 @@
 #include "NetworkManager.h"
+#include "MessageTypes.h"
+#include "MessageSerializer.h"
 #include <iostream>
 #include <format>
 #include <print>
 #include <spdlog/spdlog.h>
 
 NetworkManager::NetworkManager(
-    moodycamel::BlockingConcurrentQueue<NetworkTask>& inboundQueue,
-    moodycamel::BlockingConcurrentQueue<NetworkTask>& outboundQueue
+    moodycamel::BlockingConcurrentQueue<std::shared_ptr<Message>>& inboundQueue,
+    moodycamel::BlockingConcurrentQueue<std::shared_ptr<Message>>& outboundQueue
 )
     : running(false),
       connectionManager(std::make_unique<ConnectionManager>(16, 60000)),
@@ -67,6 +69,12 @@ void NetworkManager::stopServer() {
 
 void NetworkManager::runNetworkLoop() {
     spdlog::info("Network loop started.");
+
+    // Start periodic outbound message processing
+    if (running) {
+        startOutboundProcessing();
+    }
+
     try {
         ioContext.run();
     } catch (std::exception& e) {
@@ -78,6 +86,45 @@ void NetworkManager::runNetworkLoop() {
 
 boost::asio::io_context& NetworkManager::getIoContext() {
     return ioContext;
+}
+
+void NetworkManager::startOutboundProcessing() {
+    outboundTimer = std::make_shared<boost::asio::steady_timer>(ioContext);
+    outboundTimer->expires_after(std::chrono::milliseconds(5));
+
+    outboundTimer->async_wait([this](const boost::system::error_code& ec) {
+        if (!ec && running) {
+            processOutboundMessages();
+            startOutboundProcessing(); // Reschedule
+        }
+    });
+}
+
+void NetworkManager::processOutboundMessages() {
+    std::shared_ptr<Message> msg;
+    while (outboundQueue.try_dequeue(msg)) {
+        if (!msg) {
+            spdlog::warn("Dequeued null message from outbound queue");
+            continue;
+        }
+
+        // Serialize the message to bytes
+        auto data = MessageSerializer::serialize(*msg);
+
+        spdlog::debug("Processing outbound message for client {}, type: {}, size: {} bytes",
+                      msg->clientId, static_cast<int>(msg->type), data.size());
+
+        // Optional: Print first few bytes in hex for debugging
+        if (!data.empty()) {
+            std::string hexStr;
+            for (size_t i = 0; i < std::min(data.size(), size_t(16)); ++i) {
+                hexStr += std::format("{:02x} ", data[i]);
+            }
+            spdlog::debug("  Data (first {} bytes): {}", std::min(data.size(), size_t(16)), hexStr);
+        }
+
+        sendData(msg->clientId, data.data(), data.size());
+    }
 }
 
 void NetworkManager::startAccept() {
@@ -103,9 +150,19 @@ void NetworkManager::handleAccept(const std::shared_ptr<Connection>& newConnecti
         if (connectionId >= 0) {
             newConnection->start(connectionId);
             newConnection->setState(ConnectionState::Active);
-        }
 
-        inboundQueue.enqueue(NetworkTask{connectionId, {}});
+            spdlog::info("New client connected: {}", connectionId);
+
+            // Send PlayerJoined message to game state
+            auto joinMsg = std::make_shared<PlayerJoinedMessage>();
+            joinMsg->playerId = connectionId;
+            joinMsg->playerName = "Player" + std::to_string(connectionId);
+            joinMsg->x = 0.0f;
+            joinMsg->y = 0.0f;
+            joinMsg->clientId = connectionId;  // Set the clientId in the message itself
+
+            inboundQueue.enqueue(joinMsg);
+        }
 
         // Continue accepting new connections
         startAccept();
