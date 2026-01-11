@@ -20,11 +20,9 @@ private:
     boost::asio::io_context ioContext;
     std::unique_ptr<tcp::acceptor> acceptor;
     std::unique_ptr<ConnectionManager> connectionManager;
-    std::thread networkThread;
     std::atomic<bool> running;
     std::string lastError;
 
-    void runNetworkThread();
     void startAccept();
     void handleAccept(const std::shared_ptr<Connection>& newConnection,
                       const boost::system::error_code& error);
@@ -33,6 +31,8 @@ public:
     NetworkManager();
     ~NetworkManager();
 
+    void runNetworkLoop();
+    boost::asio::io_context& getIoContext();
     void shutdown();
     bool startServer(uint16_t port);
     void stopServer();

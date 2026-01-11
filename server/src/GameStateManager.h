@@ -2,12 +2,12 @@
 
 #include <boost/asio/io_context.hpp>
 
-class GameState {
+class GameStateManager {
 private:
     boost::asio::io_context ioContext;
     bool running;
 public:
-    GameState();
+    GameStateManager();
     void update();
     void runGameLoop();
     void shutdown();

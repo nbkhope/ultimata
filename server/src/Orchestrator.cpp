@@ -28,20 +28,26 @@ void Orchestrator::run() {  // Renamed from start()
     spdlog::info("Orchestrator running...");
 
     // Create network manager
-    g_network = std::make_unique<NetworkManager>();
+    networkManager = std::make_unique<NetworkManager>();
 
     spdlog::info("Network initialized successfully.");
 
-    // Start server (on a separate thread)
-    // TODO: move thread logic here
-    if (!g_network->startServer(8099)) {
-        throw std::runtime_error("Failed to start server: " + g_network->getLastError());
+    // Start server
+    if (!networkManager->startServer(8099)) {
+        throw std::runtime_error("Failed to start server: " + networkManager->getLastError());
     }
 
+    // Start network thread
+    networkThread = std::thread([this] {
+        networkManager->runNetworkLoop();
+    });
+
+    spdlog::info("Network thread started");
+
     // Create and start game state in separate thread
-    gameState = std::make_unique<GameState>();
+    gameStateManager = std::make_unique<GameStateManager>();
     gameStateThread = std::thread([this] {
-        gameState->runGameLoop();
+        gameStateManager->runGameLoop();
     });
 
     spdlog::info("Game state thread started");
@@ -56,14 +62,19 @@ void Orchestrator::shutdown() {
 
     spdlog::info("Orchestrator stopping...");
 
-    gameState->shutdown();
+    gameStateManager->shutdown();
     // Stop the game state thread
     if (gameStateThread.joinable()) {
         gameStateThread.join();
     }
 
     // Explicitly shut down network manager before cleanup
-    g_network.reset();
+    networkManager.reset();
+
+    // Wait for network thread to finish
+    if (networkThread.joinable()) {
+        networkThread.join();
+    }
 
     spdlog::info("Orchestrator stopped");
 }

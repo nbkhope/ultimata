@@ -28,9 +28,6 @@ bool NetworkManager::startServer(uint16_t port) {
         // Start accepting connections
         startAccept();
 
-        // Start the network thread
-        networkThread = std::thread([this] { runNetworkThread(); });
-
         spdlog::info("Server started on port {}", port);
         return true;
 
@@ -59,23 +56,22 @@ void NetworkManager::stopServer() {
     // Stop the io_context
     ioContext.stop();
 
-    // Wait for network thread to finish
-    if (networkThread.joinable()) {
-        networkThread.join();
-    }
-
     spdlog::info("Server stopped.");
 }
 
-void NetworkManager::runNetworkThread() {
-    spdlog::info("Network thread started.");
+void NetworkManager::runNetworkLoop() {
+    spdlog::info("Network loop started.");
     try {
         ioContext.run();
     } catch (std::exception& e) {
-        spdlog::error("Network thread exception: {}", e.what());
+        spdlog::error("Network loop exception: {}", e.what());
     }
 
-    spdlog::info("Network thread ended.");
+    spdlog::info("Network loop ended.");
+}
+
+boost::asio::io_context& NetworkManager::getIoContext() {
+    return ioContext;
 }
 
 void NetworkManager::startAccept() {

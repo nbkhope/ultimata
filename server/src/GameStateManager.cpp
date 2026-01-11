@@ -1,11 +1,11 @@
-#include "GameState.h"
+#include "GameStateManager.h"
 #include <spdlog/spdlog.h>
 
-GameState::GameState()
+GameStateManager::GameStateManager()
     : ioContext() {
 }
 
-void GameState::update() {
+void GameStateManager::update() {
     // Game state update logic here
     // This runs at ~60 FPS in the game thread
 
@@ -21,7 +21,7 @@ void GameState::update() {
 }
 
 // TODO: do we have to use async io here?
-void GameState::runGameLoop() {
+void GameStateManager::runGameLoop() {
     running = true;
     spdlog::info("Game loop started");
 
@@ -38,7 +38,7 @@ void GameState::runGameLoop() {
     spdlog::info("Game loop ended");
 }
 
-void GameState::shutdown() {
+void GameStateManager::shutdown() {
     running = false;
-    spdlog::info("GameState shutdown initiated");
+    spdlog::info("GameStateManager shutdown initiated");
 }
