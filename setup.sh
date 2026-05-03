@@ -34,6 +34,16 @@ warn()    { echo -e "${YELLOW}⚠  $*${NC}"; }
 error()   { echo -e "${RED}✗ $*${NC}" >&2; exit 1; }
 header()  { echo -e "\n${BOLD}═══ $* ═══${NC}\n"; }
 
+# Run a command from a specific directory without changing caller working dir.
+run_in_dir() {
+    local dir="$1"
+    shift
+    (
+        cd "$dir"
+        "$@"
+    )
+}
+
 # ---------------------------------------------------------------------------
 # Platform detection
 # ---------------------------------------------------------------------------
@@ -206,9 +216,9 @@ setup_server() {
     echo -e "${YELLOW}Press Ctrl-C to stop.${NC}\n"
 
     # Try both possible output locations
-    if   [[ -f "$build/ultimata-server" ]];         then exec "$build/ultimata-server"
-    elif [[ -f "$build/Release/ultimata-server" ]]; then exec "$build/Release/ultimata-server"
-    elif [[ -f "$build/Debug/ultimata-server" ]];   then exec "$build/Debug/ultimata-server"
+    if   [[ -f "$build/ultimata-server" ]];         then "$build/ultimata-server"
+    elif [[ -f "$build/Release/ultimata-server" ]]; then "$build/Release/ultimata-server"
+    elif [[ -f "$build/Debug/ultimata-server" ]];   then "$build/Debug/ultimata-server"
     else error "Build succeeded but executable not found in $build"; fi
 }
 
@@ -248,8 +258,7 @@ setup_client() {
     elif [[ -f "$build/bin/Debug/Ultimata" ]]; then exe="$build/bin/Debug/Ultimata"
     else error "Build succeeded but Ultimata executable not found in $build/bin"; fi
 
-    cd "$REPO_ROOT/client"
-    exec "$exe"
+    run_in_dir "$REPO_ROOT/client" "$exe"
 }
 
 # ---------------------------------------------------------------------------
@@ -287,8 +296,7 @@ setup_python_server() {
     info "Starting the Python server (listening on port 8099)…"
     echo -e "${YELLOW}Press Ctrl-C to stop.${NC}\n"
 
-    cd "$REPO_ROOT/python_server"
-    exec python3 simple_server.py
+    run_in_dir "$REPO_ROOT/python_server" python3 simple_server.py
 }
 
 # ---------------------------------------------------------------------------
@@ -333,8 +341,7 @@ setup_nodejs_client() {
     info "Connecting to server…"
     echo -e "${YELLOW}Press Ctrl-C to disconnect.${NC}\n"
 
-    cd "$dir"
-    exec node --import tsx index.ts
+    run_in_dir "$dir" node --import tsx index.ts
 }
 
 # ---------------------------------------------------------------------------
