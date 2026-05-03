@@ -35,6 +35,24 @@ function Write-Warn    { param([string]$msg) Write-Host "⚠  $msg" -ForegroundC
 function Write-Error2  { param([string]$msg) Write-Host "✗ $msg" -ForegroundColor Red; exit 1 }
 function Write-Header  { param([string]$msg) Write-Host "`n═══ $msg ═══`n" -ForegroundColor White }
 
+# Run a block in a target directory and always return to the previous one.
+function Invoke-InDirectory {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+        [Parameter(Mandatory = $true)]
+        [ScriptBlock]$Script
+    )
+
+    Push-Location $Path
+    try {
+        & $Script
+    }
+    finally {
+        Pop-Location
+    }
+}
+
 # ---------------------------------------------------------------------------
 # Elevation helper
 # ---------------------------------------------------------------------------
@@ -246,8 +264,9 @@ function Setup-Client {
     $exe = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
     if (-not $exe) { Write-Error2 "Build succeeded but Ultimata.exe not found in $build\bin" }
 
-    Set-Location "$RepoRoot\client"
-    & $exe
+    Invoke-InDirectory "$RepoRoot\client" {
+        & $exe
+    }
 }
 
 # ---------------------------------------------------------------------------
@@ -277,8 +296,9 @@ function Setup-PythonServer {
     Write-Host "Press Ctrl-C to stop." -ForegroundColor Yellow
     Write-Host ""
 
-    Set-Location "$RepoRoot\python_server"
-    python simple_server.py
+    Invoke-InDirectory "$RepoRoot\python_server" {
+        python simple_server.py
+    }
 }
 
 # ---------------------------------------------------------------------------
@@ -304,8 +324,9 @@ function Setup-NodejsClient {
     Write-Host "Press Ctrl-C to disconnect." -ForegroundColor Yellow
     Write-Host ""
 
-    Set-Location $dir
-    node --import tsx index.ts
+    Invoke-InDirectory $dir {
+        node --import tsx index.ts
+    }
 }
 
 # ---------------------------------------------------------------------------
@@ -337,12 +358,18 @@ Write-Header "Ultimata — Setup & Run (Windows)"
 Write-Host "Repository: $RepoRoot" -ForegroundColor Cyan
 Write-Host "Platform  : Windows" -ForegroundColor Cyan
 
-if (-not $Component) { $Component = Pick-Component }
+$OriginalLocation = Get-Location
+try {
+    if (-not $Component) { $Component = Pick-Component }
 
-switch ($Component) {
-    "server"        { Setup-Server }
-    "client"        { Setup-Client }
-    "python-server" { Setup-PythonServer }
-    "nodejs-client" { Setup-NodejsClient }
-    default         { Write-Error2 "Unknown component: $Component" }
+    switch ($Component) {
+        "server"        { Setup-Server }
+        "client"        { Setup-Client }
+        "python-server" { Setup-PythonServer }
+        "nodejs-client" { Setup-NodejsClient }
+        default         { Write-Error2 "Unknown component: $Component" }
+    }
+}
+finally {
+    Set-Location $OriginalLocation
 }
