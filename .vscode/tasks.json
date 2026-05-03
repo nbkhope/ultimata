@@ -1,0 +1,141 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run All Tests",
+            "type": "shell",
+            "command": "${workspaceFolder}/run-tests.sh",
+            "windows": {
+                "command": "${workspaceFolder}\\run-tests.bat"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Python Tests",
+            "type": "shell",
+            "command": "python3 -m pytest -v",
+            "windows": {
+                "command": "python -m pytest -v"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/python_server"
+            },
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run TypeScript Tests",
+            "type": "shell",
+            "command": "npm test",
+            "options": {
+                "cwd": "${workspaceFolder}/nodejs-client"
+            },
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+        {
+            "label": "Run TypeScript Tests (watch)",
+            "type": "shell",
+            "command": "npm run test:watch",
+            "options": {
+                "cwd": "${workspaceFolder}/nodejs-client"
+            },
+            "group": "test",
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run C++ Tests (CMake configure)",
+            "type": "shell",
+            "command": "cmake --preset test -B build-tests -S . -DBUILD_TESTING=ON -Wno-dev",
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Run C++ Tests (build & run)",
+            "type": "shell",
+            "command": "cmake --build build-tests --target ultimata-server-tests && ctest --test-dir build-tests --output-on-failure",
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            },
+            "dependsOn": [
+                "Run C++ Tests (CMake configure)"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Install Python Dev Dependencies",
+            "type": "shell",
+            "command": "pip install -r requirements-dev.txt",
+            "windows": {
+                "command": "pip install -r requirements-dev.txt"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/python_server"
+            },
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Install Node.js Dependencies",
+            "type": "shell",
+            "command": "npm install",
+            "options": {
+                "cwd": "${workspaceFolder}/nodejs-client"
+            },
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

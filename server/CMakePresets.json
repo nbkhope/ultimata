@@ -4,6 +4,30 @@
     {
       "name": "default",
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    },
+    {
+      "name": "test",
+      "inherits": "default",
+      "cacheVariables": {
+        "BUILD_TESTING": "ON"
+      },
+      "description": "Configure with unit tests enabled"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "test",
+      "configurePreset": "test",
+      "targets": ["ultimata-server-tests"]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "test",
+      "configurePreset": "test",
+      "output": {
+        "outputOnFailure": true
+      }
     }
   ]
 }

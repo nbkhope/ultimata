@@ -5,6 +5,9 @@ project(ultimata-server)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Option to build tests (off by default so the main server build is unaffected)
+option(BUILD_TESTING "Build the unit-test suite" OFF)
+
 # Platform-specific configurations
 if(WIN32)
     # Windows-specific settings
@@ -57,3 +60,40 @@ endif()
 set_target_properties(ultimata-server PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build
 )
+
+# ---------------------------------------------------------------------------
+# Unit tests (Google Test)
+# Enable with:  cmake --preset default -DBUILD_TESTING=ON -B build-tests
+# ---------------------------------------------------------------------------
+if(BUILD_TESTING)
+    enable_testing()
+    find_package(GTest CONFIG REQUIRED)
+    include(GoogleTest)
+
+    # Compile the serializer source as a library so tests can link against it
+    # without pulling in server-specific dependencies (Boost, spdlog, etc.).
+    add_library(ultimata-server-core OBJECT
+        src/MessageSerializer.cpp
+    )
+    target_include_directories(ultimata-server-core PUBLIC src)
+
+    # Test executable
+    add_executable(ultimata-server-tests
+        tests/test_message_serializer.cpp
+        tests/test_message_protocol.cpp
+    )
+
+    target_link_libraries(ultimata-server-tests
+        PRIVATE
+        ultimata-server-core
+        GTest::gtest
+        GTest::gtest_main
+    )
+
+    set_target_properties(ultimata-server-tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build-tests/bin
+    )
+
+    # Auto-discover tests with CTest
+    gtest_discover_tests(ultimata-server-tests)
+endif()
