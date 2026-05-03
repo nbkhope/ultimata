@@ -196,31 +196,46 @@ See [`docs/testing.md`](testing.md) for full instructions.
 
 ---
 
-## Building the Project
+## Running the Project
 
-### Server (Linux / macOS)
+### One-command setup (recommended)
+
+After cloning the repository, a single script installs all prerequisites,
+builds the chosen component, and starts it — no manual configuration needed.
+
+**macOS / Linux**
 ```bash
-cd server
-export VCPKG_ROOT=/path/to/vcpkg
-cmake --preset default -B build
-cmake --build build
-./build/ultimata-server
+./setup.sh [server|client|python-server|nodejs-client]
 ```
 
-### Client (Linux / macOS)
-```bash
-cd client
-export VCPKG_ROOT=/path/to/vcpkg
-cmake --preset default -B build
-cmake --build build
-./build/bin/Ultimata
+**Windows** (Command Prompt or PowerShell)
+```bat
+setup.bat [server|client|python-server|nodejs-client]
 ```
+or directly in PowerShell:
+```powershell
+.\setup.ps1 [server|client|python-server|nodejs-client]
+```
+
+Omit the component name to see an interactive menu.
+
+The scripts handle:
+- Installing missing system packages (via Homebrew / apt / dnf / winget / Chocolatey)
+- Cloning and bootstrapping vcpkg (first run only, placed in `~/.local/share/vcpkg`)
+- Installing vcpkg and npm/pip dependencies
+- Configuring and building CMake projects
+- Starting the selected component
 
 ### Docker (server only)
 ```bash
 cd server
 docker compose up --build
 ```
+
+### Manual build (advanced)
+
+If you prefer full control, see [`docs/testing.md`](testing.md) for the
+individual build commands for each language.
 
 ---
 
