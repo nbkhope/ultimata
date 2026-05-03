@@ -184,8 +184,27 @@ function Invoke-CmakeBuild {
     $toolchain = "$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake"
     $args = @("-S", $SrcDir, "-B", $BuildDir, "-DCMAKE_TOOLCHAIN_FILE=$toolchain")
     if ($ExtraCmakeArgs) { $args += $ExtraCmakeArgs.Split(" ") }
+
+    $configured = $false
     & cmake @args
-    if ($LASTEXITCODE -ne 0) { Write-Error2 "CMake configuration failed." }
+    if ($LASTEXITCODE -eq 0) {
+        $configured = $true
+    } else {
+        $cacheFile = Join-Path $BuildDir "CMakeCache.txt"
+        if (Test-Path $cacheFile) {
+            Write-Warn "CMake cache may have been generated from a different path."
+            Write-Warn "Cleaning stale CMake cache in $BuildDir and retrying configuration..."
+
+            Remove-Item $cacheFile -Force -ErrorAction SilentlyContinue
+            Remove-Item (Join-Path $BuildDir "CMakeFiles") -Recurse -Force -ErrorAction SilentlyContinue
+
+            & cmake @args
+            if ($LASTEXITCODE -eq 0) {
+                $configured = $true
+            }
+        }
+    }
+    if (-not $configured) { Write-Error2 "CMake configuration failed." }
 
     Write-Info "Building..."
     & cmake --build $BuildDir --config Release
