@@ -48,7 +48,11 @@ target_link_libraries(ultimata-server
 
 # Platform-specific library linking
 if(WIN32)
-    # Windows doesn't need additional libraries for this server
+    # Winsock provides htonl/ntohl and socket symbols on Windows.
+    target_link_libraries(ultimata-server
+        PRIVATE
+        ws2_32
+    )
 elseif(UNIX)
     target_link_libraries(ultimata-server
         PRIVATE
@@ -89,6 +93,13 @@ if(BUILD_TESTING)
         GTest::gtest
         GTest::gtest_main
     )
+
+    if(WIN32)
+        target_link_libraries(ultimata-server-tests
+            PRIVATE
+            ws2_32
+        )
+    endif()
 
     set_target_properties(ultimata-server-tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build-tests/bin
