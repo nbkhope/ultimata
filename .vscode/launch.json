@@ -1,0 +1,92 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Python Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "-v",
+                "tests/"
+            ],
+            "cwd": "${workspaceFolder}/python_server",
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Current Python Test File",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "-v",
+                "${file}"
+            ],
+            "cwd": "${workspaceFolder}/python_server",
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug TypeScript Tests (vitest)",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [
+                "--import",
+                "tsx",
+                "./node_modules/vitest/vitest.mjs",
+                "run"
+            ],
+            "cwd": "${workspaceFolder}/nodejs-client",
+            "console": "integratedTerminal",
+            "smartStep": true,
+            "sourceMaps": true
+        },
+        {
+            "name": "Debug C++ Tests (Linux/macOS GDB)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/server/build-tests/bin/ultimata-server-tests",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/server",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "Run C++ Tests (build & run)",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Debug C++ Tests (macOS LLDB)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/server/build-tests/bin/ultimata-server-tests",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/server",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "Run C++ Tests (build & run)"
+        },
+        {
+            "name": "Debug C++ Tests (Windows MSVC)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/server/build-tests/bin/Debug/ultimata-server-tests.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/server",
+            "environment": [],
+            "console": "integratedTerminal",
+            "preLaunchTask": "Run C++ Tests (build & run)"
+        }
+    ]
+}

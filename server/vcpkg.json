@@ -6,6 +6,7 @@
     "boost-asio",
     "boost-system",
     "concurrentqueue",
-    "spdlog"
+    "spdlog",
+    "gtest"
   ]
 }

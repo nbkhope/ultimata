@@ -1,10 +1,20 @@
 build/
+build-tests/
 .bzr/
 .bzr_probably-old
 
 docs/doxygen/config
 
 .DS_Store
+
+# Python test artifacts
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Node.js / TypeScript coverage
+coverage/
 
 # Compiled Object files
 *.slo
