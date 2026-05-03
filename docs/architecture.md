@@ -221,7 +221,7 @@ Omit the component name to see an interactive menu.
 
 The scripts handle:
 - Installing missing system packages (via Homebrew / apt / dnf / winget / Chocolatey)
-- Cloning and bootstrapping vcpkg (first run only, placed in `~/.local/share/vcpkg`)
+- Cloning and bootstrapping vcpkg (first run only; placed in `~/.local/share/vcpkg` on macOS/Linux, `%USERPROFILE%\.vcpkg` on Windows)
 - Installing vcpkg and npm/pip dependencies
 - Configuring and building CMake projects
 - Starting the selected component
