@@ -326,8 +326,21 @@ function Setup-PythonServer {
 function Setup-NodejsClient {
     Write-Header "Setting up Node.js Client"
 
-    Ensure-Command "node" "OpenJS.NodeJS.LTS" "nodejs-lts"
-    Ensure-Command "npm"  "OpenJS.NodeJS.LTS" "nodejs-lts"
+    Ensure-Command "node" "OpenJS.NodeJS" "nodejs"
+    Ensure-Command "npm"  "OpenJS.NodeJS" "nodejs"
+
+    $nodeVersionRaw = node --version 2>$null
+    if (-not $nodeVersionRaw) {
+        Write-Error2 "Node.js 25+ is required, but node --version did not return a version."
+    }
+
+    $nodeMajor = 0
+    if ($nodeVersionRaw -match '^v(\d+)') {
+        $nodeMajor = [int]$Matches[1]
+    }
+    if ($nodeMajor -lt 25) {
+        Write-Error2 "Node.js 25+ is required. Detected $nodeVersionRaw. Please upgrade Node.js and re-run."
+    }
 
     $dir = "$RepoRoot\nodejs-client"
     Write-Info "Installing npm dependencies..."

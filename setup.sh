@@ -315,18 +315,24 @@ setup_nodejs_client() {
             local pm; pm=$(detect_pkg_manager)
             case "$pm" in
                 apt)
-                    # Use NodeSource for a recent LTS
-                    curl -fsSL https://deb.nodesource.com/setup_lts.x | need_sudo bash -
+                    # Use NodeSource for current Node.js versions.
+                    curl -fsSL https://deb.nodesource.com/setup_current.x | need_sudo bash -
                     need_sudo apt-get install -y nodejs
                     ;;
                 dnf)
                     need_sudo dnf install -y nodejs
                     ;;
                 *)
-                    error "Please install Node.js 18+ from https://nodejs.org and re-run."
+                    error "Please install Node.js 25+ from https://nodejs.org and re-run."
                     ;;
             esac
         fi
+    fi
+
+    local node_major
+    node_major="$(node -p "process.versions.node.split('.')[0]" 2>/dev/null || echo 0)"
+    if ! [[ "$node_major" =~ ^[0-9]+$ ]] || (( node_major < 25 )); then
+        error "Node.js 25+ is required. Detected $(node --version 2>/dev/null || echo unknown). Please upgrade and re-run."
     fi
 
     local dir="$REPO_ROOT/nodejs-client"
