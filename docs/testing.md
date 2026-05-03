@@ -77,7 +77,7 @@ To debug, use the **Debug Python Tests** launch configuration in `.vscode/launch
 ## 2. TypeScript Tests (Vitest)
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 25+
 - npm
 
 ### Install dependencies
@@ -175,7 +175,7 @@ Or run the test binary directly for more control:
 ```
 
 ### VS Code
-Use the **Run C++ Tests (build & run)** task.  
+Use the **Run C++ Tests (build & run)** task.
 For debugging, use the **Debug C++ Tests** launch configuration appropriate for your OS.
 
 ---
